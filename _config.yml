@@ -1,70 +1,22 @@
-#Site
-title: 胖狗子修行之路
-description: This is zhanglin' home.
-logo: favicon.png
-url: https://zhanglinhahaha.github.io/zhanglin.github.io/
-rss_url: /feed.xml
+# Site settings
+title: "Typewriter"
+description: "So I was feeling nostalgic."
+baseurl: ""
+url: "http://alixedi.github.io"
 
-# Jekyll
-permalink:          /blog/:title/
-markdown:           kramdown
-highlighter:        rouge
-kramdown:
-  auto_ids:         true
-  footnote_nr:      1
-  entity_output:    as_char
-  toc_levels:       1..6
-  enable_coderay:   false
-sass:
-  sass_dir:         assets/_sass
-  style:            compressed
+# Build settings
+markdown: kramdown
+permalink: pretty
+highlighter: pygments
+paginate: 3
 
-# Comment
-comment:
-  disqus: zhanglin
-  gitalk: true
-
-# Website analytics
-google_analytics: UA-82494501-1
-baidu_analytics: 5b31ffbbdc6cff18727f3adf75a03777    #from //hm.baidu.com/hm.js?***
-
-# Author information:
-author:
-  #resume: /resume
-  name: zhanglin     #the name of Blog section
-  about_me: coder
- 
-# Social Links
-email:               zlfighting@tju.edu.cn
-#google.plus:        username
-#twitter:            username
-# facebook:            kongsong
-github:              zhanglinhahaha
-# stackoverflow:      6438519/song-kong   #from a "http://stackoverflow.com/users/123456/username" link
-# linkedin:           kongsong
-#xing:              username
-#instagram:          username
-#lastfm:            username
-#tumblr:            username
-#pinterest:         username
-#foursquare:        username
-#steam:              username
-#dribbble:          username
-#youtube:           username
-#soundcloud:        username
-#weibo:             username
-#flickr:            username
-#codepen:           username
-#keybase:           username
-#xmpp:              username@server.com
-#hackernews:        username
-#behance:           username
-
-# Plugins
-plugins:
-  - jekyll-feed
-  - jekyll-sitemap
-  - jekyll-gist
-
-# Exclude list
-exclude: [README.md, Gemfile, Gemfile.lock, _site, src, vendor, CNAME, LICENSE, Rakefile,.sass-cache,.DS_Store,.idea]
+# Links
+links:
+  - title: "abt"
+    url: /about
+  - title: "twt"
+    url: http://twitter.com/alixedi
+  - title: "git"
+    url: http://github.com/alixedi
+  - title: "rss"
+    url: /feed.xml

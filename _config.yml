@@ -2,7 +2,7 @@
 title: 胖狗子修行之路
 description: This is zhanglin' home.
 logo: favicon.png
-url: https://zhanglinhahaha.github.io/zhanglin.github.io/.com
+url: https://zhanglinhahaha.github.io/zhanglin.github.io/
 rss_url: /feed.xml
 
 # Jekyll
@@ -35,11 +35,11 @@ author:
   about_me: coder
  
 # Social Links
-# email:               hi@ikongsong.com
+email:               zlfighting@tju.edu.cn
 #google.plus:        username
 #twitter:            username
 # facebook:            kongsong
-# github:              songkong
+github:              zhanglinhahaha
 # stackoverflow:      6438519/song-kong   #from a "http://stackoverflow.com/users/123456/username" link
 # linkedin:           kongsong
 #xing:              username

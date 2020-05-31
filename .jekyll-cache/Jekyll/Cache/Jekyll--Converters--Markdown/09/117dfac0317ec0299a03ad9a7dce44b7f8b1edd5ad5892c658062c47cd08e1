@@ -1,0 +1,73 @@
+I"�<p>一个 iOS SDK 开发者，喜欢研究一些新技术。</p>
+<p>
+平时喜欢整理个人博客，逛逛技术论坛。
+<p>
+了解一些 前端 基本概念和 Python 的简单用法。
+
+<p>
+
+<h2> 我们的博客 </h2>  
+
+<p>
+
+是的，这个博客是我们大家的，目前已经有很大一部分人在使用我的博客模板了，我也很高兴大家使用我的模板。
+
+<p>
+
+如果你想搭建一个跟我一样的博客，可以看我的 
+<a href="/2016/10/jekyll_tutorials1/"> Jekyll 搭建个人博客 </a>
+教程
+
+<p>
+
+有关于博客主题的建议和意见都可以提给我，让我们一起来打造一个精美的主题吧~ 
+
+<p> 
+
+博客源码在 <a target="_blank" href="https://github.com/leopardpan/leopardpan.github.io/">Github</a> 上，你的 Star 是我更新的动力，谢谢~
+
+<p> 
+
+<p> 
+
+<p> 
+
+
+<h3> 如何联系我 </h3>  
+
+<p> 
+email：zlfighting@tju.edu.cn
+<p> 
+qq: 1012035640
+<p> 
+
+
+<section class="post-comments">
+
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/about/";
+        this.page.identifier = "/about/";
+    };
+    var disqus_shortname = 'zhanglin';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+
+  
+
+</section>
+
+
+</p></p></p></p></p></p></p></p></p></p></p></p></p>
+:ET

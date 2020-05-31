@@ -1,0 +1,50 @@
+I"�<p>正在修练进阶的coder</p>
+<p>
+语言能力：
+c++
+java
+python
+目前开发：
+Android
+<p>
+了解一些 前端 基本概念和 Python 的简单用法。
+
+<p>
+
+<h3> 如何联系我 </h3>  
+
+<p> 
+email：zlfighting@tju.edu.cn
+<p> 
+qq: 1012035640
+<p> 
+
+<section class="post-comments">
+
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://localhost:4000/about/";
+        this.page.identifier = "/about/";
+    };
+    var disqus_shortname = 'zhanglin';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+
+  
+
+</section>
+
+
+</p></p></p></p></p></p>
+:ET

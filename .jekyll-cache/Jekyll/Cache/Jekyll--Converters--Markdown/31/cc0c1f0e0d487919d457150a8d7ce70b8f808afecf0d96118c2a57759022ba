@@ -1,0 +1,49 @@
+I"z
+<h3 id="nskeyedarchiver-自定义对象写文件">NSKeyedArchiver 自定义对象写文件</h3>
+
+<p>如果存储的对象类名有变动，则需要设置clasName, 方法为：“setClassName:forClass:”      <br />
+使用 NSKeyedArchiver 进行数据持久化时, 系统会默认使用类名去建表，如果类名变了，那么使用新的类名肯定是从本地获取不到表的，代码执行崩溃。   <br />
+所以需要在 NSKeyedArchiver 或者 NSKeyedUnarchiver 时使用 “setClassName:forClass:” 指定类名。</p>
+
+<h3 id="断点配置generate-debug-symbols">断点配置：【Generate Debug Symbols】</h3>
+
+<p>描述: 用来控制断点是否生效,关闭此功能，打包 <code class="language-plaintext highlighter-rouge">.ipa</code> 时，包体积会小很多。  <br />
+配置路径:【project/TARGETS/Build Settings/Apple LLVM7.1 - Code Genneration/Generate Debug Symbols】</p>
+
+<h3 id="捕获全局异常all-exception">捕获全局异常：【All Exception】</h3>
+
+<p>描述: 用来捕捉整个项目在 Xcode 里执行时的异常。例如：try/catch 时 catch住的异常,【All Exception】可以直接定位到具体位置。   <br />
+配置路径: 异常捕捉(commod+7)/Xcode左下角点击+/Add Exception Breakpoint/完成(回车键)</p>
+
+<h3 id="ui相关">UI相关</h3>
+
+<p>1、设置状态栏颜色：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+info.plist 添加 View controller-based status bar appearance - NO     
+代码里写 [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent]; 再次运行后状态栏就会变成白色。    
+
+</code></pre></div></div>
+
+<p>2、左滑返回手势失效了怎么办：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+设置 navigationItem.leftBarButtonItem 之后，左滑返回手势就会失效。设置一下 UIGestureRecognizerDelegate 代理即可：
+
+self.navigationController.interactivePopGestureRecognizer.delegate = self;
+
+</code></pre></div></div>
+
+<p>3、让 TableView的 下拉 和 上拉 显示不一样的背景颜色：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+给 TableView 上加一个 View，View 的 Frema：
+CGRectMake(0, -self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height + 2)，
+给变View的背景颜色就可以了。
+
+</code></pre></div></div>
+
+<p><br />
+转载请注明：<a href="http://baixin">潘柏信的博客</a> » <a href="http://baixin.io/2016/12/iOS_Dev_Note/">iOS开发中的小问题记录</a></p>
+
+:ET

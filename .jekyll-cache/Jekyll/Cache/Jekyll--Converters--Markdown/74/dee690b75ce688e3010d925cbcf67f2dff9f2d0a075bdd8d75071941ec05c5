@@ -1,0 +1,69 @@
+I"'<p>　　随着低功耗蓝牙的推出，iBeacon 的使用是越来越广泛了，如：微信的附近摇一摇功能，又或者是当你进入大型商场，一些店铺给你推送通知，VR 场景识别等等，这些表示 iBeacon 已经与我们的生活精密相连了。</p>
+
+<h4 id="简介">简介：</h4>
+
+<ul>
+  <li>
+    <p><strong>概念：</strong> iBeacon 是 iOS7 后苹果出的一项新技术，支持蓝牙4.0(或以上)的 iOS 设备，工作方式是低功耗蓝牙（Bluetooth Low Energy），向周围发送自己特有的ID，一个 <code class="language-plaintext highlighter-rouge">iBeacon</code> 硬件设备在不做任何处理的情况下一般可使用两三年左右。</p>
+  </li>
+  <li>
+    <p>iBeacon 的形状多种多样，大致如下图。
+<img src="/images/posts/iBeacon/iBeacon.png" alt="" /></p>
+  </li>
+</ul>
+
+<h4 id="目前哪些地方有-ibeacon">目前哪些地方有 iBeacon：</h4>
+<ul>
+  <li>1、微信摇一摇：使用微信的人应该都知道微信有一个 <code class="language-plaintext highlighter-rouge">周边摇一摇</code> 功能， 使用的就是 iBeacon 技术。 很多餐馆都部有 iBeacon 的点，如果你想验证直接监测微信的 iBeaconUUID：FDA50693-A4E2-4FB1-AFCF-C6EB07647825。</li>
+  <li>2、走进某个商场时，忽然手机里推出一个通知，也是使用 iBeacon 技术。</li>
+  <li>3、帝都的地跌站大部分也有微信 UUID 的 iBeacon 发射器，具体是用来做什么的还不是慢清楚。</li>
+  <li>4、iBeacon 还可实现地理围栏、室内定位等功能。</li>
+</ul>
+
+<h4 id="ibeacon-技术">iBeacon 技术</h4>
+<p>　　Apple的 <code class="language-plaintext highlighter-rouge">CoreLocation.frame</code> 里把iBeacon封装成了一个 <code class="language-plaintext highlighter-rouge">CLBeacon</code> 类，<code class="language-plaintext highlighter-rouge">CLBeacon</code> 大致有下面几个属性组成：<code class="language-plaintext highlighter-rouge">Major</code> 、<code class="language-plaintext highlighter-rouge">Minor</code> 、 <code class="language-plaintext highlighter-rouge">proximity</code> 、 <code class="language-plaintext highlighter-rouge">rssi</code> 、 <code class="language-plaintext highlighter-rouge">accuracy</code> 。</p>
+
+<h4 id="开发者如何使用-ibeacopn">开发者如何使用 iBeacopn?:</h4>
+<ul>
+  <li>1、用户需要添加 <code class="language-plaintext highlighter-rouge">CoreLocation.framework</code> ，App 才具备定位的功能。</li>
+  <li>2、App 开发者需要开启定位功能需要配置：在 <code class="language-plaintext highlighter-rouge">Xcode</code> 的 <code class="language-plaintext highlighter-rouge">info.plist</code> 里面添加 <code class="language-plaintext highlighter-rouge">NSLocationAlwaysUsageDescription</code>(允许后台访问位置信息) 或 <code class="language-plaintext highlighter-rouge">requestWhenInUseAuthorization</code>(允许使用时访问位置信息) 字段。（iOS7后该添加了该字段应用才会弹出 `是否允许应用访问用户的位置信息）。</li>
+</ul>
+
+<p>创建和注册一个beacon区域</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)registerBeaconRegionWithUUID:(NSUUID *)proximityUUID andIdentifier:(NSString *)identifier
+{
+    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:proximityUUID identifier:identifier];
+    
+    [manager startMonitoringForRegion:beaconRegion];
+}
+</code></pre></div></div>
+
+<p>当接受到 iBeacon 信号时回调 ，beacons 里面装了信号的对象，可能同时出现多个信号。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
+{
+
+}
+</code></pre></div></div>
+
+<p>Note: <a href="https://developer.apple.com/library/prerelease/content/samplecode/AirLocate/Introduction/Intro.html">苹果iBeacon官方代码例子</a>。</p>
+
+<h4 id="ibeacon-硬件设备条件">iBeacon 硬件设备条件：</h4>
+<ul>
+  <li>用户设备 iOS7 或更新操作系统。</li>
+  <li>用户蓝牙设备4.0或更新。</li>
+  <li>用户蓝牙设备必须开启。</li>
+  <li>用户设备定位服务必须开启，允许应用访问位置信息。</li>
+</ul>
+
+<h4 id="ibeacon-能唤醒应用">iBeacon 能唤醒应用</h4>
+<ul>
+  <li>前提：App 具备上面使用 iBeacon 的功能，并且允许后台访问位置信息。</li>
+  <li>现象：App 能被 iBeacon 信号唤醒，即使 App 已经被用户手动杀死掉了，App 也能被 iBeacon 技术唤醒，并且能执行一系列操作。</li>
+  <li>影响：导致 App 用户在并没有使用 <code class="language-plaintext highlighter-rouge">App</code> 的情况下, <code class="language-plaintext highlighter-rouge">App</code> 有了长达几个小时的后台使用时长。</li>
+</ul>
+
+<p><br /></p>
+
+<p>转载请注明：<a href="http://baixin">潘柏信的博客</a> » <a href="http://baixin.io/2016/04/iBeacon/">点击阅读原文</a></p>
+:ET

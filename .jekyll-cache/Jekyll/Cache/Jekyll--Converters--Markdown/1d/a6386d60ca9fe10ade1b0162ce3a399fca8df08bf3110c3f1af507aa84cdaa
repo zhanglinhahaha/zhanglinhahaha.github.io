@@ -1,0 +1,236 @@
+I"�G<h3 id="简介">简介</h3>
+<p>这个专栏是阅读”设计模式之禅”第二版做的阅读笔记。
+将书中部分的例子从java改成c++</p>
+<h3 id="单一职责原则single-responsibility-principle">单一职责原则(Single Responsibility Principle)</h3>
+<p>define: There should never be more than one reason for a class to change.
+单一职责原则的定义是:应该有且仅有一个原因引起类的变更。
+分歧点：如何对一个类进行职责划分
+advice：接口一定要做到单一职责,类的设计尽量做到只有一个原因引起变化
+书中也表明，在实际项目中很难实现单一职责，但是这不能否定这个原则的优点。</p>
+
+<h3 id="里氏替换原则liskov-substitution-principle">里氏替换原则(Liskov Substitution Principle)</h3>
+<p>define: If for each object o1 of type S there is an object o2 of type T such that for all programs P defined in terms of T,the behavior of P is unchanged when o1 is substituted for o2 then S is a subtype of T.
+(如果对每一个类型为S的对象o1,都有类型为T的对象o2,使得以T定义的所有程序P在所有的对象o1都代换成o2时,程序P的行为没有发生变化,那么类型S是类型T的子类型。)
+通俗点讲,只要父类能出现的地方子类就可以出现,而且替换为子类也不会产生任何错误或异常,使用者可能根本就不需要知道是父类还是子类。但是,反过来就不行了,有子类出现的地方,父类未必就能适应。
+含义:
+1 子类必须完全实现父类的方法
+ps:
+在类中调用其他类时务必要使用父类或接口,如果不能使用父类或接口,则说明类的设计已经违背了LSP原则。
+如果子类不能完整地实现父类的方法,或者父类的某些方法在子类中已经发生“畸变”,则建议断开父子继承关系,采用依赖、聚集、组合等关系代替继承。
+eg.
+玩具枪不能继承Cs抽象枪的类，因为玩具枪不具备击杀敌人的效果。
+2 子类可以有自己的个性
+子类出现的地方父类未必可以出现，因为子类有可能带有自己的个性。
+3 覆盖或实现父类的方法时输入参数可以被放大
+4 覆写或实现父类的方法时初出结果可以被缩小
+书中的例子:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">AbstractGun</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">shoot</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Soldier</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">setGun</span><span class="p">(</span><span class="n">AbstractGun</span><span class="o">&amp;</span> <span class="n">gun</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mgun</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">gun</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">killEnemy</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"士兵开始击杀敌人..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">mgun</span><span class="o">-&gt;</span><span class="n">shoot</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">AbstractGun</span> <span class="o">*</span><span class="n">mgun</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Handgun</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AbstractGun</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">shoot</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"手枪射击..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Rifle</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AbstractGun</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">shoot</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"步枪射击..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+
+<span class="k">class</span> <span class="nc">Machinegun</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AbstractGun</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">shoot</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"机枪扫射..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">AK47</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Rifle</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">shoot</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"AK47射击..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">AUG</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Rifle</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">zoomOut</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"通过望远镜查看敌人..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">shoot</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"AUG射击..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Snipper</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">killEnemy</span><span class="p">(</span><span class="n">AUG</span><span class="o">&amp;</span> <span class="n">aug</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">aug</span><span class="p">.</span><span class="n">zoomOut</span><span class="p">();</span>
+        <span class="n">aug</span><span class="p">.</span><span class="n">shoot</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Soldier</span> <span class="n">zl</span><span class="p">;</span>
+    <span class="n">Rifle</span> <span class="n">gun</span><span class="p">;</span>
+    <span class="n">zl</span><span class="p">.</span><span class="n">setGun</span><span class="p">(</span><span class="n">gun</span><span class="p">);</span>
+    <span class="n">zl</span><span class="p">.</span><span class="n">killEnemy</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test2</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Snipper</span> <span class="n">san</span><span class="p">;</span>
+    <span class="n">AUG</span> <span class="n">aug</span><span class="p">;</span>
+    <span class="n">san</span><span class="p">.</span><span class="n">killEnemy</span><span class="p">(</span><span class="n">aug</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<h3 id="依赖倒置原则dependence-inversion-principle">依赖倒置原则(Dependence Inversion Principle)</h3>
+<p>define: High level modules should not depend upon low level modules.Both should depend upon abstractions.Abstractions should not depend upon details.Details should depend upon abstractions.
+高层模块不应该依赖底层模块，两个都应该依赖抽象
+抽象不依赖实现，实现依赖抽象</p>
+
+<p>面向对象设计 OOD(Object-Oriented Design)
+模块间的依赖通过抽象发生，实现类之间不发生直接的依赖关系，其依赖关系是通过接口或抽象类产生的
+接口或抽象类不依赖于实现类
+实现类依赖接口或抽象类</p>
+
+<p>减少类间的耦合性，提高系统的稳定性，降低并行开发引起的风险，提高代码可读性和可维护性</p>
+
+<p>三种写法
+1 构造函数传递依赖对象</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IDriver</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">drive</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Driver</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IDriver</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Driver</span><span class="p">(</span><span class="n">ICar</span><span class="o">*</span> <span class="n">car</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mcar</span> <span class="o">=</span> <span class="n">car</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">drive</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">mcar</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">ICar</span><span class="o">*</span> <span class="n">mcar</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>2 Setter方法传递依赖对象</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IDriver</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">setCar</span><span class="p">(</span><span class="n">ICar</span> <span class="o">*</span><span class="n">car</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">drive</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">};</span>
+<span class="k">class</span> <span class="nc">Driver</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IDriver</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">setCar</span><span class="p">(</span><span class="n">ICar</span> <span class="o">*</span><span class="n">car</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mcar</span> <span class="o">=</span> <span class="n">car</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">drive</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">mcar</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">ICar</span><span class="o">*</span> <span class="n">mcar</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>3 接口声明依赖对象(也叫接口注入)</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IDriver</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">drive</span> <span class="p">(</span><span class="n">ICar</span> <span class="o">*</span><span class="n">car</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">};</span>
+<span class="k">class</span> <span class="nc">Driver</span> <span class="o">:</span> <span class="k">class</span> <span class="nc">IDriver</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">drive</span> <span class="p">(</span><span class="n">ICar</span> <span class="o">*</span><span class="n">car</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">car</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>依赖倒置原则的本质就是面向接口编程，利用接口抽象类实现各个类或模块间实现独立，不相互影响，实现模块间的松耦合。
+在实际项目中使用规则：
+1 每个类尽量都有接口或抽象类，这是依赖倒置原则的基本要求。
+2 变量的表面类型尽量是接口或抽象类，表面类型是在定义的时候赋予的类型，实际类型是对象的类型。
+3 任何类都不应该从具体类派生
+4 尽量不要覆写基类已经实现的方法
+5 结合里氏替换原则使用
+书中的例子:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">ICar</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">run</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Benz</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ICar</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"run Benz...."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">BWM</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ICar</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"run BWM...."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">IDriver</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">drive</span> <span class="p">(</span><span class="n">ICar</span> <span class="o">*</span><span class="n">car</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Driver</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IDriver</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">drive</span> <span class="p">(</span><span class="n">ICar</span> <span class="o">*</span><span class="n">car</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">car</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">test0</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Driver</span> <span class="n">zl</span><span class="p">;</span>
+    <span class="n">zl</span><span class="p">.</span><span class="n">drive</span><span class="p">(</span><span class="k">new</span> <span class="n">Benz</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">test0</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+:ET

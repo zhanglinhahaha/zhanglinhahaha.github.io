@@ -1,0 +1,47 @@
+I"E
+<p>工欲善其事必先利其器，选择一些好的工具可以成吨的提高自己的工作效率。</p>
+
+<h3 id="个人开发常用工具的收集">个人开发常用工具的收集</h3>
+
+<ul>
+  <li><a href="https://www.zybuluo.com/mdeditor">cmd Markdown</a> 作业部落出版的Markdown编辑器</li>
+  <li><a href="https://github.com/rest-client/rest-client">RESTClient</a> 一个开源的客户端HTTP调试工具。</li>
+  <li><a href="https://github.com/getlantern/lantern">lantern</a> 蓝灯,一款开源的翻墙工具。</li>
+  <li><a href="https://www.charlesproxy.com/">Charles</a> 青花瓷, 一款HTTP/HTTPS的抓包工具。
+    <ul>
+      <li><a href="http://blog.devtang.com/2015/11/14/charles-introduction/">Charles 从入门到精通</a></li>
+    </ul>
+  </li>
+  <li><a href="http://www.sublimetext.com">Sublime</a> 一款强大的IDE,支持Python、JS、JSON格式化等等…更重要的是<code class="language-plaintext highlighter-rouge">Sublime</code>支持的插件很多。
+    <ul>
+      <li><a href="http://www.xuanfengge.com/practical-collection-of-sublime-plug-in.html">实用的sublime插件集合</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="文章配图网站">文章配图网站</h3>
+
+<p>还在为文章配图而苦恼吗？点击店面的网站吧，各种各样的图片帮你丰富你的文章。</p>
+
+<p><a href="http://www.gratisography.com/">Gratisography</a> gratisography 里面的图片每周都会更新，很多时尚流行的照片在里面，并且适合用在设计项目上。</p>
+
+<p><a href="http://www.ssyer.com/home-index.html">ssyer</a>国内的网站，不需要翻墙，速度很快，图片最全。完全免费的图片库。</p>
+
+<p><a href="https://pixabay.com/">Pixabay</a> 不同类型的高清摄影照片。</p>
+
+<h3 id="ui设计网站">UI设计网站</h3>
+
+<p>作为一个开发者，自己写些小程序的时候经常会为没有UI而烦恼，下面就是一些UI设计网站，有新颖的UI界面设计，也有单独的UI元素，icon等。</p>
+
+<p><a href="http://www.ui.cn/">UI中国</a> 国内潮流的UI设计作品。</p>
+
+<p><a href="http://www.webdesigndev.com/">webdesigndev</a> 国外网站设计文章，各种各样的资料看到你眼花缭乱。</p>
+
+<p><a href="https://dribbble.com/">dribbble</a> 接触过设计的应该都知道，一个很好的UI设计平台。</p>
+
+<p><a href="http://www.flaticon.com/">flaticon</a> 各种icon的设计，一定有你想想要的。</p>
+
+<p><br /></p>
+
+<p>转载请注明：<a href="http://baixin">潘柏信的博客</a> » <a href="http://baixin.io/2016/06/Develop_Tool/">点击阅读原文</a></p>
+:ET

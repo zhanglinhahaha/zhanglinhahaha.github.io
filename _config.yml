@@ -5,7 +5,7 @@ description: 欢迎来到我的个人站~
 # 头像里面的标题
 avatarTitle: zhanglin
 # 头像里面的描述
-avatarDesc: coder1
+avatarDesc: A Coder
 #https://zhanglinhahaha.github.io/zhanglin.github.io/
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://zhanglinhahaha.github.io/" # the base hostname & protocol for your site

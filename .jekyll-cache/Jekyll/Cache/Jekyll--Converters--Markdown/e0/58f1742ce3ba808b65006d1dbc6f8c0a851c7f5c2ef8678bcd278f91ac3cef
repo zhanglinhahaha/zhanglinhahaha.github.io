@@ -1,0 +1,105 @@
+I"�<h3 id="门面模式">门面模式</h3>
+<p>Provide a unified interface to a set of interfaces in a subsystem.Facade defines a higher-level interface that makes the subsystem easier to use.
+(要求一个子系统的外部与其内部的通信必须通过一个统一的对象进行。门面模式提供一个高层次的接口,使得子系统更易于使用。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>门面角色类
+客户端可以调用这个类的方法，该类知晓子系统的所有功能和责任，该角色没有实际的业务逻辑，是一个委托类。将客户端发来的请求委派到相应的子系统类
+子系统角色类
+可以一个或者多个子系统，一个子系统是一个类的集合。子系统不知道门面的存在，对于子系统来说，门面就是客户端。</p>
+<h3 id="通用源码">通用源码</h3>
+<p>//子系统角色类
+class ClassA {
+public:
+    void doSomethingA() { }
+};
+class ClassB {
+public:
+    void doSomethingB() { }
+};
+class ClassC {
+public:
+    void doSomethingC() { }
+};
+//门面角色类
+class Facade {
+public:
+    void methodA() {a.doSomethingA;}
+    void methodB() {b.doSomethingB;}
+    void methodC() {c.doSomethingC;}
+private:
+    ClassA a;
+    ClassB b;
+    ClassC c;
+};</p>
+<h3 id="优点">优点</h3>
+<p>减少子系统的相互依赖
+提高灵活性
+提高安全性</p>
+<h3 id="缺点">缺点</h3>
+<p>不符合开闭原则，对修改关闭，对扩展开放，门面角色类的代码权重较大</p>
+<h3 id="使用场景">使用场景</h3>
+<p>为一个复杂的模块或子系统提供一个供外界访问的接口
+子系统相对独立
+预防低水平人员带来的风险扩散</p>
+<h3 id="注意事项">注意事项</h3>
+<p>一个子系统可以有多个门面，门面可以按照单一职责拆分
+门面不参与子系统内的业务逻辑</p>
+<h3 id="示例代码">示例代码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+class ILetterProcess {
+public:
+    virtual void writeContext(string) = 0;
+    virtual void fillEnvelope(string) = 0;
+    virtual void letterInotoEnvelope() = 0;
+    virtual void sendLetter() = 0;
+};
+
+class LetterProcessImpl : public ILetterProcess {
+public:
+    void writeContext(string s) override {
+        cout &lt;&lt; "Context: " &lt;&lt; s &lt;&lt; endl;
+    }
+    void fillEnvelope(string s) override {
+        cout &lt;&lt; "Re Info: " &lt;&lt; s &lt;&lt; endl;
+    }
+    void letterInotoEnvelope() override {
+        cout &lt;&lt; "Package" &lt;&lt; endl;
+    }
+    void sendLetter() override {
+        cout &lt;&lt; "send..." &lt;&lt; endl;
+    }
+};
+
+class Police {
+public:
+    void checkLetter(ILetterProcess *letter) {
+        cout &lt;&lt; "check over" &lt;&lt; endl;
+    }
+};
+
+class ModenPostOffice {
+public:
+    void sendLetter(string context, string info) {
+        letter-&gt;writeContext(context);
+        letter-&gt;fillEnvelope(info);
+        letter-&gt;letterInotoEnvelope();
+        p.checkLetter(letter);
+        letter-&gt;sendLetter();
+    }
+private:
+    ILetterProcess* letter = new LetterProcessImpl();
+    Police p;
+};
+
+int main() {
+    ModenPostOffice mpo;
+    mpo.sendLetter("hello world", "c++");
+    return 0;
+}
+</code></pre></div></div>
+
+:ET

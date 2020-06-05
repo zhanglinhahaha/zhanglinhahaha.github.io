@@ -1,0 +1,105 @@
+I"�<h3 id="责任链模式">责任链模式</h3>
+<p>Avoid coupling the sender of a request to its receiver by giving more than one object a chance to handle the request.Chain the receiving objects and pass the request along the chain until an objecthandles it.
+(使多个对象都有机会处理请求,从而避免了请求的发送者和接受者之间的耦合关系。将这些对象连成一条链,并沿着这条链传递该请求,直到有对象处理它为止。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>Handler抽象类，责任链上的抽象类
+ConcreteHandler实现类，责任链上的具体实现类，继承Handler抽象类</p>
+<h3 id="通用源码">通用源码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//Handler抽象类
+class Handler {
+private:
+    Handler *nextHandler = NULL;
+public:
+    //每个处理者都必须对请求作出处理
+    Response HandleMessage(Request *request) {
+        Response *response = null;
+        //判断是否是自己的处理级别
+        if(getHandlerLevel() == request-&gt;getRequestLevel()) {
+            response = echo(request);
+        }else {
+            //不属于自己的处理级别，判断是否有下一个处理中
+            if(nextHandler != NULL) {
+                response = nextHandler-&gt;HandleMessage(request);
+            }else {
+                //没有适当的处理者，业务自行处理
+            }
+        }
+        return response;
+    }
+    //设置下一个处理者
+    void setNext(Handler *h) {
+        nextHandler = h;
+    }
+protected:
+    //每个处理者的级别
+    virtual Level getHandlerLevel() = 0;
+    //每个处理者实现的处理任务
+    virtual Response echo(Request *request) = 0;
+};
+//具体处理者类
+class ConcreteHandler1 : public Handler {
+protected:
+    //定义自己的处理逻辑
+    virtual Response echo(Request *request) {
+        //完成处理逻辑
+        return NULL:
+    }
+    //定义自己的处理级别
+    virtual Level getHandlerLevel() {
+        //设置处理级别
+        return NULL;
+    }
+};
+class ConcreteHandler2 : public Handler {
+protected:
+    //定义自己的处理逻辑
+    virtual Response echo(Request *request) {
+        //完成处理逻辑
+        return NULL:
+    }
+    //定义自己的处理级别
+    virtual Level getHandlerLevel() {
+        //设置处理级别
+        return NULL;
+    }
+};
+class ConcreteHandler3 : public Handler {
+protected:
+    //定义自己的处理逻辑
+    virtual Response echo(Request *request) {
+        //完成处理逻辑
+        return NULL:
+    }
+    //定义自己的处理级别
+    virtual Level getHandlerLevel() {
+        //设置处理级别
+        return NULL;
+    }
+};
+//上面处理涉及到的类
+//Level 定义一个请求和处理等级
+class Level {
+};
+//Request 封装请求
+class Request {
+public:
+    Level getRequestLevel() {
+        return NULL:
+    }
+};
+//Response 封装链中返回的结果
+class Response {
+};
+</code></pre></div></div>
+<h3 id="优点">优点</h3>
+<p>将请求和处理分开，将处理者和请求这解耦提高系统的灵活性；</p>
+<h3 id="缺点">缺点</h3>
+<p>每个请求都会遍历责任链，性能大打折扣
+调试的时候逻辑较复杂</p>
+<h3 id="注意事项">注意事项</h3>
+<p>控制责任链的节点数量，避免出现超长链，设置最大节点数量。</p>
+<h3 id="示例代码">示例代码</h3>
+<p>```
+#include <iostream>
+#include <string></string></iostream></p>
+:ET

@@ -1,0 +1,108 @@
+I"�<h3 id="抽象工厂模式">抽象工厂模式</h3>
+<p>Provide an interface for creating families of related or dependent objects without specifying their concrete classes.
+(为创建一组相关或相互依赖的对象提供一个接口,而且无须指定它们的具体类。)</p>
+<h3 id="抽象工厂模式的通用类图">抽象工厂模式的通用类图</h3>
+<p>具体产品继承抽象产品
+具体工厂继承抽象工厂
+在抽象工厂类中
+有N个产品族，就应该有N个创建方法
+有M个产品等级就应该有M个实现工厂类，在每个实现工厂中，实现不同产品族的生产任务</p>
+<h3 id="优点">优点</h3>
+<p>封装性；不需要关系产品的实现类，只需要关心接口。通过工厂类就能创建一个需要的对象。
+产品族内的约束为非公开状态；可以在工厂内实现具体的产品族内的约束。</p>
+<h3 id="缺点">缺点</h3>
+<p>产品族扩展非常困难；因为增加一个产品，抽象工厂需要增加一个抽象接口，相应的其实现类必须全部都要修改，严重违反开闭原则。</p>
+<h3 id="使用场景">使用场景</h3>
+<p>一组没有任何关系的对象有着相同的约束，就可以使用抽象工厂模式。
+例如文本编辑器和图片处理器，在linux和windows代码实现是不同的，它们两个都被操作系统类型约束。所以可以通过抽象工厂模式，产生不同操作系统下的文本编辑器和图片处理器。</p>
+<h3 id="注意事项">注意事项</h3>
+<p>抽象工厂模式扩展产品族比较困难，但是扩展产品等级却比较容易。
+例如，如果需要新增一个产品C则比较困难，但是新增一个产品A3比较容易。</p>
+
+<h3 id="示例代码">示例代码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;iostream&gt;
+
+using namespace std;
+
+class AbsProA {
+public:
+    void shareMethod() {
+        cout &lt;&lt; "shared A" &lt;&lt; endl;
+    }
+    virtual void doSomething() = 0;
+};
+class ProA1 : public AbsProA {
+public:
+    virtual void doSomething() {
+        cout &lt;&lt; "ProA1" &lt;&lt; endl;
+    }
+};
+class ProA2 : public AbsProA {
+public:
+    virtual void doSomething() {
+        cout &lt;&lt; "ProA2" &lt;&lt; endl;
+    }
+};
+
+class AbsProB {
+public:
+    void shareMethod() {
+        cout &lt;&lt; "shared B" &lt;&lt; endl;
+    }
+    virtual void doSomething() = 0;
+};
+class ProB1 : public AbsProB {
+public:
+    virtual void doSomething() {
+        cout &lt;&lt; "ProB1" &lt;&lt; endl;
+    }
+};
+class ProB2 : public AbsProB {
+public:
+    virtual void doSomething() {
+        cout &lt;&lt; "ProB2" &lt;&lt; endl;
+    }
+};
+
+class AbsCreator {
+public:
+    virtual AbsProA *createProA() = 0;
+    virtual AbsProB *createProB() = 0;
+};
+
+class Creator1 : public AbsCreator {
+public:
+    AbsProA *createProA() {
+        return new ProA1();
+    }
+    AbsProB *createProB() {
+        return new ProB1();
+    }
+};
+
+class Creator2 : public AbsCreator {
+public:
+    AbsProA* createProA() {
+        return new ProA2();
+    }
+    AbsProB* createProB() {
+        return new ProB2();
+    }
+};
+
+int main() {
+    AbsCreator *c1 = new Creator1();
+    AbsCreator *c2 = new Creator2();
+    AbsProA *a1 = c1-&gt;createProA();
+    AbsProA *a2 = c2-&gt;createProA();
+    AbsProB *b1 = c1-&gt;createProB();
+    AbsProB *b2 = c2-&gt;createProB();
+    a1-&gt;doSomething();
+    a2-&gt;doSomething();
+    b1-&gt;doSomething();
+    b2-&gt;doSomething();
+    return 0;
+}
+</code></pre></div></div>
+
+:ET

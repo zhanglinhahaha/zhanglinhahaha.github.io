@@ -1,0 +1,184 @@
+I"|D<h3 id="接口隔离原则interface-segregation-principle-isp">接口隔离原则(Interface Segregation Principle, ISP)</h3>
+<p>接口分为两种：
+实例接口，JAVA中类也是一个接口
+类接口，JAVA经常使用interface关键字定义的接口
+define:Clients should not be forced to depend upon interfaces that they don’t use.
+(客户端不应该依赖它不需要的接口。)
+The dependency of one class to another one should depend on the smallest possible interface.
+(类间的依赖关系应该建立在最小的接口上。)
+通俗的讲，就是尽量把接口细化。注意与单一职责原则的区别，单一职责不一定接口是最细化的。
+根据接口隔离原则拆分接口时，首先必须满足单一职责原则，保证接口不会过分的臃肿</p>
+
+<p>接口要高内聚，即接口尽量少公布public方法，接口是对外的承诺，承诺越少对系统的开发越有利
+定制服务，为各个客户端定制服务，提供访问者需要的方法</p>
+
+<p>接口和类尽量使用原子接口或原子类来组装，衡量原子划分的几个规则：
+1 一个接口只服务于一个子模块或业务逻辑
+2 通过业务逻辑压缩接口中的public方法，接口时常去回顾，尽量让接口达到“满身筋骨”，而不是“肥嘟嘟”的一大堆方法
+3 已经被污染了的接口，尽量去修改，若变更的风险较大，则采用适配器模式进行转化处理
+4 了解环境，拒绝盲从</p>
+<h3 id="迪米特法则law-of-demeter-lod">迪米特法则(Law of Demeter, LoD)</h3>
+<p>最少知识原则 Least Knowledge Principle LKP
+一个对象应该对其他对象有最少的了解。
+通俗来说，只需要知道提供的方法或接口是实现的什么目的，至于怎么去实现不关心。</p>
+
+<p>四层含义：
+1 Only talk to your immediate friends.(只与直接的朋友通信)
+不需要不必要的依赖，降低系统间的耦合，提高系统的健壮性
+eg.
+体育老师清点班级女生人数
+错误的做法
+体育老师获取女生列表，然后通知体育委员清点，最后体育委员拿着列表点名
+这样做会使体育老师和体育委员都依赖女生类
+正确的做法
+体育老师通知体育委员清点，体育委员直接获取女生列表点名。这样体育老师类将不会依赖女生类
+2 朋友间也是有距离的
+尽量不要对外公布太多的public方法和非静态的public变量。
+3 是自己的就是自己的
+如果一个方法放在本类中，既不增加类间关系，也对本类不产生负面影响，那就放置在本类中。
+4 谨慎使用Serializable</p>
+
+<p>核心观念就是类间解耦，弱耦合，提高类的复用率。</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+#include &lt;cstdlib&gt;
+#include &lt;ctime&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Wizard</span> <span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="kt">int</span> <span class="n">first</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"first..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">srand</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">100</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">second</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"second..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">srand</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">100</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">third</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"third..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">srand</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">100</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">installWizard</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">f</span> <span class="o">=</span> <span class="n">first</span><span class="p">();</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">f</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="n">second</span><span class="p">();</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">s</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="n">third</span><span class="p">();</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">t</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"successful!"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">InstallSoftware</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">installWizard</span><span class="p">(</span><span class="n">Wizard</span> <span class="n">wizard</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">wizard</span><span class="p">.</span><span class="n">installWizard</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">test0</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">InstallSoftware</span> <span class="n">ins</span><span class="p">;</span>
+    <span class="n">Wizard</span> <span class="n">wiz</span><span class="p">;</span>
+    <span class="n">ins</span><span class="p">.</span><span class="n">installWizard</span><span class="p">(</span><span class="n">wiz</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">test0</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+<h3 id="开闭原则open-close-principle">开闭原则(Open Close Principle)</h3>
+<p>Define:Software entities like classes,modules and functions should be open for extension but closed for modifications.(一个软件实体如类、模块和函数应该对扩展开放,对修改关闭。)
+变化可以分为逻辑变化，子模块变化，可见视图变化。
+当发生变化时，开闭原则要求我们通过扩展实现实现变化。
+重要性：
+1 开闭原则对测试的影响，减少单元测试用例
+2 开闭原则可以提高复用性
+3 开闭原则可以提高可维护性
+4 面向对象开发的要求
+应用：
+1 抽象约束
+通过接口或抽象类约束扩展，对扩展进行边界限定，不允许出现在接口或抽象类中不存在的public方法
+参数类型，引用对象尽量使用接口或抽象类而不是实现类
+抽象层尽量保持稳定，一旦确定即不允许修改
+2 元数据(metadata)控制模块行为
+3 制定项目章程
+4 封装变化
+将相同的变化封装到一个接口或抽象类中
+将不同的变化封装到不同的接口或抽象类中</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">IBook</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="n">string</span> <span class="n">getName</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="k">virtual</span> <span class="kt">int</span> <span class="n">getPrice</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="k">virtual</span> <span class="n">string</span> <span class="n">getAuthor</span><span class="p">()</span> <span class="p">{}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">NovelBook</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IBook</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">NovelBook</span><span class="p">(</span><span class="n">string</span> <span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">price</span><span class="p">,</span> <span class="n">string</span> <span class="n">author</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mname</span> <span class="o">=</span> <span class="n">name</span><span class="p">;</span>
+        <span class="n">mprice</span> <span class="o">=</span> <span class="n">price</span><span class="p">;</span>
+        <span class="n">mauthor</span> <span class="o">=</span> <span class="n">author</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="n">string</span> <span class="n">getName</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="n">mname</span><span class="p">;}</span>
+    <span class="k">virtual</span> <span class="kt">int</span> <span class="n">getPrice</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="n">mprice</span><span class="p">;}</span>
+    <span class="k">virtual</span> <span class="n">string</span> <span class="n">getAuthor</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="n">mauthor</span><span class="p">;}</span>
+<span class="nl">private:</span>
+    <span class="n">string</span> <span class="n">mname</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">mprice</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">mauthor</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">offNovelBook</span> <span class="o">:</span> <span class="k">public</span> <span class="n">NovelBook</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">offNovelBook</span><span class="p">(</span><span class="n">string</span> <span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">price</span><span class="p">,</span> <span class="n">string</span> <span class="n">author</span><span class="p">)</span> 
+        <span class="o">:</span><span class="n">NovelBook</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">author</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">int</span> <span class="n">getPrice</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">selfPrice</span> <span class="o">=</span> <span class="n">NovelBook</span><span class="o">::</span><span class="n">getPrice</span><span class="p">();</span>
+        <span class="kt">int</span> <span class="n">offPrice</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">selfPrice</span> <span class="o">&gt;</span> <span class="mi">4000</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">offPrice</span> <span class="o">=</span> <span class="n">selfPrice</span> <span class="o">*</span> <span class="mi">90</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+        <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+            <span class="n">offPrice</span> <span class="o">=</span> <span class="n">selfPrice</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">offPrice</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">NovelBook</span> <span class="o">*</span><span class="n">one</span> <span class="o">=</span> <span class="k">new</span> <span class="n">offNovelBook</span><span class="p">(</span><span class="s">"TLBB"</span><span class="p">,</span> <span class="mi">3200</span><span class="p">,</span> <span class="s">"JY"</span><span class="p">);</span>
+    <span class="n">NovelBook</span> <span class="o">*</span><span class="n">two</span> <span class="o">=</span> <span class="k">new</span> <span class="n">offNovelBook</span><span class="p">(</span><span class="s">"BLSMY"</span><span class="p">,</span> <span class="mi">5600</span><span class="p">,</span> <span class="s">"YG"</span><span class="p">);</span>
+    <span class="n">NovelBook</span> <span class="o">*</span><span class="n">three</span> <span class="o">=</span> <span class="k">new</span> <span class="n">offNovelBook</span><span class="p">(</span><span class="s">"BCSJ"</span><span class="p">,</span> <span class="mi">3500</span><span class="p">,</span> <span class="s">"YG"</span><span class="p">);</span>
+    <span class="n">NovelBook</span> <span class="o">*</span><span class="n">four</span> <span class="o">=</span> <span class="k">new</span> <span class="n">offNovelBook</span><span class="p">(</span><span class="s">"JPM"</span><span class="p">,</span> <span class="mi">4300</span><span class="p">,</span> <span class="s">"LLXXS"</span><span class="p">);</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">IBook</span><span class="o">*&gt;</span> <span class="n">booklist</span> <span class="o">=</span> <span class="p">{</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">,</span> <span class="n">three</span><span class="p">,</span> <span class="n">four</span><span class="p">};</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"sell books : "</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">b</span> <span class="o">:</span> <span class="n">booklist</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\t</span><span class="s">"</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="o">-&gt;</span><span class="n">getAuthor</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\t</span><span class="s">"</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="o">-&gt;</span><span class="n">getPrice</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">test</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+:ET

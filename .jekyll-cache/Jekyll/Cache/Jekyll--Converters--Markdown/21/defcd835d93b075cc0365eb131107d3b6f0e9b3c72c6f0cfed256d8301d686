@@ -1,0 +1,165 @@
+I"�<h3 id="装饰模式">装饰模式</h3>
+<p>Attach additional responsibilities to an object dynamically keeping the same interface.Decorators provide a flexible alternative to subclassing for extending functionality.
+(动态地给一个对象添加一些额外的职责。就增加功能来说,装饰模式相比生成子类更为灵活。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>抽象构件类，核心对象，也是最原始的对象
+具体构件类，最核心，最原始，最基本的的抽象类的实现，被装饰的对象，继承抽象构建类
+装饰角色类，继承抽象构建类，必然有一个指向抽象构建的变量
+具体装饰角色类，继承装饰角色类，用于装饰具体构建类</p>
+<h3 id="通用源码">通用源码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//抽象构件类
+class Component {
+public:
+    //抽象方法
+    virtual void operate() = 0;
+};
+//具体构件类
+class ConcreteComponent : public Component {
+public:
+    virtual void operate() {
+        //do Something
+    }
+};
+//抽象装饰类
+class Decorators : Component {
+private:
+    Component* component = NULL;
+public:
+    //通过构造函数传递被修饰者
+    Decorators(Component *c) {component = c;}
+    //委托给被修饰者执行
+    virtual void operate() {
+        component-&gt;operate();
+    }
+};
+//具体装饰类
+class ConcreteDecorator1 : public Decorators {
+private:
+    //定义修饰方法
+    void method1() {
+        //修饰操作
+    }
+public:
+    //定义被修饰者
+    ConcreteDecorator1(Component *c) : Decorators(c) { }
+    //重写父类方法
+    virtual void operate() {
+        method1();
+        Decorators::operate();
+    }
+}
+class ConcreteDecorator2 : public Decorators {
+private:
+    //定义修饰方法
+    void method2() {
+        //修饰操作
+    }
+public:
+    //定义被修饰者
+    ConcreteDecorator2(Component *c) : Decorators(c) { }
+    //重写父类方法
+    virtual void operate() {
+        Decorators::operate();
+        method2();
+    }
+}
+</code></pre></div></div>
+<h3 id="优点">优点</h3>
+<p>装饰类和被装饰类独立发展，不会相互耦合
+装饰模式是继承关系的一个替代方案
+装饰模式可以动态的扩展一个实现类的功能</p>
+<h3 id="缺点">缺点</h3>
+<p>多层的装饰是比较复杂的，尽可能减少装饰类的数量</p>
+<h3 id="使用场景">使用场景</h3>
+<p>需要扩展一个类的功能，或给一个类增加附加功能
+动态地给一个对象增加功能，这些功能可以再动态地撤销
+需要为一批的兄弟类进行改装或加装功能</p>
+
+<h3 id="示例代码">示例代码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+class SchoolReport {
+public:
+    virtual void report() = 0;
+    virtual void sign(string name) = 0;
+};
+
+class FouthGradeSchoolReport : public SchoolReport {
+public:
+    virtual void report() {
+        cout &lt;&lt; "Dear parents:\n math:65\tchinese:62\tPE:98\n";
+    }
+    virtual void sign(string name) {
+        cout &lt;&lt; "sign:" &lt;&lt; name &lt;&lt; endl;
+    }
+};
+
+class SugarFouthGradeSchoolReport : public FouthGradeSchoolReport {
+private:
+    void reportHighScore() {
+        cout &lt;&lt; "Highest\n math:78\tchinese:78\tPE:98\n";
+    }
+    void reportSort() {
+        cout &lt;&lt; "sort: 38th\n";
+    }
+public:
+    virtual void report() {
+        reportHighScore();
+        FouthGradeSchoolReport::report();
+        reportSort();
+    }
+};
+//为了将最高分数和排名解耦，将SugarFouthGradeSchoolReport类拆分为以下三个类
+class Decorator : public SchoolReport {
+private:
+    SchoolReport *sr = NULL;
+public:
+    Decorator(SchoolReport *s) {sr = s;}
+    virtual void report() {
+        sr-&gt;report();
+    }
+    virtual void sign(string name) {
+        sr-&gt;sign(name);
+    }
+};
+
+class HighScoreDecorator : public Decorator {
+private:
+    void reportHighScore() {
+        cout &lt;&lt; "Highest\n math:78\tchinese:78\tPE:98\n";
+    }
+public:
+    HighScoreDecorator(SchoolReport *sr) : Decorator(sr) { }
+    virtual void report() {
+        reportHighScore();
+        Decorator::report();
+    }
+};
+
+class SortDecorator : public Decorator {
+private:
+    void reportSort() {
+        cout &lt;&lt; "sort: 38th\n";
+    }
+public:
+    SortDecorator(SchoolReport *sr) : Decorator(sr) { }
+    virtual void report() {
+        Decorator::report();
+        reportSort();
+    }
+};
+
+int main() {
+    SchoolReport *sr = NULL;
+    sr = new FouthGradeSchoolReport();
+    sr = new HighScoreDecorator(sr);
+    sr = new SortDecorator(sr);
+    sr-&gt;report();
+    return 0;
+}
+</code></pre></div></div>
+
+:ET

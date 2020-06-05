@@ -1,0 +1,581 @@
+I"iJ<p>本书为Primer C++ 中文第五版</p>
+<h2 id="练习题笔记">练习题笔记</h2>
+<p><img src="https://img-blog.csdnimg.cn/20191105112102872.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><img src="https://img-blog.csdnimg.cn/20191105113049629.png" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191105133616812.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">12.1</span><span class="p">)</span>
+<span class="cp">#include "strBlob.h"
+</span>
+<span class="kt">void</span> <span class="nf">test1</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">StrBlob</span> <span class="n">b1</span><span class="p">;</span>
+    <span class="p">{</span>
+        <span class="n">StrBlob</span> <span class="n">b2</span> <span class="o">=</span> <span class="p">{</span><span class="s">"a"</span><span class="p">,</span> <span class="s">"an"</span><span class="p">,</span> <span class="s">"the"</span><span class="p">};</span>
+        <span class="n">b1</span> <span class="o">=</span> <span class="n">b2</span><span class="p">;</span>
+        <span class="n">b2</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">"about"</span><span class="p">);</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">b2</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">b1</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">b1</span><span class="err">和</span><span class="n">b2</span><span class="err">共享动态内存</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="err">，代码的结尾，</span><span class="n">b2</span><span class="err">离开作用域，</span><span class="n">b2</span><span class="err">被销毁，</span><span class="n">b1</span><span class="err">包含四个元素。</span>
+<span class="p">(</span><span class="mf">12.2</span><span class="p">)</span>
+<span class="c1">//可以编写这样一个头文件，到时候使用的时候如上面的12.1</span>
+<span class="cp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;memory&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">StrBlob</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">typedef</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;::</span><span class="n">size_type</span> <span class="n">size_type</span><span class="p">;</span>
+    <span class="n">StrBlob</span><span class="p">();</span>
+    <span class="n">StrBlob</span><span class="p">(</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">il</span><span class="p">);</span>
+    <span class="n">size_type</span> <span class="n">size</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();}</span>
+    <span class="kt">bool</span> <span class="n">empty</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">empty</span><span class="p">();}</span>
+    <span class="kt">void</span> <span class="n">push_back</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);}</span>
+    <span class="kt">void</span> <span class="n">pop_back</span><span class="p">();</span>
+    <span class="n">string</span> <span class="o">&amp;</span><span class="n">front</span><span class="p">();</span>
+	<span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">front</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+    <span class="n">string</span> <span class="o">&amp;</span><span class="n">back</span><span class="p">();</span>
+	<span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">back</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="nl">private:</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">data</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="n">check</span><span class="p">(</span><span class="n">size_type</span> <span class="n">i</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">StrBlob</span><span class="o">::</span><span class="n">StrBlob</span><span class="p">()</span><span class="o">:</span> <span class="n">data</span><span class="p">(</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">())</span> <span class="p">{</span> <span class="p">}</span>
+<span class="n">StrBlob</span><span class="o">::</span><span class="n">StrBlob</span><span class="p">(</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">il</span><span class="p">)</span><span class="o">:</span> <span class="n">data</span><span class="p">(</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">il</span><span class="p">))</span> <span class="p">{</span> <span class="p">}</span>
+
+<span class="kt">void</span>  <span class="n">StrBlob</span><span class="o">::</span><span class="n">check</span><span class="p">(</span><span class="n">size_type</span> <span class="n">i</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="n">out_of_range</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">string</span> <span class="o">&amp;</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">front</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"front on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">front</span><span class="p">()</span> <span class="k">const</span><span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"front on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">string</span> <span class="o">&amp;</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">back</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"back on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">back</span><span class="p">()</span> <span class="k">const</span><span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"back on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">pop_back</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"pop_back on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">pop_back</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.3</span><span class="p">)</span>
+<span class="err">不需要，因为</span><span class="n">push_back</span><span class="err">和</span><span class="n">pop_back</span><span class="err">都需要对</span><span class="n">vector</span><span class="err">元素进行增删操作，并不仅仅只是访问元素。</span>
+<span class="p">(</span><span class="mf">12.4</span><span class="p">)</span>
+<span class="err">因为</span><span class="n">check</span><span class="err">函数是</span><span class="k">private</span><span class="err">的，只有</span><span class="n">StrBlob</span><span class="err">内部的函数才能调用它，并且在函数内部使用的时候已经确保</span><span class="n">i</span><span class="err">的值不会出现问题</span>
+<span class="p">(</span><span class="mf">12.5</span><span class="p">)</span>
+<span class="err">未编写接受一个初始化列表参数的显示构造函数，意味着可以进行列表向</span><span class="n">StrBlob</span><span class="err">的隐式类型转换，也就是，在需要</span><span class="n">StrBlob</span><span class="err">的地方（如函数的参数），可以使用列表进行替代。而且，可以进行拷贝形式的初始化（如赋值）。这令程序编写更为简单方便。</span>
+<span class="err">但这种隐式转换并不总是好的。例如，列表中可能并非都是合法的值。再如，对于接受</span><span class="n">StrBlob</span><span class="err">的函数，传递给它一个列表，会创建一个临时的</span><span class="n">StrBlob</span><span class="err">对象，用列表对其初始化，然后将其传递给函数，当函数完成后，此对象将被丢弃，再也无法访问了。对于这些情况，我们可以定义显式的构造函数，禁止隐式类类型转换。</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191105135827202.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">12.6</span><span class="p">)</span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;*</span> <span class="nf">write</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;*</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">n</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">v</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">v</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">read</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">=</span> <span class="n">v</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">v</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;*</span> <span class="nf">creat</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">v</span> <span class="o">=</span> <span class="k">new</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">v</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">test6</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">v</span> <span class="o">=</span> <span class="n">write</span><span class="p">(</span><span class="n">creat</span><span class="p">());</span>
+    <span class="n">read</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+    <span class="k">delete</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.7</span><span class="p">)</span>
+<span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">creatPtr</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">make_shared</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">writePtr</span><span class="p">(</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">n</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">readPtr</span><span class="p">(</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">test7</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">writePtr</span><span class="p">(</span><span class="n">creatPtr</span><span class="p">());</span>
+    <span class="n">readPtr</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.8</span><span class="p">)</span>
+<span class="err">当一个程序用光了可用的内存，</span><span class="k">new</span><span class="err">表达式就会失败。如果不能分配内存失败，则会抛出一个类型</span><span class="n">bad_alloc</span><span class="err">的异常，可用使用下面的方式阻止抛出异常：</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">p2</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span><span class="n">nothrow</span><span class="p">)</span> <span class="kt">int</span><span class="p">;</span><span class="c1">//分配失败的时候返回一个空指针</span>
+<span class="err">如果该函数是想返回一个类型为</span><span class="kt">int</span><span class="err">的指针，应该修改为</span><span class="kt">int</span> <span class="o">*</span><span class="nf">b</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="k">new</span> <span class="kt">int</span><span class="p">;}</span>
+<span class="err">如果该函数是想判断是否</span><span class="k">new</span><span class="err">成功，应该改为</span> <span class="kt">bool</span> <span class="nf">b</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="k">new</span> <span class="p">(</span><span class="n">nothrow</span><span class="p">)</span> <span class="kt">int</span><span class="p">;}</span>
+<span class="p">(</span><span class="mf">12.9</span><span class="p">)</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">int</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="cm">/*new一个指针q指向42*/</span><span class="p">,</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="cm">/*new一个指针指向100*/</span><span class="p">;</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">q</span><span class="p">;</span><span class="c1">//指针r指向q</span>
+<span class="c1">//由于r指向q之后，之前分配指向100的内存存在但无法再访问，并且也没有delete，造成内存泄漏</span>
+<span class="k">auto</span> <span class="n">q2</span> <span class="o">=</span> <span class="n">make_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">42</span><span class="p">),</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">make_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span><span class="c1">//创建两个智能指针q2和r2分别指向42和100</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">q2</span><span class="p">;</span><span class="c1">//r2指向q2，r2之前指向的内存被销毁释放</span>
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191105141855132.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">12.10</span><span class="p">)</span>
+<span class="err">正确。显示构造智能指针，计数加</span><span class="mi">1</span>
+<span class="err">函数调用时会创建一个临时的智能指针，计数加</span><span class="mi">1</span>
+<span class="err">函数结束，临时指针被销毁，计数减</span><span class="mi">1</span>
+<span class="err">最终计数还是</span><span class="mi">1</span><span class="err">，不改变</span>
+<span class="p">(</span><span class="mf">12.11</span><span class="p">)</span>
+<span class="err">错误，因为</span><span class="n">p</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="err">不会使计数加</span><span class="mi">1</span><span class="err">，但是函数结束会被销毁计数减</span><span class="mi">1</span><span class="err">计数为</span><span class="mi">0</span><span class="err">，内存被释放</span>
+<span class="p">(</span><span class="mf">12.12</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">process</span><span class="p">(</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">ptr</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">test12</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">sp</span> <span class="o">=</span> <span class="n">make_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+    <span class="n">process</span><span class="p">(</span><span class="n">sp</span><span class="p">);</span><span class="c1">//a</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">sp</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> 
+    <span class="c1">//process(new int()); //b</span>
+    <span class="c1">//process(p); //c</span>
+    <span class="n">process</span><span class="p">(</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">p</span><span class="p">));</span><span class="c1">//d</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">a</span> <span class="err">合法，正确的用法</span>
+<span class="n">b</span> <span class="err">不合法，不允许隐式替换</span>
+<span class="n">c</span> <span class="err">不合法，不允许隐式替换</span>
+<span class="n">d</span> <span class="err">合法，但是内存会被释放，</span><span class="n">p</span><span class="err">变成一个空悬指针</span>
+<span class="p">(</span><span class="mf">12.13</span><span class="p">)</span>
+<span class="err">会删除</span><span class="n">sp</span><span class="err">管理的内存，使得</span><span class="n">sp</span><span class="err">变成空悬指针</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191105142603293.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+*智能指针使用规范
+*不使用相同的内置指针初始化或reset多个智能指针
+*不delete get()返回的指针
+*不使用get()初始化或reset另一个智能指针
+*如果使用get()返回的指针，当最后一个对应的智能指针销毁后，你的指针就变为无效了
+*如果使用的智能指针管理的资源不是new分配的内存，记住传递给它一个删除器
+*/</span>
+<span class="p">(</span><span class="mf">12.14</span><span class="p">)</span>
+<span class="k">struct</span> <span class="nc">destination</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">connection</span><span class="p">;</span>
+<span class="n">connection</span> <span class="nf">connect</span><span class="p">(</span><span class="n">destination</span><span class="o">*</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">disconnect</span><span class="p">(</span><span class="n">connection</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">end_connection</span><span class="p">(</span><span class="n">connection</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span><span class="n">disconnect</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">);}</span>
+
+<span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">destination</span> <span class="o">&amp;</span><span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">connection</span> <span class="n">c</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d</span><span class="p">);</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">connection</span><span class="o">&gt;</span> <span class="n">p</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="n">end_connection</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.15</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">destination</span> <span class="o">&amp;</span><span class="n">d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">connection</span> <span class="n">c</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d</span><span class="p">);</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">connection</span><span class="o">&gt;</span> <span class="n">p</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="p">[](</span><span class="n">connection</span> <span class="o">*</span><span class="n">p</span><span class="p">){</span><span class="n">disconnect</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">););</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191105145123968.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">12.16</span><span class="p">)</span>
+<span class="n">error</span><span class="o">:</span> <span class="n">use</span> <span class="n">of</span> <span class="n">deleted</span> <span class="n">function</span> <span class="err">‘</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">_Tp</span><span class="p">,</span> <span class="n">_Dp</span><span class="o">&gt;::</span><span class="n">unique_ptr</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">_Tp</span><span class="p">,</span> <span class="n">_Dp</span><span class="o">&gt;&amp;</span><span class="p">)</span> <span class="p">[</span><span class="n">with</span> <span class="n">_Tp</span> <span class="o">=</span> <span class="kt">int</span><span class="p">;</span> <span class="n">_Dp</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">default_delete</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">]</span><span class="err">’</span>
+<span class="err">正确用法为：</span>
+<span class="kt">void</span> <span class="nf">test16</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">unique_ptr</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">q1</span><span class="p">(</span><span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">q1</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">unique_ptr</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">q2</span><span class="p">(</span><span class="n">q1</span><span class="p">.</span><span class="n">release</span><span class="p">());</span><span class="c1">//release将q1置空</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">q2</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">unique_ptr</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">q3</span><span class="p">(</span><span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">q3</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">q2</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="n">q3</span><span class="p">.</span><span class="n">release</span><span class="p">());</span><span class="c1">//reset释放了q2原来指向的内存</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">q2</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.17</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">test17</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">ix</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="o">*</span><span class="n">pi</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ix</span><span class="p">,</span> <span class="o">*</span><span class="n">pi2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">2048</span><span class="p">);</span>
+    <span class="k">typedef</span> <span class="n">unique_ptr</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">IntP</span><span class="p">;</span>
+    <span class="c1">//IntP p0(ix);</span>
+    <span class="c1">//IntP p1(pi);</span>
+    <span class="n">IntP</span> <span class="n">p2</span><span class="p">(</span><span class="n">pi2</span><span class="p">);</span>
+    <span class="c1">//IntP p3(&amp;ix);</span>
+    <span class="n">IntP</span> <span class="n">p4</span><span class="p">(</span><span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">2048</span><span class="p">));</span>
+    <span class="n">IntP</span> <span class="n">p5</span><span class="p">(</span><span class="n">p2</span><span class="p">.</span><span class="n">get</span><span class="p">());</span>
+    <span class="c1">//p2.reset();</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"*p0"</span> <span class="o">&lt;&lt;</span> <span class="s">"*p1"</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">p2</span> <span class="o">&lt;&lt;</span> <span class="s">"*p3"</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">p4</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">p5</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="err">不合法</span><span class="p">,</span><span class="err">不能用非指针类型初始化。</span>
+<span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="err">合法。编译成功，运行出错。因为它用一个普通的</span><span class="kt">int</span><span class="err">变量的地址初始化</span><span class="n">p1</span><span class="err">，</span><span class="n">p1</span><span class="err">销毁时会释放此内存，其行为是未定义的。</span>
+<span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="err">合法。</span>
+<span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="err">合法。和</span><span class="n">b</span><span class="err">一样的问题</span>
+<span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="err">合法。</span>
+<span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="err">合法。但是有问题。会造成两个</span><span class="n">unique_ptr</span><span class="err">指向相同的内存地址。当其中一个</span><span class="n">unique_ptr</span><span class="err">被销毁时（或者被</span><span class="n">reset</span><span class="err">释放对象时），该内存被释放，另一个</span><span class="n">unique_ptr</span><span class="err">会变成空悬指针。</span>
+<span class="p">(</span><span class="mf">12.18</span><span class="p">)</span>
+<span class="err">因为</span><span class="n">shared_ptr</span><span class="err">是允许多个指针管理一个内存，为了对其他指针负责，所以不允许</span><span class="n">release</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191105153424443.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">12.19</span><span class="p">)</span>
+<span class="c1">//strBlobPtr.h</span>
+<span class="cp">#include "strBlob.h"
+</span>
+<span class="k">class</span> <span class="nc">StrBlobPtr</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">StrBlobPtr</span><span class="p">()</span> <span class="o">:</span> <span class="n">curr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">StrBlobPtr</span><span class="p">(</span><span class="n">StrBlob</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">sz</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span>
+            <span class="n">wptr</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">),</span> <span class="n">curr</span><span class="p">(</span><span class="n">sz</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">string</span><span class="o">&amp;</span> <span class="n">deref</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+    <span class="n">StrBlobPtr</span><span class="o">&amp;</span> <span class="n">incr</span><span class="p">();</span>
+<span class="nl">private:</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">check</span><span class="p">(</span><span class="kt">size_t</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+    <span class="n">weak_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">wptr</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">curr</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">StrBlobPtr</span><span class="o">::</span><span class="n">check</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">wptr</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="n">runtime_error</span><span class="p">(</span><span class="s">"unbound StrBlobPtr"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="n">ret</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">())</span>
+        <span class="k">throw</span> <span class="n">out_of_range</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">string</span><span class="o">&amp;</span> <span class="n">StrBlobPtr</span><span class="o">::</span><span class="n">deref</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="s">"dereference past end"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)[</span><span class="n">curr</span><span class="p">];</span>  
+<span class="p">}</span>
+
+<span class="n">StrBlobPtr</span><span class="o">&amp;</span> <span class="n">StrBlobPtr</span><span class="o">::</span><span class="n">incr</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="s">"increment past end of StrBlobPtr"</span><span class="p">);</span>
+    <span class="o">++</span><span class="n">curr</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StrBlobPtr</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">begin</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">StrBlobPtr</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">);</span> 
+<span class="p">}</span>
+
+<span class="n">StrBlobPtr</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">end</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">StrBlobPtr</span><span class="p">(</span> <span class="o">*</span><span class="k">this</span><span class="p">,</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//strBlob.h</span>
+<span class="cp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;memory&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">StrBlobPtr</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">StrBlob</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">friend</span> <span class="k">class</span> <span class="nc">StrBlobPtr</span><span class="p">;</span>
+    <span class="c1">//这两个在strBlobPtr.h里面实现</span>
+    <span class="n">StrBlobPtr</span> <span class="n">begin</span><span class="p">();</span> 
+    <span class="n">StrBlobPtr</span> <span class="n">end</span><span class="p">();</span> 
+    <span class="k">typedef</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;::</span><span class="n">size_type</span> <span class="n">size_type</span><span class="p">;</span>
+    <span class="n">StrBlob</span><span class="p">();</span>
+    <span class="n">StrBlob</span><span class="p">(</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">il</span><span class="p">);</span>
+    <span class="n">size_type</span> <span class="n">size</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();}</span>
+    <span class="kt">bool</span> <span class="n">empty</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">empty</span><span class="p">();}</span>
+    <span class="kt">void</span> <span class="n">push_back</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);}</span>
+    <span class="kt">void</span> <span class="n">pop_back</span><span class="p">();</span>
+    <span class="n">string</span> <span class="o">&amp;</span><span class="n">front</span><span class="p">();</span>
+    <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">front</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+    <span class="n">string</span> <span class="o">&amp;</span><span class="n">back</span><span class="p">();</span>
+    <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">back</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="nl">private:</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">data</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="n">check</span><span class="p">(</span><span class="n">size_type</span> <span class="n">i</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">StrBlob</span><span class="o">::</span><span class="n">StrBlob</span><span class="p">()</span><span class="o">:</span> <span class="n">data</span><span class="p">(</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">())</span> <span class="p">{</span> <span class="p">}</span>
+<span class="n">StrBlob</span><span class="o">::</span><span class="n">StrBlob</span><span class="p">(</span><span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">il</span><span class="p">)</span><span class="o">:</span> <span class="n">data</span><span class="p">(</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">il</span><span class="p">))</span> <span class="p">{</span> <span class="p">}</span>
+
+
+<span class="kt">void</span>  <span class="n">StrBlob</span><span class="o">::</span><span class="n">check</span><span class="p">(</span><span class="n">size_type</span> <span class="n">i</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="n">out_of_range</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">string</span> <span class="o">&amp;</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">front</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"front on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">front</span><span class="p">()</span> <span class="k">const</span><span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"front on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">string</span> <span class="o">&amp;</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">back</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"back on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">back</span><span class="p">()</span> <span class="k">const</span><span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"back on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">back</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">pop_back</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"pop_back on empty StrBlob"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">pop_back</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.20</span><span class="p">)</span>
+<span class="cp">#include "StrBlobPtr.h"
+</span><span class="kt">void</span> <span class="nf">test20</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">StrBlob</span> <span class="o">*</span><span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StrBlob</span><span class="p">();</span>
+    <span class="n">string</span> <span class="n">name</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">//因为没有重载operate== 和 operate!=,用n偷个懒</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">name</span> <span class="o">&amp;&amp;</span> <span class="n">name</span> <span class="o">!=</span> <span class="s">"q"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">file</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+        <span class="n">n</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">file</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">n</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">p</span><span class="p">.</span><span class="n">deref</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">p</span><span class="p">.</span><span class="n">incr</span><span class="p">();</span>
+        <span class="n">n</span><span class="o">--</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.21</span><span class="p">)</span>
+<span class="err">这样写尽可能的缩短了代码，但是可读性降低了。</span>
+<span class="p">(</span><span class="mf">12.22</span><span class="p">)</span>
+<span class="cp">#include "strBlob.h"
+</span>
+<span class="k">class</span> <span class="nc">ConstStrBlobPtr</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">ConstStrBlobPtr</span><span class="p">()</span> <span class="o">:</span> <span class="n">curr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">ConstStrBlobPtr</span><span class="p">(</span><span class="k">const</span> <span class="n">StrBlob</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">sz</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">:</span>
+            <span class="n">wptr</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">),</span> <span class="n">curr</span><span class="p">(</span><span class="n">sz</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">string</span><span class="o">&amp;</span> <span class="n">deref</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+    <span class="n">ConstStrBlobPtr</span><span class="o">&amp;</span> <span class="n">incr</span><span class="p">();</span>
+<span class="nl">private:</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">check</span><span class="p">(</span><span class="kt">size_t</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+    <span class="n">weak_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">wptr</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">curr</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">ConstStrBlobPtr</span><span class="o">::</span><span class="n">check</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">wptr</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="n">runtime_error</span><span class="p">(</span><span class="s">"unbound ConstStrBlobPtr"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="n">ret</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">())</span>
+        <span class="k">throw</span> <span class="n">out_of_range</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">string</span><span class="o">&amp;</span> <span class="n">ConstStrBlobPtr</span><span class="o">::</span><span class="n">deref</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">check</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="s">"dereference past end"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)[</span><span class="n">curr</span><span class="p">];</span>  
+<span class="p">}</span>
+
+<span class="n">ConstStrBlobPtr</span><span class="o">&amp;</span> <span class="n">ConstStrBlobPtr</span><span class="o">::</span><span class="n">incr</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">check</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="s">"increment past end of StrBlobPtr"</span><span class="p">);</span>
+    <span class="o">++</span><span class="n">curr</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ConstStrBlobPtr</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">begin</span><span class="p">()</span> <span class="k">const</span><span class="p">{</span>
+    <span class="k">return</span> <span class="n">ConstStrBlobPtr</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">);</span> 
+<span class="p">}</span>
+
+<span class="n">ConstStrBlobPtr</span> <span class="n">StrBlob</span><span class="o">::</span><span class="n">end</span><span class="p">()</span> <span class="k">const</span><span class="p">{</span>
+    <span class="k">auto</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">ConstStrBlobPtr</span><span class="p">(</span> <span class="o">*</span><span class="k">this</span><span class="p">,</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191105154824921.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">12.23</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">test23</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">c1</span> <span class="o">=</span> <span class="s">"hello,"</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">c2</span> <span class="o">=</span> <span class="s">"world!"</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">res</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="n">strlen</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span><span class="o">+</span><span class="n">strlen</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+    <span class="n">strcpy</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">c1</span><span class="p">);</span>
+    <span class="n">strcat</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">c2</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">res</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">s1</span> <span class="o">=</span> <span class="s">"HELLO,"</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">s2</span> <span class="o">=</span> <span class="s">"WORLD!"</span><span class="p">;</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">s2</span><span class="p">);</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">s1</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">res</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.24</span><span class="p">)</span>
+<span class="c1">//好像没有问题，但是这样总是不好的，可能会导致其他的错误</span>
+<span class="kt">void</span> <span class="nf">test24</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+    <span class="kt">char</span> <span class="n">c</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="n">r</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">c</span> <span class="o">&amp;&amp;</span> <span class="n">c</span> <span class="o">!=</span> <span class="sc">'q'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">*</span><span class="n">q</span><span class="o">++</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+        <span class="n">n</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">s</span> <span class="o">=</span> <span class="n">r</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">s</span> <span class="o">!=</span> <span class="n">q</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">s</span><span class="o">++</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">delete</span><span class="p">[]</span> <span class="n">r</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.25</span><span class="p">)</span>
+<span class="k">delete</span> <span class="p">[]</span> <span class="n">pa</span><span class="p">;</span>
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191105160255706.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">12.26</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">test26</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="n">allocator</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">alloc</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="k">const</span> <span class="n">p</span> <span class="o">=</span> <span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+    <span class="n">string</span> <span class="n">s</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">q</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">s</span> <span class="o">&amp;&amp;</span> <span class="n">q</span> <span class="o">!=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">n</span> <span class="o">&amp;&amp;</span> <span class="n">s</span> <span class="o">!=</span> <span class="s">"q"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">alloc</span><span class="p">.</span><span class="n">construct</span><span class="p">(</span><span class="n">q</span><span class="o">++</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">const</span> <span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="n">q</span> <span class="o">-</span> <span class="n">p</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">size</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">q</span> <span class="o">!=</span> <span class="n">p</span><span class="p">)</span>
+        <span class="n">alloc</span><span class="p">.</span><span class="n">destroy</span><span class="p">(</span><span class="o">--</span><span class="n">q</span><span class="p">);</span>
+    <span class="n">alloc</span><span class="p">.</span><span class="n">deallocate</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191105161934194.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">12.27</span><span class="p">)</span>
+<span class="c1">//TextQuery和QueryResult</span>
+<span class="cp">#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;memory&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;::</span><span class="n">size_type</span> <span class="n">line_no</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">QueryResult</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">TextQuery</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">TextQuery</span><span class="p">(</span><span class="n">ifstream</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="n">QueryResult</span> <span class="n">query</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="nl">private:</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">file</span><span class="p">;</span>
+    <span class="n">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;&gt;&gt;</span> <span class="n">wm</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">QueryResult</span> <span class="p">{</span>
+<span class="k">friend</span> <span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">print</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">QueryResult</span><span class="o">&amp;</span><span class="p">);</span>
+<span class="nl">public:</span>
+    <span class="n">QueryResult</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">,</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;&gt;</span> <span class="n">p</span><span class="p">,</span>
+        <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">f</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">sought</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">lines</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">file</span><span class="p">(</span><span class="n">f</span><span class="p">){</span> <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">string</span> <span class="n">sought</span><span class="p">;</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;&gt;</span> <span class="n">lines</span><span class="p">;</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span> <span class="n">file</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">ostream</span> <span class="o">&amp;</span><span class="n">print</span><span class="p">(</span><span class="n">ostream</span> <span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="k">const</span> <span class="n">QueryResult</span> <span class="o">&amp;</span><span class="n">qr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="n">qr</span><span class="p">.</span><span class="n">sought</span> <span class="o">&lt;&lt;</span> <span class="s">" occurs "</span> <span class="o">&lt;&lt;</span> <span class="n">qr</span><span class="p">.</span><span class="n">lines</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span>
+       <span class="o">&lt;&lt;</span> <span class="p">(((</span><span class="n">qr</span><span class="p">.</span><span class="n">lines</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">?</span> <span class="s">" times "</span> <span class="o">:</span> <span class="s">" time "</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">num</span> <span class="o">:</span> <span class="o">*</span><span class="n">qr</span><span class="p">.</span><span class="n">lines</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\t</span><span class="s">(line "</span> <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="s">") "</span>
+           <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="p">(</span><span class="n">qr</span><span class="p">.</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">num</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">os</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">TextQuery</span><span class="o">::</span><span class="n">TextQuery</span><span class="p">(</span><span class="n">ifstream</span> <span class="o">&amp;</span><span class="n">is</span><span class="p">)</span> <span class="o">:</span> <span class="n">file</span><span class="p">(</span><span class="k">new</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">string</span> <span class="n">text</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">getline</span><span class="p">(</span><span class="n">is</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">file</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">text</span><span class="p">);</span>
+        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">file</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="n">istringstream</span> <span class="n">line</span><span class="p">(</span><span class="n">text</span><span class="p">);</span>
+        <span class="n">string</span> <span class="n">word</span><span class="p">;</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">&gt;&gt;</span> <span class="n">word</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">auto</span> <span class="o">&amp;</span><span class="n">lines</span> <span class="o">=</span> <span class="n">wm</span><span class="p">[</span><span class="n">word</span><span class="p">];</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">lines</span><span class="p">)</span>
+                <span class="n">lines</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="k">new</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;</span><span class="p">);</span>
+            <span class="n">lines</span><span class="o">-&gt;</span><span class="n">insert</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">QueryResult</span> <span class="n">TextQuery</span><span class="o">::</span><span class="n">query</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">sought</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">static</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;&gt;</span> <span class="n">nodata</span><span class="p">(</span><span class="k">new</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">loc</span> <span class="o">=</span> <span class="n">wm</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">sought</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">loc</span> <span class="o">==</span> <span class="n">wm</span><span class="p">.</span><span class="n">end</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">QueryResult</span><span class="p">(</span><span class="n">sought</span><span class="p">,</span> <span class="n">nodata</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="n">QueryResult</span><span class="p">(</span><span class="n">sought</span><span class="p">,</span> <span class="n">loc</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">(</span><span class="mf">12.28</span><span class="p">)</span>
+<span class="cp">#include "TextQuery.h"
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ifstream</span> <span class="n">fin</span><span class="p">;</span>
+    <span class="n">fin</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="s">"test.txt"</span><span class="p">);</span>
+    <span class="n">TextQuery</span> <span class="n">tq</span><span class="p">(</span><span class="n">fin</span><span class="p">);</span>
+    <span class="n">string</span> <span class="n">s</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">s</span> <span class="o">&amp;&amp;</span> <span class="n">s</span> <span class="o">!=</span> <span class="s">"q"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">QueryResult</span> <span class="n">qr</span> <span class="o">=</span> <span class="n">tq</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+        <span class="n">print</span><span class="p">(</span><span class="n">cout</span><span class="p">,</span> <span class="n">qr</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">12.29</span><span class="p">)</span>
+<span class="cp">#include "TextQuery.h"
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ifstream</span> <span class="n">fin</span><span class="p">;</span>
+    <span class="n">fin</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="s">"test.txt"</span><span class="p">);</span>
+    <span class="n">TextQuery</span> <span class="n">tq</span><span class="p">(</span><span class="n">fin</span><span class="p">);</span>
+    <span class="n">string</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">s</span><span class="p">;</span>
+   	<span class="k">do</span><span class="p">{</span>
+        <span class="n">QueryResult</span> <span class="n">qr</span> <span class="o">=</span> <span class="n">tq</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+        <span class="n">print</span><span class="p">(</span><span class="n">cout</span><span class="p">,</span> <span class="n">qr</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">while</span><span class="p">(</span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">s</span> <span class="o">&amp;&amp;</span> <span class="n">s</span> <span class="o">!=</span> <span class="s">"q"</span><span class="p">)</span> 
+<span class="p">}</span>
+</code></pre></div></div>
+
+:ET

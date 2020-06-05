@@ -1,0 +1,511 @@
+I"\B<p>本书为Primer C++ 中文第五版</p>
+<h2 id="练习题笔记">练习题笔记</h2>
+<p><img src="https://img-blog.csdnimg.cn/20191012102112839.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.1)
+形参:出现在函数定义的地方,规定了该函数接受数据的类型
+实参:出现在函数调用的地方,初始化函数的形参,数据类型需与形参一致
+(6.2)
+a&gt;
+定义的函数返回类型(int)与实际上返回的类型(string)不一致
+b&gt;
+缺少返回类型的定义,不带有返回类型的函数需定义为void
+c&gt;
+形参的两个定义都是v1,二义性
+花括号不匹配,缺少开始的花括号
+d&gt;
+函数的定义需要花括号确保作用域
+(6.3)
+int fact(int val) {
+    int sum = 1;
+    while(val &gt; 1) sum *= val--;
+    return sum;
+}
+(6.4)
+int fact(int val) {
+    int sum = 1;
+    while(val &gt; 1) sum *= val--;
+    return sum;
+}
+
+void interaction() {
+    int n;
+    cout &lt;&lt; "please input a value" &lt;&lt; endl;
+    while(cin &gt;&gt; n) cout &lt;&lt; fact(n) &lt;&lt; endl;
+}
+(6.5)
+int t65(int val) {
+    return (val &gt; 0)? val : -val;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012102123408.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.6)
+结合6.7的函数以及结果可以这样解释
+形参的值表示函数在被调用的时候实参赋予的值;
+局部变量的值只在函数中保存,当函数结束,局部变量会被销毁;
+局部静态变量的值在函数第一次被调用的时候创建,然后独立于函数,将会一直保留值;
+(6.7)
+int t66(int val) {
+    int sum = 0;
+    static int count = -1;
+    sum++;
+    count++;
+    cout &lt;&lt; "val = " &lt;&lt; val &lt;&lt; endl;
+    cout &lt;&lt; "sum = " &lt;&lt; sum &lt;&lt; endl;
+    if(count == 0) {
+        cout &lt;&lt; "count = " &lt;&lt; count &lt;&lt; endl;
+        return 0;
+    }
+    else {
+        cout &lt;&lt; "count = " &lt;&lt; count &lt;&lt; endl;
+        return 1;
+    }
+}
+//输出结果如下
+3
+val = 3
+sum = 1
+count = 1
+return = 0
+2
+val = 2
+sum = 1
+count = 2
+return = 1
+4
+val = 4
+sum = 1
+count = 3
+return = 1
+1
+val = 1
+sum = 1
+count = 4
+return = 1
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012102136871.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//新建chapter6.h文件,添加声明:
+int fact(int val);
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012102151701.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//fact.cpp文件内容为
+#include "chapter6.h"
+int fact(int val) {
+    int sum = 1;
+    while(val &gt; 1) sum *= val--;
+    return sum;
+}
+//factmain.cpp文件内容为
+#include &lt;iostream&gt;
+#include "chapter6.h"
+
+int main() {
+    for(int i=0 ; i&lt;10 ; i++){
+        std::cout &lt;&lt; fact(i) &lt;&lt; " ";
+    }
+    std::cout&lt;&lt;"\n";
+    return 0;
+}
+//编译手顺
+生成链接文件 .o
+g++ -c fact.cpp
+编译 factmain文件生成可执行文件
+g++ factmain.cpp fact.o
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012104120265.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.10)
+void swap(int *v1, int *v2) {
+    int tmp = *v1;
+    *v1 = *v2;
+    *v2 = tmp;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012105828471.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.11)
+void reset(int &amp;val) {
+    val = 0;
+}
+(6.12)
+void swap(int &amp;v1, int &amp;v2) {
+    int tmp = v1;
+    v1 = v2;
+    v2 = tmp;
+}
+传值引用更容易理解(详细请看6.22题)
+(6.13)
+void f(T) 这个函数的形参仅仅拷贝了实参的值,后续对它的操作与传入的实参没有任何关系
+void f(&amp;T) 这个函数的形参是对实参的引用,后续对它的操作都会影响到实参
+(6.14)
+如果需要修改实参的值,使用引用类型;否则不能使用;
+(6.15)
+在次例子中,s是否是常量引用关系不是很大,因为没有对s进行操作,但是在没有对实参进行修改的情况下,尽可能的使用常量引用;
+occures不能作为常量引用的原因是,它在函数中会得到修改处理;如果不是引用的话则不会对实参进行修改;
+c不是引用的原因是,函数中仅仅只是拿c作为判断条件,不需要对它进行任何操作;
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012110813913.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.16)
+1&gt;首先因为string容器已经存在一个empty()函数判断,显得多余
+2&gt;如果在函数中不对s进行操作,形参应该是常量引用
+(6.17)
+bool isUp(const string &amp;s) {
+    auto length = s.size();
+    for(decltype(length) i = 0; i != length; i++) {
+        if(isupper(s[i])) return false;
+    }
+    return true;
+}
+
+void toLow(string &amp;s) {
+    auto length = s.size();
+    for(decltype(length) i = 0; i != length; i++) {
+        if(isupper(s[i])) s[i] = tolower(s[i]);
+    }
+    cout &lt;&lt; s &lt;&lt; endl;
+}
+(6.18)
+a&gt;
+bool compare(const matrix &amp;, const matrix &amp;) {/*...*/}
+b&gt;
+vector&lt;int&gt;::iterator change_val (vector&lt;int&gt;::iterator , int) {/*...*/}
+(6.19)
+a&gt;
+calc函数在声明的时候只有一个形参,调用的时候却有两个实参
+b&gt;
+合法
+c&gt;
+合法
+d&gt;
+合法
+(6.20)
+如果调用的实参不需要被修改的时候,尽可能的使用常量引用
+不能在调用改函数的时候实参为一个常量
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012111812767.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.21)
+int bigger(int val, int *pval) {
+    return (val &gt; *pval)? val : *pval;
+}
+(6.22)
+/*
+在涉及到修改实参的值,一般有两种情况:
+1值引用
+2使用指针
+*/
+//指引用
+//理解: (由里向外,由右向左) 首先pv1是个引用,其次是个int类的指针,所以pv1是一个int类指针的引用,其类型是一个int类型的指针
+void swapP(int * &amp;pv1, int * &amp;pv2) {
+    int *tmp = pv1;
+    pv1 = pv2;
+    pv2 = tmp;
+}
+//调用时
+int *v1, *v2;
+swapD(v1, v2);
+//如果使用指针
+//理解:pv1是一个指向指针的指针,使用两次解运算符就可以得到指针指向的对象;
+void swapD(int **pv1, int **pv2) {
+    int *tmp = *pv1;
+    *pv1 = *pv2;
+    *pv2 = tmp;
+}
+//调用时
+int *v1, *v2;
+swapD(&amp;v1, &amp;v2);
+(6.23)
+print(&amp;i);
+print(begin(j), end(j));
+(6.24)
+print函数的形参表示的意思是我们期望数组含有10个数组，实际上不一定
+void print(const int (&amp;ia)[10]) {
+	for(int i : ia) {
+		cout &lt;&lt; i &lt;&lt; endl;
+	}
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012112307304.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.25)
+int main(int argc, char *argv[]) {
+    string s1, s2;
+    s1 = argv[1];
+    s2 = argv[2];
+    cout &lt;&lt; s1+s2 &lt;&lt; endl;
+}
+(6.26)
+int main(int argc, char *argv[]) {
+    string s1;
+    for(int i = 1; i &lt;= argc; i++) {
+    	s1 += argv[i];
+    }
+    cout &lt;&lt; s1 &lt;&lt; endl;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012112704316.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.27)
+void dosum(initializer_list&lt;int&gt; il) {
+    int sum = 0;
+    for(auto iter = il.begin(); iter != il.end(); iter++) {
+        sum += *iter;
+    }
+    cout &lt;&lt; sum &lt;&lt; endl;
+}
+//调用
+dosum({1, 2, 3, 4, 5});
+dosum({10, 10, 10, 10, 10, 10, 10, 10, 10, 10});
+(6.28)
+const string &amp;类型
+(6.29)
+可以避免拷贝实参,提高效率
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019101213072744.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.30)
+error: return-statement with no value, in function returning ‘bool’ [-fpermissive]
+(6.31)
+返回函数局部引用无效，返回局部定义的常量引用无效。
+要确保返回的引用有效，就要确定引用所返回的是在函数之前已经存在的某个对象。
+(6.32)
+合法;该函数返回了数组坐标为index的引用
+(6.33)
+void ou(vector&lt;int&gt;::iterator iter, vector&lt;int&gt;::iterator end) {
+    cout &lt;&lt; *iter &lt;&lt;endl;
+    iter++;
+    if(iter != end) {
+        ou(iter, end);
+    }
+}
+void doou() {
+    vector&lt;int&gt; ia = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    ou(ia.begin(), ia.end());
+}
+(6.34)
+当val大于0的时候没有影响,但是当val小于0的时候会出现死循环
+(6.35)
+val--;在执行该命令之后才会执行-1的操作,出现错误
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012131219294.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.36)
+string (*reStr())[10] {/*...*/}
+(6.37)
+类型别名:
+typedef string arrT[10];
+arrT* reStr() {/*...*/}
+尾置返回类型:
+auto reStr() -&gt; string(*)[10]{/*...*/}
+decltype关键字:
+string str[10];
+decltype(str) *arrPtr() {/*...*/}
+(6.38)
+略
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191012152756899.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.39)
+如果形参是某种类型的指针或引用，则通过区分其指向的是常量对象还是非常量对象可以实现函数重载
+见(6.53)
+a&gt;
+不合法,属于顶层const形参,与第一行含义一致;
+b&gt;
+不合法,只有返回类型不一样,形参无区别会导致错误
+c&gt;
+合法
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191017104939915.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.40)
+一旦某个形参被赋予了默认值,它后面的所以形参都必须有默认值
+a&gt;正确
+b&gt;错误
+(6.41)
+a&gt;
+非法,必须要有一个实参
+b&gt;
+合法
+c&gt;
+合法,但是会出现隐式转换,使得wd = '*'对应的int值
+(6.42)
+void make_plural(const string &amp;s, char c = 's') {
+    auto iter = s.crbegin();
+    if(*iter == c) cout &lt;&lt; s &lt;&lt; endl;
+    else cout &lt;&lt; s+c &lt;&lt;endl;
+}
+
+void domake() {
+    string s;
+    while(cin &gt;&gt; s) {
+        make_plural(s);
+    }
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191017105654905.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.43)
+两个函数的声明都放在头文件
+内联函数的定义也放在头文件
+void函数的定义放在源文件
+(6.44)
+inline bool isShorter(const string &amp;s1, const string &amp;s2) {return s1.size() &gt; s2.size();}
+(6.45)
+函数代码量小,运算简单的可以写成内联函数
+(6.46)
+不可以,因为isShorter函数的形参是string类型不是字面值类型
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191017154648388.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.47)
+略,主要是要练习
+assert宏常用于检查“不能发生”的条件，表达式为假，终止程序；为真则什么也不做；头文件&lt;cassert&gt;
+assert的行为依赖NDEBUG预处理变量的状态，如果定义了NDEBUG，则会使assert失效
+#define NDEBUG
+__func__ 当前函数名
+__FILE__ 当前文件名
+__LINE__ 当前行号
+__TIME__ 编译时间
+__DATE__ 编译日期
+(6.48)
+代码的含义是直到输入字符串为 sought 时退出输入
+但是输入这个操作始终为真,所以assert(cin)在这里没有任何意义
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191017180218720.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.49)
+候选函数的特点：与调用的函数同名，其声明在调用点可见
+可行函数的特点：形参数量与本次调用提供的实参数量相等，实参的类型与对应的形参类型相同或者可转换
+(6.50)
+a&gt;
+不合法,会有二义性 void f(int, int) 和 void f(double, double = 3.14)
+b&gt;
+合法,最佳匹配 void f(int)
+c&gt;
+合法,最佳匹配 void f(int, int)
+d&gt;
+合法,最佳匹配 void f(double, double = 3.14)
+(6.51)
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cassert&gt;
+
+using namespace std;
+
+void f(double, int) {
+    cout &lt;&lt; "f(double, int)" &lt;&lt; endl;
+}
+
+void f(int) {
+    cout &lt;&lt; "f(int)" &lt;&lt; endl;
+}
+
+void f(int, int) {
+    cout &lt;&lt; "f(int, int)" &lt;&lt; endl;
+}
+
+void f(double, double = 3.14) {
+    cout &lt;&lt; "f(double, double = 3.14)" &lt;&lt; endl;
+}
+
+int main() {
+    f(2.56, 42);
+    f(42);
+    f(42, 0);
+    f(2.56, 3.14);
+    return 0;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191018093122700.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.52)
+类型提升
+字符类型转换成int类型
+a = 97;
+z = 122;
+b&gt;
+算术类型转换
+double 转换成 int
+(6.53)
+a&gt;
+合法,根据实参类型是否是常量实现重载
+b&gt;
+合法,根据实参类型是否是常量实现重载
+c&gt;
+不合法,两个函数定义一样
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191018105027338.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(6.54)
+int vec(int v1, int v2) {
+    return v1 + v2;
+}
+
+typedef decltype(vec) *vec1;
+void dovec() {
+    int v1, v2;
+    vector&lt;vec1&gt; v;
+    v.push_back(vec);
+    while(cin &gt;&gt; v1 &gt;&gt; v2) {
+        cout &lt;&lt; v[0](v1, v2) &lt;&lt; endl;
+    }
+}
+(6.55) (6.56)
+int vecAdd(int v1, int v2) {
+    return v1 + v2;
+}
+
+int vecSub(int v1, int v2) {
+    return v1 - v2;
+}
+
+int vecMul(int v1, int v2) {
+    return v1 * v2;
+}
+
+int vecDiv(int v1, int v2) {
+    return v1 / v2;
+}
+
+typedef decltype(vecAdd) *vec;
+void dovec() {
+    int v1, v2;
+    vector&lt;vec&gt; v;
+    v.push_back(vecAdd);
+    v.push_back(vecSub);
+    v.push_back(vecMul);
+    v.push_back(vecDiv);
+    while(cin &gt;&gt; v1 &gt;&gt; v2) {
+        cout &lt;&lt; "Add : " &lt;&lt; v[0](v1, v2) &lt;&lt; endl;
+        cout &lt;&lt; "Sub : " &lt;&lt; v[1](v1, v2) &lt;&lt; endl;
+        cout &lt;&lt; "Mul : " &lt;&lt; v[2](v1, v2) &lt;&lt; endl;
+        cout &lt;&lt; "Div : " &lt;&lt; v[3](v1, v2) &lt;&lt; endl;
+    }
+}
+</code></pre></div></div>
+
+:ET

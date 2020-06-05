@@ -1,0 +1,54 @@
+I"�<h3 id="策略模式">策略模式</h3>
+<p>Define a family of algorithms,encapsulate each one,and make them interchangeable.
+(定义一组算法,将每个算法都封装起来,并且使它们之间可以互换。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>封装类，承上启下，屏蔽高层模块对策略、算法的直接访问。与抽象策略类是聚合关系
+抽象策略类，策略、算法的抽象，定义必须具有的方法和属性
+具体策略类，实现抽象的操作，含有具体的方法，继承抽象策略类</p>
+<h3 id="通用源码">通用源码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//抽象策略类
+class Strategy {
+public:
+    //策略模式的运算法则
+    virtual void doSomething() = 0;
+};
+//具体策略类
+class ConcreteStrategy1 : public Strategy {
+public:
+    virtual void doSomething() {
+        //具体策略1的运算法则
+    }
+};
+class ConcreteStrategy2 : public Strategy {
+public:
+    virtual void doSomething() {
+        //具体策略2的运算法则
+    }
+};
+//封装类
+class Context {
+private:
+    Strategy* strategy = NULL;
+public:
+    Context(Strategy *s): strategy(s) { }
+    void doAnything() {
+        strategy-&gt;doSomething();
+    }
+};
+</code></pre></div></div>
+<h3 id="优点">优点</h3>
+<p>算法可以自由切换
+避免使用多重条件判断
+扩展性良好</p>
+<h3 id="缺点">缺点</h3>
+<p>策略类数量增多
+所有的策略类都需要对外暴露</p>
+<h3 id="使用场景">使用场景</h3>
+<p>多个类只有在算法或行为上稍有不同的场景
+算法需要自由切换的场景
+需要屏蔽算法规则的场景</p>
+<h3 id="示例代码">示例代码</h3>
+<p>```
+#include <iostream>
+#include <string></string></iostream></p>
+:ET

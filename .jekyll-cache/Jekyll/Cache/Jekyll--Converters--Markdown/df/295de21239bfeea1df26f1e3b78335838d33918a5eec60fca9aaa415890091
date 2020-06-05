@@ -1,0 +1,60 @@
+I"g<h3 id="模板方法模式">模板方法模式</h3>
+<p>在软件开发过程中，如果相同的一段代码复制过两次，就需要对设计产生怀疑，架构师要明确地说明为什么相同的逻辑要出现两次或更多次。
+Define the skeleton of an algorithm in an operation,deferring some steps to subclasses.Template Method lets subclasses redefine certain steps of an algorithm without changing the algorithm’s structure.
+(定义一个操作中的算法的框架,而将一些步骤延迟到子类中。使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>抽象模板类包括基本方法和模板方法，基本方法由子类实现，模板方法一般是一个具体方法，实现对基本方法的调度，完成固有的逻辑。一般模板方法都需要加上final关键字，不允许被覆写。
+具体模板类继承抽象模板类，实现父类定义的一个或多个抽象方法，即实现父类中定义的基本方法。</p>
+<h3 id="通用代码">通用代码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+*抽象模板类
+*抽象模板类中的基本方法尽量设计为protected类型，符合迪米特法则
+*/
+class AbsClass {
+public:
+    //模板方法
+    virtual void templateMethod() final {
+        this-&gt;doAnything();
+        this-&gt;doSomething();
+    }
+protected:
+    //基本方法
+    virtual void doSomething() = 0;
+    virtual void doAnything() = 0;
+};
+/**
+*具体模板类
+*若非必要，尽量不要扩大父类中的访问权限
+*/
+class ConClass1 : public AbsClass {
+protected:
+    virtual void doSomething() {
+    }
+    virtual void doAnything() {
+    }
+};
+class ConClass2 : public AbsClass {
+private:
+    virtual void doSomething() {
+    }
+    virtual void doAnything() {
+    }
+};
+//使用场景类
+AbsClass *c1 = new ConClass1();
+AbsClass *c2 = new ConClass2();
+c1-&gt;templateMethod();
+c2-&gt;templateMethod();
+</code></pre></div></div>
+<h3 id="优点">优点</h3>
+<p>封装不变部分，扩展可变部分；
+提取公共部分代码，便于维护；
+行为由父类控制，子类实现；</p>
+<h3 id="缺点">缺点</h3>
+<p>抽象类定义了部分抽象方法，由子类实现，子类执行的结果影响了父类的结果，在复杂项目中会增加代码阅读的难度。</p>
+<h3 id="使用场景">使用场景：</h3>
+<p>多个子类有公有的方法，且逻辑基本相同。
+重要、复杂的算法，可以把核心算法设计为模板方法，周边的相关细节则由各个子类实现。
+重构时，模板方法模式是一个经常使用的模式，把相同的代码抽取到父类中，然后通过钩子函数约束其行为。
+钩子函数，如例子中的isAlarm的返回值影响了模板方法的执行结果，这样的方法叫做钩子方法。</p>
+:ET

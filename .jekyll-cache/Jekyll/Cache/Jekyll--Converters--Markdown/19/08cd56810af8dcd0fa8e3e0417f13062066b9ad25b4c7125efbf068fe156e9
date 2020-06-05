@@ -1,0 +1,535 @@
+I"�M<p>本书为Primer C++ 中文第五版</p>
+<h2 id="练习题笔记">练习题笔记</h2>
+<p><img src="https://img-blog.csdnimg.cn/20191031143603894.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.1)
+void test1() {
+    vector&lt;int&gt; ive = {0, 1, 2, 3, 4, 4, 4, 5};
+    int val;
+    while(cin &gt;&gt; val &amp;&amp; val != 99) {
+        cout &lt;&lt; count(ive.begin(), ive.end(), val) &lt;&lt; endl;
+    }
+}
+(10.2)
+void test2() {
+    list&lt;string&gt; ive = {"a", "aa", "aaa", "a", "aa", "a", "b", "c"};
+    string val;
+    while(cin &gt;&gt; val &amp;&amp; val != "q") {
+        cout &lt;&lt; count(ive.begin(), ive.end(), val) &lt;&lt; endl;
+    }
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031145011391.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.3)
+void test3() {
+    vector&lt;double&gt; ive = {0, 1, 2, 3, 4, 4, 4, 5.8};
+    cout &lt;&lt; accumulate(ive.begin(), ive.end(), 0) &lt;&lt; endl;
+}
+(10.4)
+用0的话，则表明结果将会删除小数位。
+所以最好是要设置小数位
+(10.5)
+equal是利用是使用==比较两个元素。
+string重载了==，可以比较两个字符串是否等长且其中对应元素相等。
+而C风格字符串
+1如果是char*类型，没有影响。
+2如果是char []类型，用==比较两个对象，会检查两个指针值是否相等，也就是地址是否相等。
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031150248203.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.6)
+void test6() {
+    vector&lt;int&gt; ive(10);
+    fill_n(ive.begin(), ive.size(), 0);
+    for(auto i : ive) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+(10.7)
+a:
+ //使用copy等算法的时候，确保目的容器至少包含于输入序列一样多的元素。
+void test7() {
+    list&lt;int&gt; lst; int i;
+    while(cin &gt;&gt; i &amp;&amp; i != 0)
+        lst.push_back(i);
+    vector&lt;int&gt; vec(lst.size());
+    copy(lst.cbegin(), lst.cend(), vec.begin());
+    for(auto i : vec) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+或者
+void test7() {
+    list&lt;int&gt; lst; int i;
+    while(cin &gt;&gt; i &amp;&amp; i != 0)
+        lst.push_back(i);
+    vector&lt;int&gt; vec;
+    copy(lst.cbegin(), lst.cend(), back_inserter(vec));
+    for(auto i : vec) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+
+b:
+void test7_2() {
+    vector&lt;int&gt; vec;
+    //reserve预留空间，没有创建元素对象
+    //resize改变容器大小，并且创建对象
+    vec.resize(10);
+    fill_n(vec.begin(), 10, 0);
+    for(auto i : vec) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+或者使用back_inserter(vec)；
+
+(10.8)
+标准库算法不直接操作容器，而是通过操作迭代器间接访问容器。是否能插入删除元素，取决于传递给这些算法的迭代器是否具有这样的能力。
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031152902154.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.9)
+void test9() {
+    vector&lt;string&gt; sve = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    sort(sve.begin(), sve.end());
+    auto end_unique = unique(sve.begin(), sve.end());
+    sve.erase(end_unique, sve.end());
+    for(auto i : sve) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+(10.10)
+做到算法和数据结构的分离。
+算法不操作具体的容器，只操作迭代器，然后由迭代器实现对容器的访问。
+这样做的目的就是实现算法的通用性。
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031154827454.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.11)
+bool isShorter(const string &amp;s1, const string &amp;s2) {
+    return s1.size() &lt; s2.size();
+}
+
+void test11() {
+    vector&lt;string&gt; sve = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    sort(sve.begin(), sve.end());
+    auto end_unique = unique(sve.begin(), sve.end());
+    sve.erase(end_unique, sve.end());
+    for(auto i : sve) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+    sort(sve.begin(), sve.end(), isShorter);
+    for(auto i : sve) {
+        cout &lt;&lt; i &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+
+(10.12)
+struct Sales_data {
+    string bookNo;
+    Sales_data(string bn) {
+        bookNo = bn;
+    };
+    string isbn() {
+        return bookNo;
+    };
+};
+
+bool compareIsbn(Sales_data &amp;sd1, Sales_data &amp;sd2) {
+    return sd1.isbn().size() &lt; sd2.isbn().size();
+}
+
+void test12() {
+    Sales_data book1("zl");
+    Sales_data book2("zzzl");
+    Sales_data book3("zzl");
+    Sales_data book4("lz");
+    vector&lt;Sales_data&gt; vsd = {book1, book2, book3, book4};
+    sort(vsd.begin(), vsd.end(), compareIsbn);
+    for(auto i : vsd) {
+        cout &lt;&lt; i.bookNo &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+
+(10.13)
+bool sizeMore5(const string &amp;s) {
+    return s.size() &gt;= 5;
+}
+
+void test13() {
+    vector&lt;string&gt; sve = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    auto it_end = partition(sve.begin(), sve.end(), sizeMore5);
+    for(auto cb = sve.cbegin(); cb &lt; it_end; cb++) {
+        cout &lt;&lt; *cb &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031162937904.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.14)
+void test14() {
+    auto sum = [](int a, int b){return a+b;};
+    cout &lt;&lt; sum(3, 4) &lt;&lt; endl;
+}
+(10.15)
+void test15() {
+    int m =10;
+    auto sum = [m](int a){return a+m;};
+    cout &lt;&lt; sum(5) &lt;&lt; endl;
+}
+(10.16)
+void biggies(vector&lt;string&gt; &amp;words, vector&lt;string&gt;::size_type sz) {
+    sort(words.begin(), words.end());
+    auto end_unique = unique(words.begin(), words.end());
+    words.erase(end_unique, words.end());
+    stable_sort(words.begin(), words.end(),
+                [](const string &amp;s1, const string &amp;s2){return s1.size() &lt; s2.size();});
+    auto wc = find_if(words.begin(), words.end(),
+                [sz](string &amp;s){return s.size() &gt;= sz;});
+    auto count = words.end() - wc;
+    cout &lt;&lt; count &lt;&lt; " "&lt;&lt; (count &gt; 1 ? "words" : "word") &lt;&lt; " of length "
+         &lt;&lt; sz &lt;&lt; " or longger" &lt;&lt; endl;
+    for_each(wc, words.end(), [](string &amp;s){ cout &lt;&lt; s &lt;&lt; " ";});
+    cout &lt;&lt; endl;
+
+}
+
+void test16() {
+    vector&lt;string&gt; sve = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    biggies(sve, 5);
+}
+(10.17)
+void test17() {
+    Sales_data book1("zl");
+    Sales_data book2("zzzl");
+    Sales_data book3("zzl");
+    Sales_data book4("lz");
+    vector&lt;Sales_data&gt; vsd = {book1, book2, book3, book4};
+    sort(vsd.begin(), vsd.end(),
+        [](Sales_data &amp;sd1, Sales_data &amp;sd2){return sd1.isbn().size() &lt; sd2.isbn().size();});
+    for(auto i : vsd) {
+        cout &lt;&lt; i.bookNo &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+(10.18)
+void test18(){
+    vector&lt;string&gt; words = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    int sz = 5;
+    sort(words.begin(), words.end());
+    auto end_unique = unique(words.begin(), words.end());
+    words.erase(end_unique, words.end());
+    stable_sort(words.begin(), words.end(),
+                [](const string &amp;s1, const string &amp;s2){return s1.size() &lt; s2.size();});
+    auto wc = partition(words.begin(), words.end(),
+                [sz](string &amp;s){return s.size() &lt; sz;});
+    auto count = words.end() - wc;
+    cout &lt;&lt; count &lt;&lt; " "&lt;&lt; (count &gt; 1 ? "words" : "word") &lt;&lt; " of length "
+         &lt;&lt; sz &lt;&lt; " or longger" &lt;&lt; endl;
+    for_each(wc, words.end(), [](string &amp;s){ cout &lt;&lt; s &lt;&lt; " ";});
+    cout &lt;&lt; endl;
+}
+
+(10.19)
+void test19(){
+    vector&lt;string&gt; words = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    int sz = 5;
+    sort(words.begin(), words.end());
+    auto end_unique = unique(words.begin(), words.end());
+    words.erase(end_unique, words.end());
+    stable_sort(words.begin(), words.end(),
+                [](const string &amp;s1, const string &amp;s2){return s1.size() &lt; s2.size();});
+    auto wc = stable_partition(words.begin(), words.end(),
+                [sz](string &amp;s){return s.size() &lt; sz;});
+    auto count = words.end() - wc;
+    cout &lt;&lt; count &lt;&lt; " "&lt;&lt; (count &gt; 1 ? "words" : "word") &lt;&lt; " of length "
+         &lt;&lt; sz &lt;&lt; " or longger" &lt;&lt; endl;
+    for_each(wc, words.end(), [](string &amp;s){ cout &lt;&lt; s &lt;&lt; " ";});
+    cout &lt;&lt; endl;
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031165250204.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.20)
+void test20() {
+    vector&lt;string&gt; words = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    auto count = count_if(words.begin(), words.end(),
+                [](const string &amp;s){return s.size() &gt; 6;});
+    cout &lt;&lt; count &lt;&lt; endl;
+}
+
+(10.21)
+void test21() {
+    int m = 5;
+    auto b = [&amp;m]()-&gt;bool{return --m;};
+    while(b());
+    cout &lt;&lt; m &lt;&lt; endl;
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031171713395.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.22)
+bool shorterThan(const string &amp;s, int l) {
+    return s.size() &lt;= l;
+}
+
+void test22() {
+    vector&lt;string&gt; words = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    auto count = count_if(words.begin(), words.end(),
+                bind(shorterThan, placeholders::_1, 6));
+    cout &lt;&lt; count &lt;&lt; endl;
+}
+
+(10.23)
+bind接受的参数与它绑定的函数相关，函数接受n个参数，则bind接受n+1个参数
+(10.24)
+bool shorter(const string &amp;s, int l) {
+    return s.size() &lt; l;
+}
+
+void test24() {
+    vector&lt;int&gt; ive = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    string s;
+    while(cin &gt;&gt; s &amp;&amp; s != "q") {
+        auto iter = find_if(ive.begin(), ive.end(), bind(shorter, s, placeholders::_1));
+        if(iter != ive.end()) cout &lt;&lt; *iter &lt;&lt; endl;
+    }
+}
+
+(10.25)
+bool check_size(const string &amp;s, int l) {
+    return s.size() &gt;= l;
+}
+
+void test25() {
+    vector&lt;string&gt; words = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    sort(words.begin(), words.end());
+    auto end_unique = unique(words.begin(), words.end());
+    words.erase(end_unique, words.end());
+    stable_sort(words.begin(), words.end(),
+                [](const string &amp;s1, const string &amp;s2){return s1.size() &lt; s2.size();});
+    auto wc = find_if(words.begin(), words.end(), bind(check_size, placeholders::_1, 5));
+    auto count = words.end() - wc;
+    cout &lt;&lt; count &lt;&lt; " "&lt;&lt; (count &gt; 1 ? "words" : "word") &lt;&lt; " of length 5 or longger" &lt;&lt; endl;
+    for_each(wc, words.end(), [](string &amp;s){ cout &lt;&lt; s &lt;&lt; " ";});
+    cout &lt;&lt; endl;
+
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031172659364.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.26)
+back_inserter 创建一个使用push_back的迭代器
+front_inserter 穿件一个使用push_front的迭代器
+inserter 创建一个使用insert的迭代器，此函数接受第二个参数，这个参数必须是一个指向给定容器的迭代器。元素将被插入到给定迭代器所表示的元素之前。
+在使用back_inserter和front_inserter的时候要确保容器支持push_back和push_front。
+(10.27)
+void test27() {
+    vector&lt;int&gt; ive = {1, 2, 2, 3, 3, 3, 4, 5};
+    list&lt;int&gt; lst;
+    unique_copy(ive.begin(), ive.end(), inserter(lst, lst.begin()));
+    for(auto i : lst) cout &lt;&lt; i &lt;&lt; " ";
+    cout &lt;&lt; endl;
+}
+
+(10.28)
+void test28() {
+    vector&lt;int&gt; ori = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    vector&lt;int&gt; ive, bve;
+    list&lt;int&gt; fve;
+    copy(ori.rbegin(), ori.rend(), front_inserter(fve));
+    copy(ori.begin(), ori.end(), back_inserter(bve));
+    copy(ori.begin(), ori.end(), inserter(ive, ive.begin()));
+    for(auto i : fve) cout &lt;&lt; i &lt;&lt; " ";
+    cout &lt;&lt; endl;
+    for(auto i : bve) cout &lt;&lt; i &lt;&lt; " ";
+    cout &lt;&lt; endl;
+    for(auto i : ive) cout &lt;&lt; i &lt;&lt; " ";
+    cout &lt;&lt; endl;
+
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031174254848.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.29)
+void test29() {
+    ifstream in("test.txt");
+    istream_iterator&lt;string&gt; str_it(in), end;
+    ostream_iterator&lt;string&gt; out_iter(cout, " ");
+    copy(str_it, end, out_iter);
+    cout &lt;&lt; endl;
+}
+
+(10.30)
+void test30() {
+    istream_iterator&lt;int&gt; in(cin), eof;
+    ostream_iterator&lt;int&gt; out(cout, " ");
+    vector&lt;int&gt; ive(in, eof);
+    sort(ive.begin(), ive.end());
+    copy(ive.begin(), ive.end(), out);
+}
+
+(10.31)
+void test31() {
+    istream_iterator&lt;int&gt; in(cin), eof;
+    ostream_iterator&lt;int&gt; out(cout, " ");
+    vector&lt;int&gt; ive(in, eof);
+    sort(ive.begin(), ive.end());
+    unique_copy(ive.begin(), ive.end(), out);
+}
+
+(10.32)
+struct Sale_data {
+    string bookNo;
+    double price;
+    int num;
+};
+
+istream &amp;operator&gt;&gt;(istream &amp;is, Sale_data &amp;item) {
+    is &gt;&gt; item.bookNo &gt;&gt; item.price &gt;&gt; item.num;
+    return is;
+}
+
+ostream &amp;operator&lt;&lt;(ostream &amp;os,const Sale_data &amp;item) {
+    os &lt;&lt; item.bookNo &lt;&lt; " " &lt;&lt; item.price &lt;&lt; " " &lt;&lt; item.num;
+    return os;
+}
+
+bool compareIsbn(const Sale_data &amp;sd1, const Sale_data &amp;sd2) {
+    return sd1.bookNo.size() &lt; sd2.bookNo.size();
+}
+
+void test32() {
+    istream_iterator&lt;Sale_data&gt; in(cin), eof;
+    ostream_iterator&lt;Sale_data&gt; out(cout, "\n");
+    vector&lt;Sale_data&gt; sve(in, eof);
+    copy(sve.begin(), sve.end(), out);
+    sort(sve.begin(), sve.end(), compareIsbn);
+    copy(sve.begin(), sve.end(), out);
+}
+
+(10.33)
+void oddEven(const string &amp;in, const string &amp;odd, const string &amp;even) {
+    ifstream fin(in);
+    ofstream foutodd(odd);
+    ofstream fouteven(even);
+    istream_iterator&lt;int&gt; i(fin), eof;
+    ostream_iterator&lt;int&gt; oodd(foutodd, "\n");
+    ostream_iterator&lt;int&gt; oeven(fouteven, "\n");
+    while(i != eof) {
+        if(*i%2) oodd = *i;
+        else oeven = *i;
+        i++;
+    }
+}
+
+void test33() {
+    oddEven("num.txt", "odd.txt", "even.txt");
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019103117473838.png" alt="在这里插入图片描述" /><img src="https://img-blog.csdnimg.cn/20191031174840689.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.34)
+void test34() {
+    ifstream fin("num.txt");
+    istream_iterator&lt;int&gt; in(fin), eof;
+    vector&lt;int&gt; ive(in, eof);
+    for(auto rbe = ive.crbegin(); rbe &lt; ive.crend(); ++rbe) {
+        cout &lt;&lt; *rbe &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+
+(10.35)
+void test35() {
+    ifstream fin("num.txt");
+    istream_iterator&lt;int&gt; in(fin), eof;
+    vector&lt;int&gt; ive(in, eof);
+    for(auto end = ive.cend() - 1; end &gt;= ive.cbegin(); --end) {
+        cout &lt;&lt; *end &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+
+(10.36)
+void test36() {
+    list&lt;int&gt; lst = {0, 1, 2, 3, 0, 1, 2, 0, 2, 3, 0, 4};
+    auto last = find(lst.crbegin(), lst.crend(), 0);
+    cout &lt;&lt; *last &lt;&lt; *last.base() &lt;&lt; endl;
+}
+
+(10.37)
+void test37() {
+    vector&lt;int&gt; ive = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    list&lt;int&gt; lst(ive.crbegin()+2, ive.crend()-3);
+    for(auto i : lst) cout &lt;&lt; i &lt;&lt; " ";
+    cout &lt;&lt; endl;
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031175636523.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.38)
+输入迭代器，find和accumulate要求输入迭代器，istream_iterator是一种输入迭代器
+输出迭代器，copy函数的第三个参数就是输出迭代器，ostream_iterator类型也是输出迭代器
+前向迭代器，replace要求前向迭代器，forward_list上的迭代器是前向迭代器
+双向迭代器，reverse要求双向迭代器，处理forward_list，其他标准库都提供符合双向迭代器要求的迭代器
+随机访问迭代器，sort要求随机访问迭代器，array、deque、string和vector的迭代器都是随机访问迭代器，用于访问内置数组元素的指针也是。
+(10.39)
+list上的迭代器属于双向迭代器
+vector上的迭代器属于随机访问迭代器
+(10.40)
+copy要求输出迭代器
+reverse要求双向迭代器
+unique要求前向迭代器
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031175915846.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(10.41)
+replace 把迭代器范围内的old_val替换成new_val
+replace_if 把迭代器范围内使得pred为true的值替换成new_val
+replace_copy 和 replace() 做的事是一样的，但它的结果会被保存到另一个序列中，而不会改变原始序列
+replace_copy_if()，它和 replace_if() 算法是相同的，但它的结果会被保存到另一个序列中
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191031180047593.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void test42() {
+    list&lt;string&gt; lst = {"the", "quick", "red", "fox", "jumps", "over", "the", "slow", "red", "turtle"};
+    lst.sort();
+    lst.unique();
+    for(auto s : lst) cout &lt;&lt; s &lt;&lt; " "; cout &lt;&lt; endl;
+}
+
+</code></pre></div></div>
+
+:ET

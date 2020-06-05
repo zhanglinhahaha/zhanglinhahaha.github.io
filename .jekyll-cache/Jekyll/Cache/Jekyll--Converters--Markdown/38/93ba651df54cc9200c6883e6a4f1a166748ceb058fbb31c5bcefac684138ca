@@ -1,0 +1,36 @@
+I"�<h3 id="原型模式">原型模式</h3>
+<p>Specify the kinds of objects to create using a prototypical instance,and create new objects by copying this prototype.
+(用原型实例指定创建对象的种类,并且通过拷贝这些原型创建新的对象。)
+不通过new关键字产生一个对象，而是通过对象复制来实现的模式叫做原型模式。</p>
+<h3 id="通用源码">通用源码</h3>
+<p>C++可以重写拷贝构造函数实现对象的复制
+java需要依赖Cloneable接口重写clone函数,如:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class PrototypeClass implements Cloneable {
+    @Override
+    public PrototypeClass clone() {
+        PrototypeClass prototypeClass = null;
+        try {
+            prototypeClass = (PrototypeClass) super.clone();
+        } catch(CloneNotSupportedException e) {
+            //异常处理
+        }
+        return prototypeClass;
+    }
+}
+</code></pre></div></div>
+<h3 id="优点">优点</h3>
+<p>性能优良，是内存二进制流的拷贝，比new对象的性能好很多
+逃避构造函数的约束</p>
+<h3 id="使用场景">使用场景</h3>
+<p>资源优化场景，初始化需要消耗非常多的资源时
+性能和安全要求的场景，通过new产生镀锡需要非常繁琐的数据准备或访问权限时
+一个对象多个修改者的场景</p>
+<h3 id="注意事项">注意事项</h3>
+<p>构造函数不会被执行
+深拷贝和浅拷贝，不会被拷贝的成员变量:类的成员变量；可变的引用对象；
+使用clone方法，类的成员变量不要增加final关键字，否则会产生冲突</p>
+<h3 id="示例代码">示例代码</h3>
+<p>```
+#include <iostream>
+#include <string></string></iostream></p>
+:ET

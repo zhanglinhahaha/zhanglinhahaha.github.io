@@ -1,0 +1,71 @@
+I"z<h3 id="工厂方法模式">工厂方法模式</h3>
+<p>定义:
+Define an interface for creating an object, but let subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.
+(定义一个用于创建对象的接口,让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类。)</p>
+<h3 id="通用源码模板">通用源码模板:</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>定义抽象产品类:
+class Product {
+public:
+    //产品类的公共方法
+    void method1() {
+        //业务逻辑处理
+    }
+    //抽象方法
+    virtual void method2() = 0;
+};
+定义具体产品类:
+class ConcreateProduct1 : public Product {
+public:
+    virtual void method2() {
+        //业务逻辑处理
+    }
+};
+class ConcreateProduct2 : public Product {
+public:
+    virtual void method2() {
+        //业务逻辑处理
+    }
+};
+定义抽象工厂类:
+template &lt;class AbsPro&gt;
+class Creator {
+public:
+    virtual AbsPro* createProduct() = 0;
+};
+定义具体工厂类:
+template &lt;class AbsPro, class ConPro&gt;
+class ConcreteCreator : public Creator&lt;AbsPro&gt; {
+public:
+    AbsPro* createProduct() {
+        return new ConPro();
+    }
+};
+场景调用类:
+ConcreteCreator&lt;Product, ConcreateProduct2&gt; pc;
+Product *p = pc.createProduct();
+p-&gt;method2();
+</code></pre></div></div>
+<h3 id="优点">优点:</h3>
+<p>良好的封装性，代码结构清晰。根据产品的类名即可得到产品对象；
+扩展性非常优秀。需要增加产品类时，只要适当地修改具体的工厂类或扩展一个工厂类就可以实现；
+屏蔽产品类。调用者不需要关系产品类的实现，产品类的实现由工厂类完成；
+典型的解耦框架。</p>
+<h3 id="使用场景">使用场景：</h3>
+<p>工厂方法模式是new一个对象的替代品，所以在所有需要生成对象的地方都可以使用，但是需要考虑复杂度；
+需要灵活的，可扩展的框架时；
+可以用在异构项目中；
+使用在测试驱动开发的框架下；</p>
+<h3 id="扩展">扩展：</h3>
+<p>1 简单工厂模式
+当一个模块只需要一个工厂类，即删除抽象工厂类，一个工厂固定的加工生产某一种抽象产品。
+不符合开闭原则。
+没有完美的模式，简单且符合需求即是完美。
+2 升级为多个工厂类
+为产品类增加适配其对应的工厂类来完成每个产品具体实现，比较合适产品类的初始化都不相同的情况下。
+3 替代单例模式
+4 延迟初始化
+通过map将已经创建的产品类对象保留缓存，然后下一次如果需要获取对象，先判断map中是否存在，如果存在则直接取出返回，否则按需产生一个对象并放入到map容器中，方便下次调用。</p>
+<h3 id="示例代码">示例代码</h3>
+<p>```
+#include <iostream></iostream></p>
+:ET

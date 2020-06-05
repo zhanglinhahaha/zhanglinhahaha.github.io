@@ -1,0 +1,147 @@
+I"#<h3 id="解释器模式">解释器模式</h3>
+<p>Given a language, define a representation for its grammar along with an interpreter that uses the representation to interpret sentences in the language.
+(给定一门语言,定义它的文法的一种表示,并定义一个解释器,该解释器使用该表示来解释语言中的句子。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>抽象解释器
+定义一个抽象类
+终结符表达式类
+继承抽象解释器类，通常和抽象解释器一对一，实现与文法中的元素相关联的解释操作
+非终结符表达式类
+继承抽象解释器类，通常和抽象解释器一对多，文法中的每条规则对应于一个非终结表达式</p>
+<h3 id="通用源码">通用源码</h3>
+<p>//抽象表达式
+template &lt;typename T, typename H&gt;
+class Expression {
+public:
+    //每个表达式必须有一个解析任务
+    virtual T interpreter(H&amp;) = 0;
+};
+//终结符表达式
+template &lt;typename T, typename H&gt;
+class TerminalExpression : public Expression&lt;T, H&gt; {
+public:
+    //通常终结符表达式只有一个，但是有多个对象
+    T interpreter(H&amp; h) {
+        return null;
+    }
+};
+//非终结符表达式
+template &lt;typename T, typename H&gt;
+class NonerminalExpression : public Expression&lt;T, H&gt; {
+    //每个非终结符表达式都会对其他表达式产生依赖
+    public NonerminalExpression (Expression* e) {
+    }
+    T interpreter(H&amp; h) {
+        //进行文法处理
+        return null;
+    }
+};</p>
+<h3 id="优点">优点</h3>
+<p>解释器是一个简单语法分析工具，扩展性非常好</p>
+<h3 id="缺点">缺点</h3>
+<p>导致类膨胀
+采用递归调用方法
+效率不高</p>
+<h3 id="使用场景">使用场景</h3>
+<p>重复发生的问题的场景
+一个简单语法需要解释的场景</p>
+<h3 id="最佳实践">最佳实践</h3>
+<p>解释器模式因为性能、效率以及维护问题，一般在实际的系统开发中使用得较少。
+如果实在需要用到解释器模式时，可以考虑Expression4J、MESP(Math Expression String Parser)、Jep等开源的解析工具包。</p>
+<h3 id="示例代码">示例代码</h3>
+
+<h3 id="示例代码-1">示例代码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+class Expression {
+public:
+    virtual int interpreter(map&lt;char, int&gt;&amp;) = 0;
+};
+
+class VarExpression : public Expression {
+public:
+    VarExpression(char s): key(s) { }
+    int interpreter(map&lt;char, int&gt;&amp; mci) override {
+        return mci[key];
+    }
+private:
+    char key;
+};
+
+class SymbolExpression : public Expression {
+public:
+    SymbolExpression(Expression* l, Expression* r): left(l), right(r) { }
+protected:
+    Expression* left;
+    Expression* right;
+};
+
+class AddExpression : public SymbolExpression {
+public:
+    AddExpression(Expression* l, Expression* r): SymbolExpression(l ,r) { }
+    int interpreter(map&lt;char, int&gt;&amp; mci) override {
+        return left-&gt;interpreter(mci) + right-&gt;interpreter(mci);
+    }
+};
+
+class SubExpression : public SymbolExpression {
+public:
+    SubExpression(Expression* l, Expression* r): SymbolExpression(l ,r) { }
+    int interpreter(map&lt;char, int&gt;&amp; mci) override {
+        return left-&gt;interpreter(mci) - right-&gt;interpreter(mci);
+    }
+};
+
+class Calculator {
+public:
+    Calculator(string s) {
+        stack&lt;Expression*&gt; se;
+        Expression* left = nullptr;
+        Expression* right = nullptr;
+        for(int i = 0; i &lt; s.size(); ++i) {
+            if(s[i] == '+') {
+                left = se.top();se.pop();
+                right = new VarExpression(s[++i]);
+                se.push(new AddExpression(left, right));
+            }else if(s[i] == '-') {
+                left = se.top();se.pop();
+                right = new VarExpression(s[++i]);
+                se.push(new SubExpression(left, right));
+            }else {
+                se.push(new VarExpression(s[i]));
+            }
+        }
+        expression = se.top();se.pop();
+    }
+    int run(map&lt;char, int&gt; mci) {
+        return expression-&gt;interpreter(mci);
+    }
+private:
+    Expression* expression;
+};
+
+int main() {
+    string s;
+    cout &lt;&lt; "input Expression: " &lt;&lt; endl;
+    cin &gt;&gt; s;
+    map&lt;char, int&gt; mci;
+    for(int i = 0; i &lt; s.size(); ++i) {
+        if(s[i] != '+' &amp;&amp; s[i] != '-') {
+            cout &lt;&lt; "input " &lt;&lt; s[i] &lt;&lt; " :"&lt;&lt; endl;
+            int tmp;
+            cin &gt;&gt; tmp;
+            mci.insert(make_pair(s[i], tmp));
+        }
+    }
+    Calculator* cal = new Calculator(s);
+    cout &lt;&lt;"the answer is: " &lt;&lt; cal-&gt;run(mci) &lt;&lt; endl;
+    return 0;
+}
+</code></pre></div></div>
+
+:ET

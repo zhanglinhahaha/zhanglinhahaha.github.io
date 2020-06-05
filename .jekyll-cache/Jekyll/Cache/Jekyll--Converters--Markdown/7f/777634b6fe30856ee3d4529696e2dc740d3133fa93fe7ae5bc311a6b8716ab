@@ -1,0 +1,11 @@
+I"<h3 id="接口隔离原则interface-segregation-principle-isp">接口隔离原则(Interface Segregation Principle, ISP)</h3>
+<p>接口分为两种：
+实例接口，JAVA中类也是一个接口
+类接口，JAVA经常使用interface关键字定义的接口
+define:Clients should not be forced to depend upon interfaces that they don’t use.
+(客户端不应该依赖它不需要的接口。)
+The dependency of one class to another one should depend on the smallest possible interface.
+(类间的依赖关系应该建立在最小的接口上。)
+通俗的讲，就是尽量把接口细化。注意与单一职责原则的区别，单一职责不一定接口是最细化的。
+根据接口隔离原则拆分接口时，首先必须满足单一职责原则，保证接口不会过分的臃肿</p>
+:ET

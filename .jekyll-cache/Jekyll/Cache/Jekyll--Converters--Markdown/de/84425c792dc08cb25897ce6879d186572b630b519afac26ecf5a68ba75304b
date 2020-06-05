@@ -1,0 +1,223 @@
+I"�U<h3 id="代理模式">代理模式</h3>
+<p>urrogate or placeholder for another object to control access to it.
+(为其他对象提供一种代理以控制对这个对象的访问。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>抽象主题类
+是一个最普通的业务类型定义
+具体主题类
+被代理角色；业务逻辑的具体指向者，继承抽象主题类，和代理主题类关联
+代理主题类
+代理类；负责对真实角色的应用，把所有抽象主题类定义的方法限制委托给具体主题角色实现，同样继承抽象主题类。</p>
+<h3 id="通用源码">通用源码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//抽象主题类
+class Subject {
+public:
+    //定义一个方法
+    virtual void request() = 0;
+};
+//具体主题类
+class RealSubject : public Subject {
+public:
+    //实现方法
+    virtual void request() {
+        //业务逻辑处理
+    }
+};
+//代理类
+class Proxy : public Subject {
+private:
+    //要代理哪个实现类
+    Subject *msubject = NULL;
+    //预处理
+    void before() {
+        //业务逻辑处理
+    }
+    //善后处理
+    void after() {
+        //业务逻辑处理
+    }
+public:
+    //默认被代理者
+    Proxy() {
+        msubject = new Proxy();
+    }
+    //通过构造函数传递代理者
+    Proxy(Subject* subject) {
+        msubject = subject;
+    }
+    //实现接口中定义的方法
+    virtual void request() {
+        this-&gt;before();
+        msubject-&gt;request();
+        this-&gt;after();
+    }
+}
+</code></pre></div></div>
+<h3 id="优点">优点</h3>
+<p>职责清晰，具体的角色就是实际的业务逻辑，不用关心其他非本职责的事务
+高扩展性，具体的角色随时都会发生变化，但是只要实现了接口，代理类可以不做任何修改就可以使用
+智能化，见扩展中的动态代理</p>
+<h3 id="扩展">扩展</h3>
+<p>1普通代理，客户端只能访问代理角色，不能访问具体角色；通过修改具体角色类和代理角色类的构造函数，使得可以通过代理角色类的构造函数直接获得具体角色的对象，从而对具体角色进行封装
+2强制代理，要从具体角色查找获得代理角色，不允许直接访问具体角色，也不允许随便new一个代理角色访问。只能通过新增getProxy()方法获得具体角色的代理角色进行访问具体角色
+3代理是有个性的，可以实现其他接口完成不同的任务，对目标对象的方法进行拦截和过滤。
+4动态代理，是现阶段不用关心代理谁，运行阶段才指定代理哪一个对象。要用到反射机制，c++貌似没有反射机制。</p>
+<h3 id="示例代码">示例代码</h3>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">IGamePlayer</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">login</span><span class="p">(</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">user</span><span class="p">,</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">password</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">killBoss</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">upgrade</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">GamePlayer</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IGamePlayer</span> <span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="n">string</span> <span class="n">mname</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="n">GamePlayer</span><span class="p">(</span><span class="n">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span><span class="n">mname</span> <span class="o">=</span> <span class="n">name</span><span class="p">;}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">killBoss</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">mname</span> <span class="o">&lt;&lt;</span> <span class="s">" kill Boss!!!"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">login</span><span class="p">(</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">user</span><span class="p">,</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">password</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"user: "</span> <span class="o">&lt;&lt;</span> <span class="n">user</span> <span class="o">&lt;&lt;</span><span class="s">"</span><span class="se">\n</span><span class="s">password: "</span> <span class="o">&lt;&lt;</span> <span class="n">password</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">upgrade</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">mname</span> <span class="o">&lt;&lt;</span> <span class="s">" upgrade!!!"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">GamePlayerProxy</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IGamePlayer</span> <span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">mgamePlayer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="n">GamePlayerProxy</span><span class="p">(</span><span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">gamePlayer</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mgamePlayer</span> <span class="o">=</span> <span class="n">gamePlayer</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">killBoss</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">mgamePlayer</span><span class="o">-&gt;</span><span class="n">killBoss</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">login</span><span class="p">(</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">user</span><span class="p">,</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">password</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mgamePlayer</span><span class="o">-&gt;</span><span class="n">login</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">upgrade</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">mgamePlayer</span><span class="o">-&gt;</span><span class="n">upgrade</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">IGamePlayer</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GamePlayer</span><span class="p">(</span><span class="s">"zl"</span><span class="p">);</span>
+    <span class="n">string</span> <span class="n">user</span><span class="p">(</span><span class="s">"zl"</span><span class="p">),</span> <span class="n">password</span><span class="p">(</span><span class="s">"970724"</span><span class="p">);</span>
+    <span class="n">IGamePlayer</span> <span class="o">*</span><span class="n">proxy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GamePlayerProxy</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+    <span class="n">proxy</span><span class="o">-&gt;</span><span class="n">login</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="p">);</span>
+    <span class="n">proxy</span><span class="o">-&gt;</span><span class="n">killBoss</span><span class="p">();</span>
+    <span class="n">proxy</span><span class="o">-&gt;</span><span class="n">upgrade</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h4 id="强制代理模式">强制代理模式</h4>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">IGamePlayer</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">login</span><span class="p">(</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">user</span><span class="p">,</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">password</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">killBoss</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">upgrade</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">virtual</span> <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">getPorxy</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">GamePlayPorxy</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IGamePlayer</span> <span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">mgamePlayer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="n">GamePlayPorxy</span><span class="p">(</span><span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">pGamePlayer</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mgamePlayer</span> <span class="o">=</span> <span class="n">pGamePlayer</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">login</span><span class="p">(</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">user</span><span class="p">,</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">password</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mgamePlayer</span><span class="o">-&gt;</span><span class="n">login</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">killBoss</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">mgamePlayer</span><span class="o">-&gt;</span><span class="n">killBoss</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">upgrade</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">mgamePlayer</span><span class="o">-&gt;</span><span class="n">upgrade</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">getPorxy</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">GamePlayer</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IGamePlayer</span> <span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="n">string</span> <span class="n">mname</span><span class="p">;</span>
+    <span class="n">GamePlayPorxy</span><span class="o">*</span> <span class="n">mPorxy</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="n">GamePlayer</span><span class="p">(</span><span class="n">string</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mname</span> <span class="o">=</span> <span class="n">name</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">login</span><span class="p">(</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">user</span><span class="p">,</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">password</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">mPorxy</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"user: "</span><span class="o">&lt;&lt;</span><span class="n">user</span><span class="o">&lt;&lt;</span><span class="s">" name: "</span> <span class="o">&lt;&lt;</span><span class="n">mname</span><span class="o">&lt;&lt;</span><span class="s">" login successful!"</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"please use proxy"</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">killBoss</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">mPorxy</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">mname</span><span class="o">&lt;&lt;</span><span class="s">" kill boss!!!"</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"please use proxy"</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">upgrade</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">mPorxy</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">mname</span><span class="o">&lt;&lt;</span><span class="s">" upgrade!!!"</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"please use proxy"</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">virtual</span> <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">getPorxy</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">mPorxy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GamePlayPorxy</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">mPorxy</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">string</span> <span class="n">user</span><span class="p">(</span><span class="s">"user"</span><span class="p">),</span> <span class="n">password</span><span class="p">(</span><span class="s">"password"</span><span class="p">),</span> <span class="n">name</span><span class="p">(</span><span class="s">"zl"</span><span class="p">);</span>
+
+    <span class="c1">//错误方式,直接访问具体角色</span>
+    <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">pGamePlayer0</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GamePlayer</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+    <span class="n">pGamePlayer0</span><span class="o">-&gt;</span><span class="n">login</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="p">);</span>
+    <span class="n">pGamePlayer0</span><span class="o">-&gt;</span><span class="n">killBoss</span><span class="p">();</span>
+    <span class="n">pGamePlayer0</span><span class="o">-&gt;</span><span class="n">upgrade</span><span class="p">();</span>
+    <span class="k">delete</span> <span class="n">pGamePlayer0</span><span class="p">;</span>
+
+    <span class="c1">//错误方式，随便new一个proxy</span>
+    <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">pGamePlayer1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GamePlayer</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+    <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">pPorxy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GamePlayPorxy</span><span class="p">(</span><span class="n">pGamePlayer1</span><span class="p">);</span>
+    <span class="n">pPorxy</span><span class="o">-&gt;</span><span class="n">login</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="p">);</span>
+    <span class="n">pPorxy</span><span class="o">-&gt;</span><span class="n">killBoss</span><span class="p">();</span>
+    <span class="n">pPorxy</span><span class="o">-&gt;</span><span class="n">upgrade</span><span class="p">();</span>
+    <span class="k">delete</span> <span class="n">pGamePlayer1</span><span class="p">;</span>
+    <span class="k">delete</span> <span class="n">pPorxy</span><span class="p">;</span>
+
+    <span class="c1">//正确方式</span>
+    <span class="n">IGamePlayer</span><span class="o">*</span> <span class="n">pGamePlayer2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GamePlayer</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+    <span class="n">pGamePlayer2</span><span class="o">-&gt;</span><span class="n">getPorxy</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">login</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="p">);</span>
+    <span class="n">pGamePlayer2</span><span class="o">-&gt;</span><span class="n">getPorxy</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">killBoss</span><span class="p">();</span>
+    <span class="n">pGamePlayer2</span><span class="o">-&gt;</span><span class="n">getPorxy</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">upgrade</span><span class="p">();</span>
+    <span class="k">delete</span> <span class="n">pGamePlayer2</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+:ET

@@ -1,0 +1,124 @@
+I"�<h3 id="组合模式">组合模式</h3>
+<p>Compose objects into tree structures to represent part-whole hierarchies.Composite lets clients treat individual objects and compositions of objects uniformly.
+(将对象组合成树形结构以表示“部分-整体”的层次结构,使得用户对单个对象和组合对象的使用具有一致性。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>抽象构件角色类
+定义参加组合对象的公有方法和属性，可以定义一下默认的行为或属性
+叶子构件类
+叶子对象，其下再也没有其他的分支，遍历的最小单位，继承抽象构件角色类
+树枝构件类
+组合树枝节点和叶子节点形成一个树形结构，继承抽象构件角色类，并且与之是整体与部分关系</p>
+<h3 id="通用源码">通用源码</h3>
+<p>//抽象构件类
+class Component {
+public:
+    virtual void doSomething() {
+        //业务逻辑
+    }
+};
+//树枝构件类，组合模式的重点
+class Composite : public Component {
+private:
+    //构件容器
+    vector&lt;Component<em>&gt; vc;
+public:
+    //增加一个叶子构件或树枝构件
+    void add(Component *c) { vc.push_back(c);}
+    //删除一个叶子构件或树枝构件
+    void remove(Component *c) {
+        auto iter = vc.find(vc.begin(), vc.end(), c);
+        vc.erase(c);
+    }
+    //获得分支下的所有叶子构件和树枝构件
+    vector&lt;Component</em>&gt; getChildren() {
+        return vc;
+    }
+};
+//叶子构件类
+class Leaf : public Component {
+public:
+    void doSomething() {
+    }
+};</p>
+<h3 id="优点">优点</h3>
+<p>高层模块调用简单
+节点自由增加，符合开闭原则</p>
+<h3 id="缺点">缺点</h3>
+<p>违背依赖倒置原则，没有面向接口编程</p>
+<h3 id="使用场景">使用场景</h3>
+<p>维护和展示部分-整体的场景，如树性菜单、文件和文件夹管理
+从一个整体中能够独立出部分模块或功能的场景</p>
+<h3 id="扩展">扩展</h3>
+<p>与关系数据库结合使用，能够轻松的实现树的组装
+透明的组合模式，把树枝构件中的方法放到抽象类中实现，遵循依赖倒置原则
+组合模式的遍历，增加设置父节点的方法，实现从底往上的遍历</p>
+<h3 id="示例代码">示例代码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+class Corp {
+public:
+    Corp(const string&amp; n, const string&amp; p, int s): name(n), position(p), salary(s) { }
+    string getinfo() {
+        string info = name + ", "+ position + ", ";
+        info += to_string(salary);
+        return info;
+    }
+private:
+    string name;
+    string position;
+    int salary;
+};
+
+class Leaf : public Corp {
+public:
+    Leaf(const string&amp; n, const string&amp; p, int s): Corp(n, p, s) { }
+};
+
+class Branch : public Corp {
+public:
+    Branch(const string&amp; n, const string&amp; p, int s): Corp(n, p, s){ }
+    void addSubordinate(Corp *ic) {
+        vIc.push_back(ic);
+    }
+    vector&lt;Corp*&gt; getSubordinate() {
+        return vIc;
+    }
+private:
+    vector&lt;Corp*&gt; vIc;
+};
+
+int main() {
+    Branch ceo("zzzl", "ceo", 10000);
+    Branch dev("lzzl", "dev", 8000);
+    Branch sal("llzl", "sal", 8000);
+    Leaf a("zzl1", "dev1", 5000);
+    Leaf b("zzl2", "dev2", 5000);
+    Leaf c("lzl1", "sal1", 5000);
+    Leaf d("lzl2", "sal2", 5000);
+    Leaf e("lll", "ass", 5000);
+    ceo.addSubordinate(&amp;dev);
+    ceo.addSubordinate(&amp;sal);
+    ceo.addSubordinate(&amp;e);
+    dev.addSubordinate(&amp;a);
+    dev.addSubordinate(&amp;b);
+    sal.addSubordinate(&amp;c);
+    sal.addSubordinate(&amp;d);
+    cout &lt;&lt; ceo.getinfo() &lt;&lt; endl;
+    vector&lt;Branch&gt; vb;
+    vb.push_back(ceo);
+    vb.push_back(dev);
+    vb.push_back(sal);
+    for(i : vb) {
+        vector&lt;Corp*&gt; v = i.getSubordinate();
+        for(j : v)
+            cout &lt;&lt; j-&gt;getinfo() &lt;&lt; endl;
+    }
+    return 0;
+}
+</code></pre></div></div>
+
+:ET

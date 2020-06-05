@@ -1,0 +1,43 @@
+I"<p>本书为Primer C++ 中文第五版
+<img src="https://img-blog.csdnimg.cn/20190927133257838.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="算术类型" />
+<img src="https://img-blog.csdnimg.cn/2019092713335026.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="指定字面值的类型" />​​
+<img src="https://img-blog.csdnimg.cn/20190927142716539.png" alt="转义序列" /></p>
+<h2 id="学习笔记">学习笔记</h2>
+<h4 id="初始化与赋值"><em>初始化与赋值</em></h4>
+<p>初始化的含义是创建变量时赋予其一个初始值；
+赋值的含义是把对象的当前值擦除，以一个新值代替；
+<strong>对象在创建的时候最好初始化</strong></p>
+<h4 id="声明与定义"><em>声明与定义</em></h4>
+<p>声明使得名字为程序所知，一个文件如果想要使用别处定义的名字必须包含对那个名字的声明，声明规定了变量的类型和名字；
+定义负责创建与名字关联的实体，不仅规定变量的类型和名字，还会申请存储控件，也可能会为变量赋一个初始值。</p>
+<pre><code class="language-C++">//eg.
+extern int i;//声明
+int j;//定义
+extern double pi = 3.14159;//定义
+</code></pre>
+<p><strong>变量能且只能被定义一次，但是可以被多次声明</strong></p>
+<h4 id="引用"><em>引用</em></h4>
+<p>引用为对象起了另外一个名字，引用一旦初始化完成，引用将和它的初始值对象一直绑定在一次，所以<strong>引用必须要初始化</strong>，引用类型的初始值必须是一个对象。
+在定义引用之后，对引用的一切操作都是在与之绑定的对象上进行的，因为引用本身不是一个对象，不能定义引用的引用。</p>
+<pre><code class="language-C++">//eg.
+int ival = 1024;
+int &amp;refVal = ival;
+</code></pre>
+<h4 id="指针"><em>指针</em></h4>
+<p>指针和引用一样也实现了对其他对象的间接访问，与引用不同的地方有以下几个方面:
+指针本身就是一个对象，允许对指针赋值和拷贝，而且在指针的声明周期内它可以先后指向几个不同的对象；
+指针无须在定义时赋初值，但是如果不初始化，将会拥有一个不确定的值。
+<strong>如果指针没有指向任何具体对象，所有试图访问此指针对象的行为都不被允许</strong></p>
+<h4 id="符号的多重含义"><em>符号的多重含义</em></h4>
+<pre><code class="language-C++">//eg.
+int i = 42;	//定义int类型的i值为42
+int &amp;r = i;	//声明r是一个引用
+int *p;		//声明p是一个指针
+p = &amp;i;	//&amp;是一个取地址符
+*p = i;		//*是一个解引用符
+int &amp;r2 = *p;	//声明r2是一个引用，*是一个解引用符，其中r2的初始对象为i
+int *&amp;r3 = p;	//声明r3是一个引用，*是一个解引用符，其中r3的初始对象为p
+</code></pre>
+<h4 id="void指针"><em>void指针</em></h4>
+<p>是一种特殊的指针类型，可用于存放任意对象的地址。void<em>指针只可以和别的指针比较、作为函数的输入或输出，或者赋给另外一个void</em>指针。不能直接操作void*指针所指的对象。</p>
+:ET

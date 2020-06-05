@@ -1,0 +1,911 @@
+I"J<p>本书为Primer C++ 中文第五版</p>
+<h2 id="练习题笔记">练习题笔记</h2>
+<p><img src="https://img-blog.csdnimg.cn/20191106102558207.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.1</span><span class="p">)</span>
+<span class="err">如果一个构造函数的第一个参数是自身类类型的引用，且任何额外参数都有默认值，则次构造函数是拷贝构造函数。拷贝构造函数的第一个参数必须是一个引用类型。拷贝构造函数通常不应该是</span><span class="k">explicit</span>
+<span class="err">使用场合：</span>
+<span class="err">类会自动定义合成拷贝构造函数，编译器从给定对象中依次将每个非</span><span class="k">static</span><span class="err">成员拷贝到正在创建的对象中</span>
+<span class="err">拷贝初始化，要求编译器将右侧运算对象拷贝到正在穿件的对象中，如果需要的话还要进行类型转换</span>
+<span class="err">在函数调用过程中，具有非引用类型的参数要进行拷贝初始化；具有非引用的返回类型，返回值会被用来初始化调用方的结果</span>
+<span class="p">(</span><span class="mf">13.2</span><span class="p">)</span>
+<span class="err">拷贝构造函数的参数需要是引用类型，否则将会掉入无限调用拷贝构造函数的循环中</span>
+<span class="p">(</span><span class="mf">13.3</span><span class="p">)</span>
+<span class="err">当拷贝一个</span><span class="n">StrBlob</span><span class="err">时，拷贝一个</span><span class="n">shared_ptr</span><span class="p">(</span><span class="err">调用</span><span class="n">shared_ptr</span><span class="err">的拷贝构造函数</span><span class="p">)</span><span class="err">，</span><span class="n">shared_ptr</span><span class="err">计数会增加</span><span class="mi">1</span>
+<span class="err">当拷贝一个</span><span class="n">StrBlobPtr</span><span class="err">时，拷贝一个</span><span class="n">weak_ptr</span><span class="p">(</span><span class="err">调用</span><span class="n">weak_ptr</span><span class="err">的拷贝构造函数</span><span class="p">)</span><span class="err">，</span><span class="n">weak_ptr</span><span class="err">计数不会增加；</span><span class="n">curr</span><span class="err">直接拷贝</span>
+<span class="p">(</span><span class="mf">13.4</span><span class="p">)</span>
+<span class="n">Point</span> <span class="n">global</span><span class="p">;</span>
+<span class="n">Point</span> <span class="nf">foo_bar</span><span class="p">(</span><span class="n">Point</span> <span class="n">arg</span><span class="p">)</span><span class="c1">//非引用的参数</span>
+<span class="p">{</span>
+    <span class="n">Point</span> <span class="n">local</span> <span class="o">=</span> <span class="n">arg</span><span class="p">,</span> <span class="o">*</span><span class="n">heap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Point</span><span class="p">(</span><span class="n">global</span><span class="p">);</span><span class="c1">//运算符=</span>
+    <span class="o">*</span><span class="n">heap</span> <span class="o">=</span> <span class="n">local</span><span class="p">;</span><span class="c1">//运算符=</span>
+    <span class="n">Point</span> <span class="n">pa</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">local</span><span class="p">,</span> <span class="o">*</span><span class="n">heap</span><span class="p">};</span><span class="c1">//运算符=</span>
+    <span class="k">return</span> <span class="o">*</span><span class="n">heap</span><span class="p">;</span><span class="c1">//非引用的返回值</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.5</span><span class="p">)</span>
+<span class="n">HasPtr</span><span class="o">::</span><span class="n">HasPtr</span><span class="p">(</span><span class="k">const</span> <span class="n">HasPtr</span> <span class="o">&amp;</span><span class="n">hp</span><span class="p">)</span> <span class="o">:</span>
+            <span class="n">ps</span><span class="p">(</span><span class="k">new</span> <span class="nf">String</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">hp</span><span class="p">.</span><span class="n">ps</span><span class="p">))),</span> <span class="n">i</span><span class="p">(</span><span class="n">hp</span><span class="p">.</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106103900894.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.6</span><span class="p">)</span>
+<span class="err">拷贝赋值运算符接受一个与其所在类相同类型的参数，通常应该返回一个指向其左侧运算对象的引用。</span>
+<span class="err">如果类未定义自己的拷贝赋值运算符，编译器会为它生成一个合成拷贝赋值运算符</span>
+<span class="p">(</span><span class="mf">13.7</span><span class="p">)</span>
+<span class="err">当一个</span><span class="n">StrBlob</span><span class="err">赋值给另一个</span><span class="n">StrBlob</span><span class="err">时，会调用</span><span class="n">shared_ptr</span><span class="err">的拷贝赋值运算符</span>
+<span class="err">当一个</span><span class="n">StrBlobPtr</span><span class="err">赋值给另一个</span><span class="n">StrBlobPtr</span><span class="err">时，</span><span class="n">weak_ptr</span><span class="err">和</span><span class="n">curr</span><span class="err">会调用各自的拷贝赋值运算符</span>
+<span class="p">(</span><span class="mf">13.8</span><span class="p">)</span>
+<span class="n">HasPtr</span><span class="o">::</span><span class="n">HasPtr</span><span class="o">&amp;</span> <span class="n">HasPtr</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">HasPtr</span> <span class="o">&amp;</span> <span class="n">hp</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">hp</span><span class="p">.</span><span class="n">ps</span><span class="p">));</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">hp</span><span class="p">.</span><span class="n">i</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106105454818.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.9</span><span class="p">)</span>
+<span class="err">析构函数执行与构造函数相反的操作，释放对象使用的资源，并销毁对象的非</span><span class="k">static</span><span class="err">数据成员。没有返回值，也不结束参数，不能被重载，一个类对应唯一一个析构函数。</span>
+<span class="err">变量离开作用域时被销毁；对象被销毁时其成员被销毁；容器被销毁，其元素被销毁；动态分配的对象，使用</span><span class="k">delete</span><span class="err">时被销毁；</span>
+<span class="err">当指向一个对象的引用或指针离开作用域时，析构函数不会执行。</span>
+<span class="err">当一个类未定义自己的析构函数时，编译器会为它定义一个合成析构函数。</span>
+<span class="p">(</span><span class="mf">13.10</span><span class="p">)</span>
+<span class="err">对于</span><span class="n">StrBlob</span><span class="err">，会销毁</span><span class="n">data</span><span class="err">，并使得</span><span class="n">shared_ptr</span><span class="err">计数减一，若变为</span><span class="mi">0</span><span class="err">，则释放其对象</span>
+<span class="err">对于</span><span class="n">StrBlobPtr</span><span class="err">，会销毁</span><span class="n">weak_ptr</span><span class="err">和</span><span class="n">curr</span><span class="err">，因为是</span><span class="n">weak_ptr</span><span class="err">，所以计数不会改变</span>
+<span class="p">(</span><span class="mf">13.11</span><span class="p">)</span>
+<span class="n">HasPtr</span><span class="o">::~</span><span class="n">HasPtr</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">delete</span> <span class="n">ps</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.12</span><span class="p">)</span>
+<span class="kt">bool</span> <span class="nf">fun</span><span class="p">(</span><span class="k">const</span> <span class="n">Sales_data</span> <span class="o">*</span><span class="n">trans</span><span class="p">,</span> <span class="n">Sales_data</span> <span class="n">accum</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Sales_data</span> <span class="n">item1</span><span class="p">(</span><span class="o">*</span><span class="n">trans</span><span class="p">),</span> <span class="n">item2</span><span class="p">(</span><span class="n">accum</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">item1</span><span class="p">.</span><span class="n">isbn</span><span class="p">()</span> <span class="o">!=</span> <span class="n">item2</span><span class="p">.</span><span class="n">isbn</span><span class="p">();</span>
+<span class="p">}</span><span class="c1">//离开作用域时，item1，item2以及accum都会被销毁</span>
+<span class="p">(</span><span class="mf">13.13</span><span class="p">)</span>
+<span class="k">struct</span> <span class="nc">X</span> <span class="p">{</span>
+    <span class="n">X</span><span class="p">()</span> <span class="p">{</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"X()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+    <span class="n">X</span><span class="p">(</span><span class="k">const</span> <span class="n">X</span><span class="o">&amp;</span><span class="p">)</span> <span class="p">{</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"X(const X&amp;)"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+    <span class="n">X</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">X</span><span class="o">&amp;</span><span class="p">)</span> <span class="p">{</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"operator=(const X&amp;)"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+    <span class="o">~</span><span class="n">X</span><span class="p">()</span> <span class="p">{</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"~X()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+<span class="kt">void</span> <span class="nf">t1</span><span class="p">(</span><span class="n">X</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+<span class="kt">void</span> <span class="nf">t2</span><span class="p">(</span><span class="n">X</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test13</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">X</span> <span class="n">x0</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"拷贝构造函数"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">X</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">x0</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"拷贝赋值运算符"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">X</span> <span class="n">x2</span><span class="p">;</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">x0</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"调用非引用的参数"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">t1</span><span class="p">(</span><span class="n">x0</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"调用引用参数"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">t2</span><span class="p">(</span><span class="n">x0</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"析构函数"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106110206161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.14</span><span class="p">)</span>
+<span class="err">因为</span><span class="n">b</span><span class="err">和</span><span class="n">c</span><span class="err">都会调用拷贝构造函数，但是拷贝构造函数是默认合成的，并没有为此生成唯一的序号，所以将会公用一个序号。所以代码输出都会是一样的。</span>
+<span class="p">(</span><span class="mf">13.15</span><span class="p">)</span>
+<span class="err">输出结果会改变，但是由于函数的参数是非引用类型，在调用的时候会再次使用拷贝构造函数，和我们理想的结果不一样</span>
+<span class="p">(</span><span class="mf">13.16</span><span class="p">)</span>
+<span class="err">将会是理想的效果，输出结果为原</span><span class="n">a</span><span class="err">，</span><span class="n">b</span><span class="err">，</span><span class="n">c</span><span class="err">的</span><span class="n">mysn</span>
+<span class="p">(</span><span class="mf">13.17</span><span class="p">)</span>
+<span class="c1">//14题的验证 可以重写numbered(const numbered&amp;)，然后调用test15即可。</span>
+<span class="c1">//结果符合我们的预想</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">numbered</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">int</span> <span class="n">mysn</span><span class="p">;</span>
+    <span class="n">numbered</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">mysn</span> <span class="o">=</span> <span class="n">id</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">numbered</span><span class="p">(</span><span class="k">const</span> <span class="n">numbered</span><span class="o">&amp;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mysn</span> <span class="o">=</span> <span class="n">id</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+<span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">numbered</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">s</span><span class="p">.</span><span class="n">mysn</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="kt">void</span> <span class="nf">f0</span><span class="p">(</span><span class="n">numbered</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">s</span><span class="p">.</span><span class="n">mysn</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;}</span>
+<span class="kt">void</span> <span class="nf">test15</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">numbered</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+    <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">f</span><span class="p">(</span><span class="n">b</span><span class="p">);</span> <span class="n">f</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">test16</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">numbered</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+    <span class="n">f0</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">f0</span><span class="p">(</span><span class="n">b</span><span class="p">);</span> <span class="n">f0</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106112003263.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.18</span><span class="p">)</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">ID</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">Employee</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">string</span> <span class="n">name</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">isbn</span><span class="p">;</span>
+    <span class="n">Employee</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">isbn</span> <span class="o">=</span> <span class="n">ID</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">Employee</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">s</span><span class="p">;</span>
+        <span class="n">isbn</span> <span class="o">=</span> <span class="n">ID</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">Employee</span><span class="p">(</span><span class="k">const</span> <span class="n">Employee</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+        <span class="n">isbn</span> <span class="o">=</span> <span class="n">ID</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">Employee</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Employee</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+        <span class="n">isbn</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">isbn</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+<span class="p">(</span><span class="mf">13.19</span><span class="p">)</span>
+<span class="err">需要定义拷贝控制成员</span><span class="o">:</span><span class="err">拷贝构造函数和拷贝赋值运算符，否则将不能保证雇员证号唯一</span>
+<span class="p">(</span><span class="mf">13.20</span><span class="p">)</span>
+<span class="err">拷贝和赋值</span><span class="n">TextQuery</span><span class="err">对象时</span><span class="p">,</span><span class="n">file</span><span class="err">和</span><span class="n">wm</span><span class="err">会被拷贝，对于</span><span class="n">shared_ptr</span><span class="err">类型的</span><span class="n">file</span><span class="err">计数加</span><span class="mi">1</span>
+<span class="err">删除</span><span class="n">TextQuery</span><span class="err">对象时</span><span class="p">,</span><span class="n">file</span><span class="err">和</span><span class="n">wm</span><span class="err">会被销毁，对于</span><span class="n">shared_ptr</span><span class="err">类型的</span><span class="n">file</span><span class="err">计数减</span><span class="mi">1</span><span class="err">，若为</span><span class="mi">0</span><span class="err">，其管理的内存被释放</span>
+<span class="err">拷贝和赋值</span><span class="n">QueryResult</span><span class="err">对象时</span><span class="p">,</span><span class="n">sought</span><span class="p">,</span><span class="n">lines</span><span class="p">,</span><span class="n">file</span><span class="err">会被拷贝，对于</span><span class="n">shared_ptr</span><span class="err">类型的</span><span class="n">lines</span><span class="err">和</span><span class="n">file</span><span class="err">计数会加</span><span class="mi">1</span>
+<span class="err">删除</span><span class="n">QueryResult</span><span class="err">对象时</span><span class="p">,</span><span class="n">sought</span><span class="err">，</span><span class="n">lines</span><span class="err">，</span><span class="n">file</span><span class="err">会被销毁，对于</span><span class="n">shared_ptr</span><span class="err">类型的</span><span class="n">lines</span><span class="err">和</span><span class="n">file</span><span class="err">计数会减</span><span class="mi">1</span><span class="err">，计数为</span><span class="mi">0</span><span class="err">的时候其管理的内存会被销毁</span>
+<span class="p">(</span><span class="mf">13.21</span><span class="p">)</span>
+<span class="err">不需要，因为对于动态管理的内存已经有智能指针实现，临时对象拷贝赋值和销毁也已经是实现了的。</span>
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106112921858.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.22</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">HasPtr</span><span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
+    <span class="n">string</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="n">HasPtr</span><span class="p">()</span> <span class="p">{}</span>
+    <span class="n">HasPtr</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">string</span> <span class="n">s</span><span class="p">)</span><span class="o">:</span> <span class="n">num</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">str</span><span class="p">(</span><span class="k">new</span> <span class="n">string</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">HasPtr</span><span class="p">(</span><span class="k">const</span> <span class="n">HasPtr</span> <span class="o">&amp;</span><span class="n">p</span><span class="p">)</span><span class="o">:</span> <span class="n">num</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">num</span><span class="p">),</span> <span class="n">str</span><span class="p">(</span><span class="k">new</span> <span class="n">string</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">str</span><span class="p">)))</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"(const&amp;)"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">HasPtr</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">HasPtr</span> <span class="o">&amp;</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"operator="</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">num</span><span class="p">;</span>
+        <span class="k">auto</span> <span class="n">newstr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">str</span><span class="p">));</span>
+        <span class="k">delete</span> <span class="n">str</span><span class="p">;</span>
+        <span class="n">str</span> <span class="o">=</span> <span class="n">newstr</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="o">~</span><span class="n">HasPtr</span><span class="p">()</span> <span class="p">{</span><span class="k">delete</span> <span class="n">str</span><span class="p">;}</span>
+    <span class="kt">void</span> <span class="n">input</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span> <span class="o">&lt;&lt;</span> <span class="n">str</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">test22</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">HasPtr</span> <span class="n">hp0</span> <span class="o">=</span> <span class="n">HasPtr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"zl"</span><span class="p">);</span>
+    <span class="n">HasPtr</span> <span class="n">hp1</span> <span class="o">=</span> <span class="n">hp0</span><span class="p">;</span>
+    <span class="n">HasPtr</span> <span class="n">hp2</span><span class="p">;</span>
+    <span class="n">hp2</span> <span class="o">=</span> <span class="n">hp0</span><span class="p">;</span>
+    <span class="n">hp0</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+    <span class="n">hp1</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+    <span class="n">hp2</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106113557289.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.23</span><span class="p">)</span>
+<span class="err">赋值操作忘记删除当前的</span><span class="n">string</span><span class="p">,</span><span class="err">没有定义析构函数</span>
+<span class="p">(</span><span class="mf">13.24</span><span class="p">)</span>
+<span class="err">析构函数未定义，导致内存不会被释放；</span>
+<span class="err">拷贝构造函数未定义，会导致两个对象会指向同一个</span><span class="n">string</span><span class="err">，其中一个被删除，则另一个指针空悬；</span>
+<span class="p">(</span><span class="mf">13.25</span><span class="p">)</span>
+<span class="err">注意的地方就是拷贝构造函数和拷贝构造赋值运算符获得的对象不应该和原对象共享</span><span class="n">vector</span><span class="err">的内存，需要重新新建一个内存。</span>
+<span class="p">(</span><span class="mf">13.26</span><span class="p">)</span>
+<span class="c1">//类值版本的拷贝构造函数</span>
+<span class="n">StrBlob</span><span class="p">(</span> <span class="k">const</span> <span class="n">StrBlob</span> <span class="o">&amp;</span><span class="n">sb</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">make_shared</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="o">*</span><span class="n">sb</span><span class="p">.</span><span class="n">data</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">//类值版本的拷贝赋值运算符</span>
+<span class="n">StrBlob</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span> <span class="k">const</span> <span class="n">StrBlob</span> <span class="o">&amp;</span><span class="n">sb</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">newdata</span> <span class="o">=</span> <span class="n">make_shared</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="o">*</span><span class="n">sb</span><span class="p">.</span><span class="n">data</span><span class="p">);</span>
+    <span class="k">delete</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">newdata</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019110611431116.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.27</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">HasPtr</span><span class="p">{</span>
+<span class="nl">private:</span>
+    <span class="n">string</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="o">*</span><span class="n">use</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="nl">public:</span>
+    <span class="n">HasPtr</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s</span> <span class="o">=</span> <span class="n">string</span><span class="p">())</span><span class="o">:</span> <span class="n">str</span><span class="p">(</span><span class="k">new</span> <span class="n">string</span><span class="p">(</span><span class="n">s</span><span class="p">)),</span> <span class="n">num</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">use</span><span class="p">(</span><span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">HasPtr</span><span class="p">(</span><span class="k">const</span> <span class="n">HasPtr</span><span class="o">&amp;</span> <span class="n">hp</span><span class="p">)</span> <span class="o">:</span> <span class="n">str</span><span class="p">(</span><span class="n">hp</span><span class="p">.</span><span class="n">str</span><span class="p">),</span> <span class="n">num</span><span class="p">(</span><span class="n">hp</span><span class="p">.</span><span class="n">num</span><span class="p">),</span> <span class="n">use</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">use</span><span class="p">)</span> <span class="p">{</span><span class="o">++*</span><span class="n">use</span><span class="p">;}</span>
+    <span class="n">HasPtr</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">HasPtr</span><span class="o">&amp;</span> <span class="n">hp</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">++*</span><span class="n">hp</span><span class="p">.</span><span class="n">use</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="o">--*</span><span class="n">use</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">delete</span> <span class="n">str</span><span class="p">;</span>
+            <span class="k">delete</span> <span class="n">use</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">str</span> <span class="o">=</span> <span class="n">hp</span><span class="p">.</span><span class="n">str</span><span class="p">;</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="n">hp</span><span class="p">.</span><span class="n">num</span><span class="p">;</span>
+        <span class="n">use</span> <span class="o">=</span> <span class="n">hp</span><span class="p">.</span><span class="n">use</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="o">~</span><span class="n">HasPtr</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="o">--*</span><span class="n">use</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">delete</span> <span class="n">str</span><span class="p">;</span>
+            <span class="k">delete</span> <span class="n">use</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+<span class="p">(</span><span class="mf">13.28</span><span class="p">)</span>
+<span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1">//参考HasPtr</span>
+<span class="k">class</span> <span class="nc">TreeNode</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">TreeNode</span><span class="p">()</span> <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">string</span><span class="p">()),</span> <span class="n">count</span><span class="p">(</span><span class="k">new</span> <span class="kt">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="n">left</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">right</span><span class="p">(</span><span class="nb">NULL</span><span class="p">){</span> <span class="p">}</span>
+    <span class="n">TreeNode</span><span class="p">(</span><span class="k">const</span> <span class="n">TreeNode</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span>
+        <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">value</span><span class="p">),</span> <span class="n">count</span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">count</span><span class="p">),</span> <span class="n">left</span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">left</span><span class="p">),</span> <span class="n">right</span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">right</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">++*</span><span class="n">count</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">TreeNode</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">TreeNode</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">++*</span><span class="n">rhs</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">--*</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">delete</span> <span class="n">left</span><span class="p">;</span>
+            <span class="k">delete</span> <span class="n">right</span><span class="p">;</span>
+            <span class="k">delete</span> <span class="n">count</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">left</span><span class="p">;</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">right</span><span class="p">;</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="o">~</span><span class="n">TreeNode</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">--*</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">delete</span> <span class="n">left</span><span class="p">;</span>
+            <span class="k">delete</span> <span class="n">right</span><span class="p">;</span>
+            <span class="k">delete</span> <span class="n">count</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">value</span><span class="p">;</span>
+    <span class="kt">int</span><span class="o">*</span> <span class="n">count</span><span class="p">;</span>
+    <span class="n">TreeNode</span><span class="o">*</span> <span class="n">left</span><span class="p">;</span>
+    <span class="n">TreeNode</span><span class="o">*</span> <span class="n">right</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">BinStrTree</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">BinStrTree</span><span class="p">()</span> <span class="o">:</span> <span class="n">root</span><span class="p">(</span><span class="k">new</span> <span class="n">TreeNode</span><span class="p">())</span> <span class="p">{}</span>
+    <span class="n">BinStrTree</span><span class="p">(</span><span class="k">const</span> <span class="n">BinStrTree</span><span class="o">&amp;</span> <span class="n">bst</span><span class="p">)</span> <span class="o">:</span> <span class="n">root</span><span class="p">(</span><span class="k">new</span> <span class="n">TreeNode</span><span class="p">(</span><span class="o">*</span><span class="n">bst</span><span class="p">.</span><span class="n">root</span><span class="p">))</span> <span class="p">{}</span>
+    <span class="n">BinStrTree</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">BinStrTree</span><span class="o">&amp;</span> <span class="n">bst</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">TreeNode</span><span class="o">*</span> <span class="n">new_root</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TreeNode</span><span class="p">(</span><span class="o">*</span><span class="n">bst</span><span class="p">.</span><span class="n">root</span><span class="p">);</span>
+        <span class="k">delete</span> <span class="n">root</span><span class="p">;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">new_root</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="o">~</span><span class="n">BinStrTree</span><span class="p">()</span> <span class="p">{</span> <span class="k">delete</span> <span class="n">root</span><span class="p">;</span> <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">TreeNode</span><span class="o">*</span> <span class="n">root</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106131540422.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.29</span><span class="p">)</span>
+<span class="n">swap</span><span class="p">(</span><span class="n">HasPtr</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">HasPtr</span><span class="o">&amp;</span><span class="p">)</span><span class="err">中调用的</span><span class="n">swap</span><span class="err">是标准库的函数</span>
+<span class="p">(</span><span class="mf">13.30</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">HasPtr</span><span class="p">{</span>
+<span class="c1">//...</span>
+    <span class="k">friend</span> <span class="kt">void</span> <span class="n">swap</span><span class="p">(</span><span class="n">HasPtr</span> <span class="o">&amp;</span><span class="n">hp0</span><span class="p">,</span> <span class="n">HasPtr</span> <span class="o">&amp;</span><span class="n">hp1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"HasPtr swap"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">;</span>
+        <span class="n">swap</span><span class="p">(</span><span class="n">hp0</span><span class="p">.</span><span class="n">str</span><span class="p">,</span> <span class="n">hp1</span><span class="p">.</span><span class="n">str</span><span class="p">);</span>
+        <span class="n">swap</span><span class="p">(</span><span class="n">hp0</span><span class="p">.</span><span class="n">num</span><span class="p">,</span> <span class="n">hp1</span><span class="p">.</span><span class="n">num</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="c1">//...</span>
+<span class="p">};</span>
+<span class="kt">void</span> <span class="nf">test30</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">HasPtr</span> <span class="n">hp0</span> <span class="o">=</span> <span class="n">HasPtr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"zl0"</span><span class="p">);</span>
+    <span class="n">HasPtr</span> <span class="n">hp1</span> <span class="o">=</span> <span class="n">HasPtr</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">"zl1"</span><span class="p">);</span>
+    <span class="n">hp0</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+    <span class="n">hp1</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+    <span class="n">swap</span><span class="p">(</span><span class="n">hp0</span><span class="p">,</span> <span class="n">hp1</span><span class="p">);</span>
+    <span class="n">hp0</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+    <span class="n">hp1</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.31</span><span class="p">)</span>
+<span class="err">当</span><span class="n">vector</span><span class="err">中的元素较少时，</span><span class="n">sort</span><span class="err">会采用插入排序法，不会调用</span><span class="n">swap</span><span class="err">函数，当元素数量增大到一定数量时，才会采用快速排序法，调用</span><span class="n">swap</span><span class="err">函数。</span>
+<span class="k">class</span> <span class="nc">HasPtr</span><span class="p">{</span>
+<span class="c1">//...</span>
+    <span class="kt">bool</span> <span class="k">operator</span><span class="o">&lt;</span><span class="p">(</span><span class="k">const</span> <span class="n">HasPtr</span> <span class="o">&amp;</span><span class="n">hp</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="n">hp</span><span class="p">.</span><span class="n">num</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="c1">//...</span>
+<span class="p">};</span>
+<span class="kt">void</span> <span class="nf">test31</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">HasPtr</span> <span class="n">hp0</span> <span class="o">=</span> <span class="n">HasPtr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">"zl0"</span><span class="p">);</span>
+    <span class="n">HasPtr</span> <span class="n">hp1</span> <span class="o">=</span> <span class="n">HasPtr</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">"zl0"</span><span class="p">);</span>
+    <span class="n">HasPtr</span> <span class="n">hp2</span> <span class="o">=</span> <span class="n">HasPtr</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">"zl0"</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"init vector"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">HasPtr</span><span class="o">&gt;</span> <span class="n">vhp</span> <span class="o">=</span> <span class="p">{</span><span class="n">hp2</span><span class="p">,</span> <span class="n">hp0</span><span class="p">,</span> <span class="n">hp1</span><span class="p">};</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"sort begin()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">sort</span><span class="p">(</span><span class="n">vhp</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">vhp</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.32</span><span class="p">)</span>
+<span class="err">不会，因为</span><span class="n">HasPtr</span><span class="err">版本的</span><span class="n">swap</span><span class="err">是为了减少内存分配而不去交换临时对象，直接去交换两个指针。</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106142938871.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.33</span><span class="p">)</span>
+<span class="err">用引用当参数可以避免使用拷贝构造函数，导致</span><span class="n">Message</span><span class="err">是添加删除到拷贝的</span><span class="n">Floder</span><span class="err">中；不用常量引用是因为</span><span class="n">sava</span><span class="err">和</span><span class="n">remove</span><span class="err">会对</span><span class="n">Floder</span><span class="err">进行增删操作</span>
+<span class="p">(</span><span class="mf">13.34</span><span class="p">)</span>
+<span class="cp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+</span>
+<span class="k">class</span> <span class="nc">Message</span> <span class="p">{</span>
+    <span class="k">friend</span> <span class="k">class</span> <span class="nc">Folder</span><span class="p">;</span>
+    <span class="k">friend</span> <span class="kt">void</span> <span class="n">swap</span><span class="p">(</span><span class="n">Message</span><span class="o">&amp;</span><span class="p">,</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+<span class="nl">public:</span>
+    <span class="k">explicit</span> <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">str</span> <span class="o">=</span> <span class="s">" "</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">content</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="n">Message</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="o">~</span><span class="n">Message</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">remove</span><span class="p">(</span><span class="n">Folder</span><span class="o">&amp;</span><span class="p">);</span>
+<span class="nl">private:</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">contents</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Folder</span><span class="o">*&gt;</span> <span class="n">folders</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="n">add_to_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">remove_from_Folders</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Folder</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Folder</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+    <span class="n">Floder</span><span class="p">(</span><span class="k">const</span> <span class="n">Floder</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="o">~</span><span class="n">Floder</span><span class="p">();</span>
+    <span class="n">Floder</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Floder</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">);</span>
+<span class="nl">private:</span>
+    <span class="n">set</span><span class="o">&lt;</span><span class="n">Message</span><span class="o">*&gt;</span> <span class="n">msgs</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="n">addFldr</span><span class="p">(</span><span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span><span class="n">msgs</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">m</span><span class="p">);}</span>
+    <span class="kt">void</span> <span class="n">remFldr</span><span class="p">(</span><span class="n">Message</span> <span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span><span class="n">msgs</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">m</span><span class="p">);}</span>
+    <span class="kt">void</span> <span class="n">add_to_Messages</span><span class="p">(</span><span class="k">const</span> <span class="n">Floder</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">remove_from_Messages</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Floder</span><span class="o">::</span><span class="n">add_to_Messages</span><span class="p">(</span><span class="k">const</span> <span class="n">Floder</span> <span class="o">&amp;</span><span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">m</span> <span class="o">:</span> <span class="n">f</span><span class="p">.</span><span class="n">msgs</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">-&gt;</span><span class="n">addFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Floder</span><span class="o">::</span><span class="n">remove_from_Messages</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">m</span> <span class="o">:</span> <span class="n">f</span><span class="p">.</span><span class="n">msgs</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">-&gt;</span><span class="n">remFldr</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">Floder</span><span class="o">::</span><span class="n">Floder</span><span class="p">(</span><span class="k">const</span> <span class="n">Floder</span> <span class="o">&amp;</span><span class="n">f</span><span class="p">)</span> <span class="o">:</span> <span class="n">msgs</span><span class="p">(</span><span class="n">f</span><span class="p">.</span><span class="n">msgs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">add_to_Messages</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">Floder</span><span class="o">::~</span><span class="n">Floder</span><span class="p">()</span> <span class="p">{</span> <span class="n">remove_from_Messages</span><span class="p">();</span> <span class="p">}</span>
+
+<span class="n">Floder</span><span class="o">&amp;</span> <span class="n">Floder</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Floder</span><span class="o">&amp;</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">remove_from_Messages</span><span class="p">();</span>
+    <span class="n">msgs</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">msgs</span><span class="p">;</span>
+    <span class="n">add_to_Messages</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Floder</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="n">ostream</span> <span class="o">&amp;</span><span class="n">os</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">m</span> <span class="o">:</span> <span class="n">msgs</span><span class="p">)</span> <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="n">m</span><span class="o">-&gt;</span><span class="n">contents</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">save</span><span class="p">(</span><span class="n">Folder</span> <span class="o">&amp;</span><span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">folders</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="o">&amp;</span><span class="n">f</span><span class="p">);</span>
+    <span class="n">f</span><span class="p">.</span><span class="n">addMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">Folder</span> <span class="o">&amp;</span><span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">folders</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="o">&amp;</span><span class="n">f</span><span class="p">);</span>
+    <span class="n">f</span><span class="p">.</span><span class="n">remMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">add_to_Folders</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">f</span> <span class="o">:</span> <span class="n">m</span><span class="p">.</span><span class="n">folders</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">-&gt;</span><span class="n">addMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">Message</span><span class="o">::</span><span class="n">Message</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="n">m</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">contents</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">contents</span><span class="p">),</span> <span class="n">folders</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">folders</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">add_to_Folders</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Message</span><span class="o">::</span><span class="n">remove_from_Folders</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">f</span> <span class="o">:</span> <span class="n">folders</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">-&gt;</span><span class="n">remMsg</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">Message</span><span class="o">::~</span><span class="n">Message</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">remove_from_Folders</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="n">Message</span><span class="o">&amp;</span> <span class="n">Message</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="n">rhs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">remove_from_Folders</span><span class="p">();</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">contents</span><span class="p">;</span>
+    <span class="n">folders</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">folders</span><span class="p">;</span>
+    <span class="n">add_to_Folders</span><span class="p">(</span><span class="n">rhs</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">swap</span><span class="p">(</span><span class="n">Message</span> <span class="o">&amp;</span><span class="n">lhs</span><span class="p">,</span> <span class="n">Message</span> <span class="o">&amp;</span><span class="n">rhs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">f</span> <span class="o">:</span> <span class="n">lhs</span><span class="p">.</span><span class="n">folders</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">-&gt;</span><span class="n">remMsg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lhs</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">f</span> <span class="o">:</span> <span class="n">rhs</span><span class="p">.</span><span class="n">folders</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">-&gt;</span><span class="n">remMsg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rhs</span><span class="p">);</span>
+    <span class="n">swap</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">folders</span><span class="p">,</span> <span class="n">rhs</span><span class="p">.</span><span class="n">folders</span><span class="p">);</span>
+    <span class="n">swap</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">contents</span><span class="p">,</span> <span class="n">rhs</span><span class="p">.</span><span class="n">contents</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">f</span> <span class="o">:</span> <span class="n">lhs</span><span class="p">.</span><span class="n">folders</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">-&gt;</span><span class="n">addMsg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lhs</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">f</span> <span class="o">:</span> <span class="n">rhs</span><span class="p">.</span><span class="n">folders</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">-&gt;</span><span class="n">addMsg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rhs</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.35</span><span class="p">)</span>
+<span class="err">使用合成的拷贝构造函数，将不会把拷贝的</span><span class="n">Message</span><span class="err">副本添加到对于的</span><span class="n">Floder</span><span class="err">中</span>
+<span class="err">使用合成的拷贝赋值运算符，将不会把左边的</span><span class="n">Message</span><span class="err">原</span><span class="n">Floder</span><span class="err">记录删除，而且不会把右边的</span><span class="n">Message</span><span class="err">的</span><span class="n">Floder</span><span class="err">记录添加到左边去。</span>
+<span class="err">使用合成的析构函数，将不会删除</span><span class="n">Floder</span><span class="err">对应的</span><span class="n">Message</span><span class="err">信息</span>
+<span class="p">(</span><span class="mf">13.36</span><span class="p">)</span>
+<span class="err">见</span><span class="mi">34</span>
+<span class="p">(</span><span class="mf">13.37</span><span class="p">)</span>
+<span class="err">见</span><span class="mi">34</span>
+<span class="p">(</span><span class="mf">13.38</span><span class="p">)</span>
+<span class="err">因为用</span><span class="n">swap</span><span class="err">方式实际赋值运算符，其参数是非引用的，尽管用</span><span class="n">swap</span><span class="err">可以提高其效能，但是用非引用的参数会用到拷贝构造函数。对于这道题，明显拷贝构造函数会造成更多的浪费。</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106144810608.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.39</span><span class="p">)</span>
+<span class="cp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;memory&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">StrVec</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">StrVec</span><span class="p">()</span> <span class="o">:</span> <span class="n">elements</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span><span class="n">first_free</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">cap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">StrVec</span><span class="p">(</span><span class="k">const</span> <span class="n">StrVec</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="n">StrVec</span> <span class="o">&amp;</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">StrVec</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="o">~</span><span class="n">StrVec</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="n">push_back</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="kt">size_t</span> <span class="n">size</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span><span class="k">return</span> <span class="n">first_free</span> <span class="o">-</span> <span class="n">elements</span><span class="p">;}</span>
+    <span class="kt">size_t</span> <span class="n">capacity</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span><span class="k">return</span> <span class="n">cap</span> <span class="o">-</span> <span class="n">elements</span><span class="p">;}</span>
+    <span class="n">string</span> <span class="o">*</span><span class="n">begin</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span><span class="k">return</span> <span class="n">elements</span><span class="p">;}</span>
+    <span class="n">string</span> <span class="o">*</span><span class="n">end</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span><span class="k">return</span> <span class="n">first_free</span><span class="p">;}</span>
+<span class="nl">private:</span>
+    <span class="k">static</span> <span class="n">allocator</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">alloc</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="n">chk_n_alloc</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="n">capacity</span><span class="p">())</span> <span class="n">reallocate</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">pair</span><span class="o">&lt;</span><span class="n">string</span><span class="o">*</span><span class="p">,</span> <span class="n">string</span><span class="o">*&gt;</span> <span class="n">alloc_n_copy</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span><span class="o">*</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="n">free</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="n">reallocate</span><span class="p">();</span>
+    <span class="n">string</span> <span class="o">*</span><span class="n">elements</span><span class="p">;</span> <span class="c1">//数组首元素</span>
+    <span class="n">string</span> <span class="o">*</span><span class="n">first_free</span><span class="p">;</span> <span class="c1">//数组第一个空闲元素</span>
+    <span class="n">string</span> <span class="o">*</span><span class="n">cap</span><span class="p">;</span> <span class="c1">//数组尾后位置</span>
+<span class="p">};</span>
+
+<span class="n">allocator</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">StrVec</span><span class="o">::</span><span class="n">alloc</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="n">StrVec</span><span class="o">::</span><span class="n">push_back</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">chk_n_alloc</span><span class="p">();</span>
+    <span class="n">alloc</span><span class="p">.</span><span class="n">construct</span><span class="p">(</span><span class="n">first_free</span><span class="o">++</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">pair</span><span class="o">&lt;</span><span class="n">string</span><span class="o">*</span><span class="p">,</span> <span class="n">string</span><span class="o">*&gt;</span> <span class="n">StrVec</span><span class="o">::</span><span class="n">alloc_n_copy</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">*</span><span class="n">b</span><span class="p">,</span> <span class="k">const</span> <span class="n">string</span> <span class="o">*</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">data</span> <span class="o">=</span> <span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">e</span> <span class="o">-</span> <span class="n">b</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">data</span><span class="p">,</span> <span class="n">uninitialized_copy</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">data</span><span class="p">)};</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">StrVec</span><span class="o">::</span><span class="n">free</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">p</span> <span class="o">=</span> <span class="n">first_free</span><span class="p">;</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">elements</span><span class="p">;)</span> <span class="p">{</span>
+            <span class="n">alloc</span><span class="p">.</span><span class="n">destroy</span><span class="p">(</span><span class="o">--</span><span class="n">p</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">alloc</span><span class="p">.</span><span class="n">deallocate</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">cap</span> <span class="o">-</span> <span class="n">elements</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">StrVec</span><span class="o">::</span><span class="n">StrVec</span><span class="p">(</span><span class="k">const</span> <span class="n">StrVec</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">newdata</span> <span class="o">=</span> <span class="n">alloc_n_copy</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">s</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="n">newdata</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+    <span class="n">first_free</span> <span class="o">=</span> <span class="n">cap</span> <span class="o">=</span> <span class="n">newdata</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">StrVec</span><span class="o">::~</span><span class="n">StrVec</span><span class="p">()</span> <span class="p">{</span><span class="n">free</span><span class="p">();</span> <span class="p">}</span>
+
+<span class="n">StrVec</span> <span class="o">&amp;</span><span class="n">StrVec</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">StrVec</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">data</span> <span class="o">=</span> <span class="n">alloc_n_copy</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">s</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+    <span class="n">free</span><span class="p">();</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+    <span class="n">first_free</span> <span class="o">=</span> <span class="n">cap</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">StrVec</span><span class="o">::</span><span class="n">reallocate</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">newcapacity</span> <span class="o">=</span> <span class="n">size</span><span class="p">()</span> <span class="o">?</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">size</span><span class="p">()</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">newdata</span> <span class="o">=</span> <span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">newcapacity</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">dest</span> <span class="o">=</span> <span class="n">newdata</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">elem</span> <span class="o">=</span> <span class="n">elements</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">alloc</span><span class="p">.</span><span class="n">construct</span><span class="p">(</span><span class="n">dest</span><span class="o">++</span><span class="p">,</span><span class="n">move</span><span class="p">(</span><span class="o">*</span><span class="n">elem</span><span class="o">++</span><span class="p">));</span>
+    <span class="n">free</span><span class="p">();</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="n">newdata</span><span class="p">;</span>
+    <span class="n">first_free</span> <span class="o">=</span> <span class="n">dest</span><span class="p">;</span>
+    <span class="n">cap</span> <span class="o">=</span> <span class="n">elements</span> <span class="o">+</span> <span class="n">newcapacity</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.40</span><span class="p">)</span>
+<span class="n">StrVec</span><span class="p">(</span> <span class="n">initializer_list</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">ls</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">newdata</span> <span class="o">=</span> <span class="n">alloc_n_copy</span><span class="p">(</span><span class="n">ls</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">ls</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="n">newdata</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+    <span class="n">first_free</span> <span class="o">=</span> <span class="n">cap</span> <span class="o">=</span> <span class="n">newdata</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.41</span><span class="p">)</span>
+<span class="err">前置版本将对象本身作为左值返回，后置版本则将对象原始值的副本作为右值返回。</span>
+<span class="p">(</span><span class="mf">13.42</span><span class="p">)</span>
+<span class="err">把之前的</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="err">替换成</span><span class="n">StrVec</span>
+<span class="c1">//TextQuery.h</span>
+<span class="cp">#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;memory&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include "StrVec.h"
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="kt">size_t</span> <span class="n">line_no</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">QueryResult</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">TextQuery</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">TextQuery</span><span class="p">(</span><span class="n">ifstream</span><span class="o">&amp;</span><span class="p">);</span>
+    <span class="n">QueryResult</span> <span class="n">query</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<span class="nl">private:</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">StrVec</span><span class="o">&gt;</span> <span class="n">file</span><span class="p">;</span>
+    <span class="n">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;&gt;&gt;</span> <span class="n">wm</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">QueryResult</span> <span class="p">{</span>
+<span class="k">friend</span> <span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">print</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="o">&amp;</span><span class="p">,</span> <span class="k">const</span> <span class="n">QueryResult</span><span class="o">&amp;</span><span class="p">);</span>
+<span class="nl">public:</span>
+    <span class="n">QueryResult</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">,</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;&gt;</span> <span class="n">p</span><span class="p">,</span>
+        <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">StrVec</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">)</span><span class="o">:</span>
+        <span class="n">sought</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">lines</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">file</span><span class="p">(</span><span class="n">f</span><span class="p">){</span> <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">string</span> <span class="n">sought</span><span class="p">;</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;&gt;</span> <span class="n">lines</span><span class="p">;</span>
+    <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">StrVec</span><span class="o">&gt;</span> <span class="n">file</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">ostream</span> <span class="o">&amp;</span><span class="n">print</span><span class="p">(</span><span class="n">ostream</span> <span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="k">const</span> <span class="n">QueryResult</span> <span class="o">&amp;</span><span class="n">qr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="n">qr</span><span class="p">.</span><span class="n">sought</span> <span class="o">&lt;&lt;</span> <span class="s">" occurs "</span> <span class="o">&lt;&lt;</span> <span class="n">qr</span><span class="p">.</span><span class="n">lines</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span>
+       <span class="o">&lt;&lt;</span> <span class="p">(((</span><span class="n">qr</span><span class="p">.</span><span class="n">lines</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">?</span> <span class="s">" times "</span> <span class="o">:</span> <span class="s">" time "</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">num</span> <span class="o">:</span> <span class="o">*</span><span class="n">qr</span><span class="p">.</span><span class="n">lines</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\t</span><span class="s">(line "</span> <span class="o">&lt;&lt;</span> <span class="n">num</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="s">") "</span>
+           <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="p">(</span><span class="n">qr</span><span class="p">.</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">()</span> <span class="o">+</span> <span class="n">num</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">os</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">TextQuery</span><span class="o">::</span><span class="n">TextQuery</span><span class="p">(</span><span class="n">ifstream</span> <span class="o">&amp;</span><span class="n">is</span><span class="p">)</span> <span class="o">:</span> <span class="n">file</span><span class="p">(</span><span class="k">new</span> <span class="nf">StrVec</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">string</span> <span class="n">text</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">getline</span><span class="p">(</span><span class="n">is</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">file</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">text</span><span class="p">);</span>
+        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">file</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="n">istringstream</span> <span class="n">line</span><span class="p">(</span><span class="n">text</span><span class="p">);</span>
+        <span class="n">string</span> <span class="n">word</span><span class="p">;</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">line</span> <span class="o">&gt;&gt;</span> <span class="n">word</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">auto</span> <span class="o">&amp;</span><span class="n">lines</span> <span class="o">=</span> <span class="n">wm</span><span class="p">[</span><span class="n">word</span><span class="p">];</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">lines</span><span class="p">)</span>
+                <span class="n">lines</span><span class="p">.</span><span class="n">reset</span><span class="p">(</span><span class="k">new</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;</span><span class="p">);</span>
+            <span class="n">lines</span><span class="o">-&gt;</span><span class="n">insert</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">QueryResult</span> <span class="n">TextQuery</span><span class="o">::</span><span class="n">query</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">sought</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">static</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;&gt;</span> <span class="n">nodata</span><span class="p">(</span><span class="k">new</span> <span class="n">set</span><span class="o">&lt;</span><span class="n">line_no</span><span class="o">&gt;</span><span class="p">);</span>
+    <span class="k">auto</span> <span class="n">loc</span> <span class="o">=</span> <span class="n">wm</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">sought</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">loc</span> <span class="o">==</span> <span class="n">wm</span><span class="p">.</span><span class="n">end</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">QueryResult</span><span class="p">(</span><span class="n">sought</span><span class="p">,</span> <span class="n">nodata</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="n">QueryResult</span><span class="p">(</span><span class="n">sought</span><span class="p">,</span> <span class="n">loc</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">//main.cpp</span>
+<span class="cp">#include "TextQuery.h"
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ifstream</span> <span class="n">fin</span><span class="p">;</span>
+    <span class="n">fin</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="s">"test.txt"</span><span class="p">);</span>
+    <span class="n">TextQuery</span> <span class="n">tq</span><span class="p">(</span><span class="n">fin</span><span class="p">);</span>
+    <span class="n">string</span> <span class="n">s</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">s</span> <span class="o">&amp;&amp;</span> <span class="n">s</span> <span class="o">!=</span> <span class="s">"q"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">QueryResult</span> <span class="n">qr</span> <span class="o">=</span> <span class="n">tq</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+        <span class="n">print</span><span class="p">(</span><span class="n">cout</span><span class="p">,</span> <span class="n">qr</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="p">(</span><span class="mf">13.43</span><span class="p">)</span>
+<span class="kt">void</span> <span class="n">StrVec</span><span class="o">::</span><span class="n">free</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">for_each</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">first_free</span><span class="p">,</span> <span class="p">[](</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">){</span><span class="n">alloc</span><span class="p">.</span><span class="n">destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="p">);});</span>
+    <span class="n">alloc</span><span class="p">.</span><span class="n">deallocate</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">cap</span> <span class="o">-</span> <span class="n">elements</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="err">很明显</span><span class="n">for_each</span><span class="err">内部已经封装了迭代器的增加，避免外面递增使用错误</span>
+<span class="p">(</span><span class="mf">13.44</span><span class="p">)</span>
+<span class="cp">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;memory&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">String</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">String</span><span class="p">()</span><span class="o">:</span> <span class="n">sz</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">p</span><span class="p">(</span><span class="nb">NULL</span><span class="p">){</span> <span class="p">}</span>
+    <span class="c1">//接受C风格字符串构造函数</span>
+    <span class="n">String</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cp</span><span class="p">)</span><span class="o">:</span> <span class="n">sz</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">cp</span><span class="p">)),</span> <span class="n">p</span><span class="p">(</span><span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">sz</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">uninitialized_copy</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">cp</span> <span class="o">+</span> <span class="n">sz</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">String</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span><span class="o">:</span> <span class="n">sz</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">),</span> <span class="n">p</span><span class="p">(</span><span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">sz</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">uninitialized_copy</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">p</span> <span class="o">+</span> <span class="n">sz</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">String</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">auto</span> <span class="n">newp</span> <span class="o">=</span> <span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">);</span>
+        <span class="n">uninitialized_copy</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">p</span> <span class="o">+</span> <span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">,</span> <span class="n">newp</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="n">alloc</span><span class="p">.</span><span class="n">deallocate</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">sz</span><span class="p">);</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">newp</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">input</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">auto</span> <span class="n">newp</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sz</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">,</span> <span class="o">++</span><span class="n">newp</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">newp</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="o">~</span><span class="n">String</span><span class="p">(){</span><span class="k">delete</span> <span class="n">p</span><span class="p">;}</span>
+<span class="nl">private:</span>
+    <span class="k">static</span> <span class="n">allocator</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">alloc</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">sz</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">allocator</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">String</span><span class="o">::</span><span class="n">alloc</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">String</span> <span class="n">s</span><span class="p">(</span><span class="s">"sssss"</span><span class="p">);</span>
+    <span class="n">s</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="s">"zlfight"</span><span class="p">;</span>
+    <span class="n">String</span> <span class="n">s1</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+    <span class="n">s1</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s1</span><span class="p">;</span>
+    <span class="n">s</span><span class="p">.</span><span class="n">input</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><img src="https://img-blog.csdnimg.cn/20191106151714893.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.45</span><span class="p">)</span>
+<span class="err">赋值、下标、解引用和前置递增</span><span class="o">/</span><span class="err">递减运算符，返回左值</span>
+<span class="err">算术、关系、位以及后置递增</span><span class="o">/</span><span class="err">递减运算符，生成右值</span>
+<span class="err">左值持久，右值短暂</span>
+<span class="err">变量是左值，不能将一个右值引用直接绑定到一个变量上，即使这个变量是右值引用类型也不行</span>
+<span class="n">eg</span><span class="p">.</span>
+<span class="kt">int</span> <span class="o">&amp;&amp;</span><span class="n">rr1</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+<span class="kt">int</span> <span class="o">&amp;&amp;</span><span class="n">rr2</span> <span class="o">=</span> <span class="n">rr1</span><span class="p">;</span> <span class="c1">//error</span>
+<span class="err">调用</span><span class="n">move</span><span class="err">获得绑定到左值上的右值引用，定义在</span><span class="n">utility</span><span class="err">中；</span>
+<span class="kt">int</span> <span class="o">&amp;&amp;</span><span class="n">rr2</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">rr1</span><span class="p">);</span><span class="c1">//ok</span>
+<span class="err">当调用</span><span class="n">move</span><span class="err">之后，</span><span class="n">rr1</span><span class="err">将被销毁，除非赋予它新值，否则将不能使用该值。</span>
+<span class="p">(</span><span class="mf">13.46</span><span class="p">)</span>
+<span class="kt">int</span> <span class="nf">f</span><span class="p">();</span> <span class="c1">//返回一个右值</span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vi</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+<span class="kt">int</span><span class="o">&amp;&amp;</span> <span class="n">r1</span> <span class="o">=</span> <span class="n">f</span><span class="p">();</span>
+<span class="kt">int</span><span class="o">&amp;</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">vi</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="c1">//下标返回左值</span>
+<span class="kt">int</span><span class="o">&amp;</span> <span class="n">r3</span> <span class="o">=</span> <span class="n">r1</span><span class="p">;</span><span class="c1">//r1是变量</span>
+<span class="kt">int</span><span class="o">&amp;&amp;</span> <span class="n">r4</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nf">f</span><span class="p">();</span><span class="c1">//算术运算返回右值</span>
+<span class="p">(</span><span class="mf">13.47</span><span class="p">)</span>
+<span class="cp">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">String</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">String</span><span class="p">()</span><span class="o">:</span> <span class="n">sz</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">p</span><span class="p">(</span><span class="nb">NULL</span><span class="p">){</span> <span class="p">}</span>
+    <span class="c1">//接受C风格字符串构造函数</span>
+    <span class="n">String</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cp</span><span class="p">)</span><span class="o">:</span> <span class="n">sz</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">cp</span><span class="p">)),</span> <span class="n">p</span><span class="p">(</span><span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">sz</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">uninitialized_copy</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">cp</span> <span class="o">+</span> <span class="n">sz</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">String</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span><span class="o">:</span> <span class="n">sz</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">),</span> <span class="n">p</span><span class="p">(</span><span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">sz</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"调用拷贝构造"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">uninitialized_copy</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">p</span> <span class="o">+</span> <span class="n">sz</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">String</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"调用拷贝赋值"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="k">auto</span> <span class="n">newp</span> <span class="o">=</span> <span class="n">alloc</span><span class="p">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">);</span>
+        <span class="n">uninitialized_copy</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">p</span> <span class="o">+</span> <span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">,</span> <span class="n">newp</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="n">alloc</span><span class="p">.</span><span class="n">deallocate</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">sz</span><span class="p">);</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">newp</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">input</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">auto</span> <span class="n">newp</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sz</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">,</span> <span class="o">++</span><span class="n">newp</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">newp</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="o">~</span><span class="n">String</span><span class="p">(){</span><span class="k">delete</span> <span class="n">p</span><span class="p">;}</span>
+<span class="nl">private:</span>
+    <span class="k">static</span> <span class="n">allocator</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">alloc</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">sz</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">allocator</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">String</span><span class="o">::</span><span class="n">alloc</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">vs</span><span class="p">;</span>
+    <span class="n">vs</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+    <span class="n">String</span> <span class="n">s</span><span class="p">(</span><span class="s">"test"</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"vs.size(): "</span> <span class="o">&lt;&lt;</span> <span class="n">vs</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">", vs.capacity(): "</span> <span class="o">&lt;&lt;</span> <span class="n">vs</span><span class="p">.</span><span class="n">capacity</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"push_back start()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">vs</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"push_back end()"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.48</span><span class="p">)</span>
+<span class="err">如果一开始没有给</span><span class="n">vector</span><span class="err">预分配空间，</span><span class="n">vector</span><span class="o">&lt;&gt;</span> <span class="err">空间分配是按</span><span class="mi">2</span><span class="err">的幂次方递增的，在空间不足是会调用拷贝构造，把小的拷贝到大的上面去，所以对容器里面的元素也会调用拷贝构造</span><span class="p">(</span><span class="n">ps</span><span class="o">:</span><span class="err">因为没有定义移动构造函数，所以会调用拷贝构造函数</span><span class="p">)</span><span class="err">，然后再调用</span><span class="n">push_back</span><span class="err">的拷贝构造函数。</span>
+<span class="err">但是如果一开始就给容器分配空间，每次</span><span class="n">push_back</span><span class="err">只会调用一次拷贝构造函数。</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106155323617.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.49</span><span class="p">)</span>
+<span class="c1">//StrVec</span>
+    <span class="c1">//移动构造函数</span>
+    <span class="n">StrVec</span><span class="p">(</span><span class="n">StrVec</span> <span class="o">&amp;&amp;</span><span class="n">s</span><span class="p">)</span> <span class="k">noexcept</span> <span class="o">:</span> <span class="n">elements</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">elements</span><span class="p">),</span> <span class="n">first_free</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">first_free</span><span class="p">),</span> <span class="n">cap</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">cap</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">s</span><span class="p">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">first_free</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">cap</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//移动赋值</span>
+    <span class="n">StrVec</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">StrVec</span> <span class="o">&amp;&amp;</span><span class="n">s</span><span class="p">)</span> <span class="k">noexcept</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="k">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">free</span><span class="p">();</span>
+            <span class="n">elements</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">elements</span><span class="p">;</span>
+            <span class="n">first_free</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">first_free</span><span class="p">;</span>
+            <span class="n">cap</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">cap</span><span class="p">;</span>
+            <span class="n">s</span><span class="p">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">first_free</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">cap</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="c1">//String</span>
+    <span class="c1">//移动构造函数</span>
+    <span class="n">String</span><span class="p">(</span><span class="n">String</span><span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="k">noexcept</span> <span class="o">:</span> <span class="n">sz</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">),</span> <span class="n">p</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">p</span><span class="p">){</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"调用移动构造"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">s</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//移动赋值运算符</span>
+    <span class="n">String</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">String</span> <span class="o">&amp;&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"调用移动赋值"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="k">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">sz</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">sz</span><span class="p">;</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">p</span><span class="p">;</span>
+            <span class="n">s</span><span class="p">.</span><span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+<span class="p">(</span><span class="mf">13.50</span><span class="p">)</span>
+<span class="err">当</span><span class="n">vector</span><span class="err">内存不足，扩大内存的时候，会调用移动构造函数而不是拷贝构造函数</span>
+<span class="p">(</span><span class="mf">13.51</span><span class="p">)</span>
+<span class="err">因为函数返回类型是值方式，所以返回的是右值，所以初始化或者赋值给一个</span><span class="n">unique_ptr</span><span class="err">时会调用它的移动构造函数或者移动赋值运算符接管此函数中</span><span class="n">unique_ptr</span><span class="err">变量的所有权。所以是合法的</span>
+<span class="p">(</span><span class="mf">13.52</span><span class="p">)</span>
+<span class="n">hp</span> <span class="o">=</span> <span class="n">hp2</span><span class="p">;</span>
+<span class="n">hp2</span><span class="err">是一个左值，因此</span><span class="n">rhs</span><span class="err">将使用拷贝构造函数初始化；</span>
+<span class="n">hp</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">hp2</span><span class="p">);</span>
+<span class="err">调用</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="err">将一个右值引用绑定到</span><span class="n">hp2</span><span class="err">上，拷贝构造函数和移动构造函数都可行，但是实参是一个右值引用，移动构造函数精确匹配，</span><span class="n">rhs</span><span class="err">将使用移动构造函数；</span>
+<span class="p">(</span><span class="mf">13.53</span><span class="p">)</span>
+<span class="err">因为赋值运算符尽管是使用</span><span class="n">swap</span><span class="err">交换指针，避免拷贝，但是</span><span class="n">rhs</span><span class="err">的生成是调用了拷贝构造函数了的。</span>
+<span class="n">HasPtr</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">HasPtr</span> <span class="o">&amp;</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"operator="</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">num</span><span class="p">;</span>
+    <span class="n">str</span> <span class="o">=</span> <span class="k">new</span> <span class="n">string</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="p">.</span><span class="n">str</span><span class="p">));</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">HasPtr</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">HasPtr</span> <span class="o">&amp;&amp;</span><span class="n">hp</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">this</span> <span class="o">!=</span> <span class="o">&amp;</span><span class="n">hp</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="n">hp</span><span class="p">.</span><span class="n">num</span><span class="p">;</span>
+        <span class="n">str</span> <span class="o">=</span> <span class="n">p</span><span class="p">.</span><span class="n">str</span><span class="p">;</span>
+        <span class="n">p</span><span class="p">.</span><span class="n">str</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.54</span><span class="p">)</span>
+<span class="err">产生二义性错误</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191106155402809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">13.55</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">push_back</span><span class="p">(</span><span class="n">string</span> <span class="o">&amp;&amp;</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">chk_n_alloc</span><span class="p">();</span>
+    <span class="n">alloc</span><span class="p">.</span><span class="n">construct</span><span class="p">(</span><span class="n">first_free</span><span class="o">++</span><span class="p">,</span> <span class="n">move</span><span class="p">(</span><span class="n">s</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">13.56</span><span class="p">)</span>
+<span class="err">因为</span><span class="n">ret</span><span class="err">是一个左值，左值调用的函数还是</span><span class="k">const</span> <span class="o">&amp;</span><span class="err">的函数，导致一直循环调用函数</span>
+<span class="p">(</span><span class="mf">13.57</span><span class="p">)</span>
+<span class="err">因为</span><span class="n">Foo</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">)</span><span class="err">是一个右值，会调用</span><span class="o">&amp;&amp;</span><span class="err">的函数</span>
+<span class="p">(</span><span class="mf">13.58</span><span class="p">)</span>
+<span class="cp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Foo</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Foo</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">v</span><span class="p">)</span> <span class="o">:</span> <span class="n">data</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">Foo</span> <span class="n">sorted</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"&amp;&amp;"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">sort</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">data</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">Foo</span> <span class="n">sorted</span><span class="p">()</span> <span class="k">const</span> <span class="o">&amp;</span><span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"const &amp;"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="c1">//调用右值版本的sorted</span>
+        <span class="k">return</span> <span class="n">Foo</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">).</span><span class="n">sorted</span><span class="p">();</span>
+        <span class="c1">//Foo ret(*this);</span>
+        <span class="c1">//无限调用左值版本的sorted</span>
+        <span class="c1">//return ret.sorted();</span>
+        <span class="c1">//内部排序版本</span>
+        <span class="c1">//sort(ret.data.begin(), ret.data.end());</span>
+        <span class="c1">//return *this;</span>
+    <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">data</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">tmp</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
+    <span class="n">Foo</span> <span class="n">f0</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+    <span class="n">f0</span><span class="p">.</span><span class="n">sorted</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+:ET

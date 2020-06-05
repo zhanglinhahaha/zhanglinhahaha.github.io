@@ -1,0 +1,565 @@
+I"�W<p>本书为Primer C++ 中文第五版</p>
+<h2 id="练习题笔记">练习题笔记</h2>
+<p><img src="https://img-blog.csdnimg.cn/20191029173548369.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191029174659128.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191029174819539.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.1)
+a&gt;vector；无需在中间位置进行插入元素，插入后利用sort即可达到要求
+b&gt;deque；典型的队列操作，在头尾部进行插入或删除操作
+c&gt;vector；可变大小数组，可全部插入后利用sort排序输出
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191029175434531.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191029175451231.png" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191029175250217.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.2)
+list&lt;queue&lt;int&gt;&gt; lst;
+</code></pre></div></div>
+<p><img src="https://img-blog.csdnimg.cn/20191029175904425.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.3)
+构成范围的迭代器的要求为
+1.指向同一个容器中的元素，或者是容器最后一个元素之后的位置。
+2.可以反复递增begin来到达end。
+(9.4)
+bool test4(vector&lt;int&gt;::iterator begin, const vector&lt;int&gt;::iterator end, int n) {
+    while(begin != end) {
+        if(*begin == n) return true;
+        begin++;
+    }
+    return false;
+}
+(9.5)
+vector&lt;int&gt;::iterator test4(vector&lt;int&gt;::iterator begin, const vector&lt;int&gt;::iterator end, int n) {
+    while(begin != end) {
+        if(*begin == n) return begin;
+        begin++;
+    }
+    return begin;
+}
+(9.6)
+list没有定义'&lt;'操作符，需要改成 while(iter1 != iter2)
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191029180246187.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.7)
+vector&lt;int&gt;::iterator iter;
+(9.8)
+string 或者 list&lt;string&gt;::value_type
+string 或者 list&lt;string&gt;::referebce
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191029180634570.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.9)
+begin()和cbegin()的区别在于定义迭代器是否为常量
+cbegin()是C++新标准引入的，与auto一起使用可以隐式的选择迭代器类型
+当容器为常量时，使用begin()和cbegin()迭代器都是常量
+当容器为非常量时，使用begin()迭代器是非常量，使用cbegin()迭代器是常量
+(9.10)
+it1 非常量
+it2 常量
+it3 常量
+it4 常量
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191029181608607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.11)
+vector&lt;int&gt; vec;
+1.vector&lt;int&gt; vec1;
+2.vector&lt;int&gt; vec2(vec);
+3.vector&lt;int&gt; vec3 = {0, 1, 2, 3};
+4.vector&lt;int&gt; vec4(vec.begin(), vec.end());
+5.vector&lt;int&gt; vec5(10);
+6.vector&lt;int&gt; vec6(10,1);
+(9.12)
+元素个数不同，拷贝是全部，迭代器是部分(也可能是全部，begin()-&gt;end())
+(9.13)
+list&lt;int&gt; lst = {0, 1, 2, 3, 4};
+vector&lt;int&gt; ive = {4, 3, 2, 1, 0};
+vector&lt;double&gt; dve(lst.begin(), lst.end());
+vector&lt;double&gt; dve2(ive.begin(), ive.end());
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030145747230.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/2019103015030125.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.14)
+list&lt;char*&gt; lst = {"a", "aa", "aaa"};
+vector&lt;string&gt; sve(lst.begin(), lst.end());
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019103015111327.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.15)
+bool test15(vector&lt;int&gt; ive1, vector&lt;int&gt; ive2) {
+    auto bive1 = ive1.cbegin();
+    auto bive2 = ive2.cbegin();
+    while(bive1 != ive1.cend() &amp;&amp; bive2 != ive2.cend()) {
+        if(*bive1 != *bive2) return false;
+        bive1++;
+        bive2++;
+    }
+    if(bive1 == ive1.cend() &amp;&amp; bive2 == ive2.cend()) return true;
+    else return false;
+}
+(9.16)
+bool test15(list&lt;int&gt; ilst, vector&lt;int&gt; ive) {
+    auto bilst = ilst.cbegin();
+    auto bive = ive.cbegin();
+    while(bilst != ilst.cend() &amp;&amp; bive != ive.cend()) {
+        if(*bilst != *bive) return false;
+        bilst++;
+        bive++;
+    }
+    if(bilst == ilst.cend() &amp;&amp; bive == ive.cend()) return true;
+    else return false;
+}
+(9.17)
+三个条件
+1.容器类型相同
+2.容器内的元素类型相同
+3.容器支持运算符'&lt;'
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030151330622.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191030152525822.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.18)
+string s;
+deque&lt;string&gt; ds;
+while(cin &gt;&gt; s &amp;&amp; s != "q") {
+    ds.push_back(s);
+}
+(9.19)
+string s;
+list&lt;string&gt; ls;
+while(cin &gt;&gt; s &amp;&amp; s != "q") {
+    ls.push_back(s);
+}
+(9.20)
+list&lt;int&gt; lst = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+cout &lt;&lt; "全部数：" &lt;&lt; endl;
+for(auto d : lst) cout &lt;&lt; d &lt;&lt; " ";
+cout &lt;&lt; endl;
+deque&lt;int&gt; d1, d2;
+auto begin = lst.cbegin();
+while(begin != lst.cend()) {
+    if(*begin % 2 == 0) d1.push_back(*begin);
+    else d2.push_back(*begin);
+    begin++;
+}
+cout &lt;&lt; "偶数：" &lt;&lt; endl;
+for(auto d : d1) cout &lt;&lt; d &lt;&lt; " ";
+cout &lt;&lt; endl;
+cout &lt;&lt; "奇数：" &lt;&lt; endl;
+for(auto d : d2) cout &lt;&lt; d &lt;&lt; " ";
+cout &lt;&lt; endl;
+(9.21)
+vector&lt;string&gt; vec;
+auto iter = vec.begin();
+while(cin &gt;&gt; word) iter = vec.insert(iter, word);
+首先定义iter为vec的begin
+然后用insert函数在容器begin前插入word
+最后函数返回指向插入元素的迭代器，也就是插入元素后容器的begin位置
+(9.22)
+对于vector，在用完insert函数之后，之前的迭代器都会失去效果
+也就是在使用insert函数后，iter 和 mid 都会失效，需要重新赋值
+修改为
+vector&lt;int&gt;::iterator iter = iv.begin();
+int new_ele = 0;
+while(iter != iv.begin + iv.size() / 2 + new_ele) {
+    if(*iter == some_val) {
+        iter = iv.insert(iter, 2 * some_val);
+        iter += 2;
+        new_ele++;
+    }
+    else iter++;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030152741999.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191030152937645.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.23)
+val1, val2, val3, val4四个值都是c中唯一的一个数
+(9.24)
+如过vector为空，则会报错
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030153042875.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/2019103015370929.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.25)
+范围删除是一个左闭右开的区间，返回右边的迭代器
+当elem1 == elem2，需要返回elem2,所以不执行删除
+当elem2 == 尾后迭代器，则删除包括elem1在内的后面所有元素，结束后elem1 == elem2 == 尾后迭代器
+当elem1 == elem2 == 尾后迭代器，不执行删除
+(9.26)
+int ia[] = {0, 1, 1, 2, 3, 5, 8, 13, 21, 55, 89};
+vector&lt;int&gt; ivec;
+ivec.assign(ia, ia + 11);
+list&lt;int&gt; ilst;
+ilst.assign(ia, ia + 11);
+auto vbegin = ivec.begin();
+auto lbegin = ilst.begin();
+for(int i = 0; i &lt; 11; i++) {
+    if(*vbegin % 2 == 0) {
+        vbegin = ivec.erase(vbegin);
+    }else {
+        vbegin++;
+    }
+    if(*lbegin % 2 == 1) {
+        lbegin = ilst.erase(lbegin);
+    }else {
+        lbegin++;
+    }
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030153925217.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191030154355669.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.27)
+forward_list&lt;int&gt; flst = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+auto prev = flst.before_begin();
+auto begin = flst.begin();
+while(begin != flst.end()) {
+    if(*begin % 2) {
+        begin = flst.erase_after(prev);
+    }else {
+        prev = begin++;
+    }
+}
+(9.28)
+void Inser(forward_list&lt;string&gt; &amp;flst, string ser, string in) {
+    auto prev = flst.before_begin();
+    auto begin = flst.begin();
+    while(begin != flst.end()) {
+        if(*begin == ser) {
+            flst.insert_after(begin,in);
+            return;
+        }
+        prev = begin++;
+    }
+    flst.insert_after(prev, in);
+    return;
+}
+void test28() {
+    forward_list&lt;string&gt; flst = {"I", "am", "ITer"};
+    string ser, in;
+    cin &gt;&gt; ser &gt;&gt; in;
+    Inser(flst, ser, in);
+    for(auto s : flst) cout &lt;&lt; s &lt;&lt; " ";
+    cout &lt;&lt; endl;
+    cin &gt;&gt; ser &gt;&gt; in;
+    Inser(flst, ser, in);
+    for(auto s : flst) cout &lt;&lt; s &lt;&lt; " ";
+    cout &lt;&lt; endl;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030154412510.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.29)
+vec.resize(100) -&gt; 初始化75个元素插入到vec中
+vec.resize(10) -&gt; 从vec末尾删除90个元素
+(9.30)
+元素有默认初始值
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030155000966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.31)
+list 和 forward_list 没有'+'操作，需要用'++';
+forward_list 需要用 erase_after 和 insert_after;
+(9.32)
+不合法。对实参求值、向形参传递的处理顺序，不同的编译器可能不同
+(9.33)
+begin迭代器将会失效，程序可能会出现错误
+(9.34)
+迭代器少加了一次，当出现奇数值时，会一直循环
+需要再加上一行 ++iter;
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030155602691.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.35)
+capacity 当前容器在不重新分配内存的情况下最多能有多少个元素
+size 当前容器的元素个数
+capacity &gt;= size
+(9.36)
+不可能
+(9.37)
+list 存储的元素间不是连续地址，可以随便的增删
+array 在定义的时候就已经固定数量了
+(9.38)
+vector&lt;int&gt; vec;
+vec.reserve(10);
+cout &lt;&lt; vec.size() &lt;&lt; " " &lt;&lt; vec.capacity() &lt;&lt; endl;
+while(vec.size() != vec.capacity()) {
+    vec.push_back(1);
+}
+cout &lt;&lt; vec.size() &lt;&lt; " " &lt;&lt; vec.capacity() &lt;&lt; endl;
+vec.push_back(1);
+cout &lt;&lt; vec.size() &lt;&lt; " " &lt;&lt; vec.capacity() &lt;&lt; endl;
+结果为：
+0 10
+10 10
+11 20
+(9.39)
+第一行 定义了一个string的vector容器
+第二行 给这个容器预留了1024个string内存空间
+第三行到第五行 输入string存储到容器中
+最后一行 在容器尾部添加当前容器数量的一半个空字符串
+(9.40)
+if 256 then capacity 1024
+if 512 then capacity 1024
+if 1000 then capacity 2048
+if 1048 then capacity 2048
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030155701235.png" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191030160048222.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.41)
+vector&lt;char&gt; vec = {'s', 't', 'r', 'i', 'n', 'g'};
+string s;
+for(auto c : vec) s += c;
+(9.42)
+可以提前给string分配空间
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030160845523.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191030160955862.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191030160940737.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.43)
+void Rep(string &amp;s, string oldVal, string newVal) {
+    auto begin = s.begin();
+    while(begin != s.end()) {
+        if(*begin == oldVal[0] ) {
+            string tmp(begin, begin + oldVal.size());
+            if(tmp == oldVal) {
+                begin = s.insert(begin, newVal.begin(), newVal.end());
+                begin += newVal.size();
+                s.erase(begin, begin + oldVal.size());
+            }
+            else begin++;
+        }
+        else begin++;
+    }
+}
+(9.44)
+void Rep2(string &amp;s, string oldVal, string newVal) {
+    auto begin = s.begin();
+    while(begin != s.end()) {
+        if(*begin == oldVal[0] ) {
+            string tmp(begin, begin + oldVal.size());
+            if(tmp == oldVal) {
+                s.replace(begin, begin + oldVal.size(), newVal);
+                begin += newVal.size();
+            }
+            else begin++;
+        }
+        else begin++;
+    }
+}
+(9.45)
+void Add(string &amp;name, string pre, string nex) {
+    auto begin = name.begin();
+    name.insert(begin, pre.begin(), pre.end());
+    name.append(nex);
+}
+(9.46)
+void Add2(string &amp;name, string pre, string nex) {
+    name.insert(name.size(), nex);
+    name.insert(0, pre);
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030161229988.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191030161528218.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.47)
+string s = "ab2c3d7R4E6";
+string num = "0123456789";
+cout &lt;&lt; s &lt;&lt; endl;
+auto pos = s.find_first_of(num);
+do{
+    cout &lt;&lt; s[pos] &lt;&lt; " ";
+    pos++;
+    pos = s.find_first_of(num, pos);
+}while(pos != string::npos);
+cout &lt;&lt; endl;
+auto p = s.find_first_not_of(num);
+do{
+    cout &lt;&lt; s[p] &lt;&lt; " ";
+    p++;
+    p = s.find_first_not_of(num, p);
+}while(p != string::npos);
+cout &lt;&lt; endl;
+(9.48)
+npos
+(9.49)
+void test49() {
+    fstream fin;
+    fin.open("test.txt");
+    string de("bdfghjklpqtyBDFGHJKLPQTY");
+    int lengthmax = 0;
+    string ret;
+    if(fin) {
+        string word;
+        while(fin &gt;&gt; word) {
+            auto pos = word.find_first_of(de);
+            if(pos == string::npos &amp;&amp; lengthmax &lt; word.size()) {
+                lengthmax = word.size();
+                ret = word;
+            }
+        }
+    }
+    fin.close();
+    cout &lt;&lt; lengthmax &lt;&lt; " " &lt;&lt; ret &lt;&lt; endl;
+    return;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030161743440.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.50)
+void test50() {
+    vector&lt;string&gt; svec = {"1", "12", "3", "5"};
+    float sum = 0;
+    for(auto s : svec) sum += stof(s);
+    cout &lt;&lt; sum &lt;&lt; endl;
+}
+(9.51)
+map&lt;string,unsigned int&gt; M = {
+{"January", 1}, {"Jan", 1}, {"1", 1},
+{"February",2}, {"Feb", 2}, {"2", 2},
+{"March", 3}, {"Mar", 3}, {"3", 3},
+{"April", 4}, {"Apr", 4}, {"4", 4},
+{"May", 5}, {"5", 5},
+{"June", 6}, {"Jun", 6}, {"6", 6},
+{"July", 7}, {"Jul", 7}, {"7", 7},
+{"August", 8}, {"Aug", 8}, {"8", 8},
+{"September", 9}, {"Sept", 9}, {"9", 9},
+{"October", 10}, {"Oct", 10}, {"10", 10},
+{"November", 11}, {"Nov", 11}, {"11", 11},
+{"December", 12}, {"Dec", 12}, {"12", 12}
+};
+
+struct Date {
+    unsigned int year, month, day;
+    Date(string date) {
+        string m = date.substr(0, date.find_first_of(" ,/"));
+        string y = date.substr(date.find_first_of(",/ "));
+        y.erase(y.begin());
+        string d = y.substr(0, y.find_first_of(" ,/"));
+        y = y.substr(y.find_first_of(" ,/"));
+        y.erase(y.begin());
+        cout &lt;&lt; y  &lt;&lt; " " &lt;&lt; m &lt;&lt; " " &lt;&lt; d &lt;&lt; endl;
+        year = stof(y);
+        day = stof(d);
+        if(M.count(m)) {
+            month = M[m];
+        }else month = 0;
+        cout &lt;&lt; year &lt;&lt; " " &lt;&lt; month &lt;&lt; " " &lt;&lt; day &lt;&lt; endl;
+    }
+};
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191030162454225.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9.52)
+#include &lt;iostream&gt;
+#include &lt;stack&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+bool lower(string l, string h) {
+    if((h == "*" || h == "/") &amp;&amp; (l == "+" || l == "-")) {
+        return true;
+    }
+    else if(l == "*" &amp;&amp; h == "/") {
+        return true;
+    }
+    else if(l == "+" &amp;&amp; h == "-") {
+        return true;
+    }
+    else return false;
+}
+
+void calcu(stack&lt;int&gt; &amp;v, stack&lt;string&gt; &amp;o) {
+    int tmp1 = v.top();
+    v.pop();
+    int tmp2 = v.top();
+    v.pop();
+    int tmp;
+    string ope = o.top();
+    o.pop();
+    if(ope == "+") {
+        tmp = tmp1 + tmp2;
+    }else if(ope == "-") {
+        tmp = tmp2 - tmp1;
+    }else if(ope == "*") {
+        tmp = tmp1 * tmp2;
+    }else if(ope == "/") {
+        tmp = tmp2 / tmp1;
+    }
+    v.push(tmp);
+}
+
+void cal(string s) {
+    auto begin = s.begin();
+    stack&lt;string&gt; o;
+    stack&lt;int&gt; v;
+    while(s.size() != 0) {
+        string ele = s.substr(0, s.find_first_of("+-*/()="));
+        s = s.substr(s.find_first_of("+-*/()="));
+        string ope = s.substr(0, 1);
+        s.erase(s.begin());
+        //操作数入栈
+        if(ele.size() != 0) {
+            v.push(stoi(ele));
+        }
+        //操作符入栈
+        if(ope.size() != 0 &amp;&amp; ope != "=") {
+            if(!o.empty() &amp;&amp; lower(ope, o.top())) {
+                calcu(v, o);
+            }
+            if(ope == ")") {
+                string l = o.top();
+                while(l != "(") {
+                    calcu(v, o);
+                    l = o.top();
+                }
+                o.pop();
+            }
+            else {
+                o.push(ope);
+            }
+        }
+    }
+    while(!o.empty()) {
+        calcu(v, o);
+    }
+    cout &lt;&lt; v.top() &lt;&lt; endl;
+}
+
+int main() {
+    string s;
+    while(getline(cin, s) &amp;&amp; s != "q") {
+        if(*s.end() != '=') s.append("=");
+        cal(s);
+    }
+    return 0;
+}
+</code></pre></div></div>
+
+:ET

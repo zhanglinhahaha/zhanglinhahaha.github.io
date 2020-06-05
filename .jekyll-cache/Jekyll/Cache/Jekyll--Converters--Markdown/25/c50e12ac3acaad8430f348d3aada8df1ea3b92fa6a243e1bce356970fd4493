@@ -1,0 +1,50 @@
+I"�<h3 id="适配器模式">适配器模式</h3>
+<p>Convert the interface of a class into another interface clients expect.Adapter lets classes work together that couldn’t otherwise because of incompatible interfaces.
+(将一个类的接口变换成客户端所期待的另一种接口,从而使原本因接口不匹配而无法在一起工作的两个类能够在一起工作。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>目标类，把其他类转换为何种接口，期望接口。
+适配源类，想把哪个类转换成目标类，其中那个类就是适配源类，也就是原始类，经过包装转换成目标类。
+适配器类，需要新建的类，继承目标类和适配源类，使得目标类和适配源类产生关系。</p>
+<h3 id="通用源码">通用源码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//目标类接口
+class Target {
+public:
+    virtual void request() = 0;
+};
+//目标类的实现类
+class ConcreteTarget : public Target {
+public:
+    virtual void request() {
+        //逻辑实现
+    }
+};
+//适配源类
+class Adaptee {
+public:
+    void doSomething() {
+        //逻辑实现
+    }
+};
+//适配器类
+class Adapter : public Adaptee, public Target {
+public:
+    virtual void request() {
+        Adaptee::doSomething();
+    }
+};
+</code></pre></div></div>
+<h3 id="优点">优点</h3>
+<p>让两个没有任何关系的类在一起运行
+增加类的透明性，实现对高层次透明
+提高类的复用性
+灵活性非常好</p>
+<h3 id="使用场景">使用场景</h3>
+<p>修改已经投产中的接口时，适配器模式可以考虑
+适配器模式是一个补偿模式，或者说是一个补救模式</p>
+<h3 id="注意事项">注意事项</h3>
+<p>在详细设计阶段不需要考虑，不是解决处在开发阶段的最好方案。一定要遵守依赖倒置原则和里氏替换原则</p>
+<h3 id="扩展">扩展</h3>
+<p>上面的介绍是通过继承进行的适配，叫做类适配器
+对象适配器，通过对象的合成关系，也可以说是类的关联关系。
+对象适配器是用过类间的关联关系进行耦合的，在设计时比较灵活。</p>
+:ET

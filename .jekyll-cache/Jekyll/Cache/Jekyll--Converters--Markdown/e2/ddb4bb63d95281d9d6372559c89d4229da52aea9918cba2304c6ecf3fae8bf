@@ -1,0 +1,322 @@
+I"D*<p>本书为Primer C++ 中文第五版</p>
+<h2 id="练习题笔记">练习题笔记</h2>
+<p><img src="https://img-blog.csdnimg.cn/20191011165702266.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(a)
+含义:检查string字符串的每一个字符
+修改为:
+string::iterator iter = s.begin();
+while(iter != s.end());
+或者
+while( s.begin() != s.end());
+(b)
+含义:检查某个单词是否存在，如果不存在会执行什么操作
+修改为:
+bool status;
+while(status = find(word)) {/*...*/}
+if(!status) {/*...*/}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019101117015811.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(5.5)
+void transIf() {
+    int grade;
+    while(cin &gt;&gt; grade) {
+        if(grade &gt;= 90) {
+            cout &lt;&lt; "A"  &lt;&lt; endl;
+        }
+        else if(grade &gt;= 80) {
+            cout &lt;&lt; "B"  &lt;&lt; endl;
+        }
+        else if(grade &gt;= 60) {
+            cout &lt;&lt; "C"  &lt;&lt; endl;
+        }
+        else {
+            cout &lt;&lt; "D"  &lt;&lt; endl;
+        }
+    }
+}
+(5.6)
+void trans() {
+    int grade;
+    while(cin &gt;&gt; grade) {
+        (grade &gt;= 90)? cout &lt;&lt; "A" &lt;&lt; endl :
+            (grade &gt;= 80)? cout &lt;&lt; "B" &lt;&lt; endl :
+                (grade &gt;= 60)? cout &lt;&lt; "C" &lt;&lt; endl : cout &lt;&lt; "D" &lt;&lt; endl;
+    }
+}
+(5.7)
+a&gt;
+ival1 = ival2;	//缺少分号
+b&gt;
+//if部分有两行代码,需要加上花括号
+c&gt;
+//int val; 应该定义在最前面,要不然作用域不能到达第二个if
+d&gt;
+// = 是赋值符号,赋值总为true
+// == 才是判断符号
+(5.8)
+/*
+悬垂else是指当程序中的if分支多于else分支时，如何为else寻找与之匹配的if分支的问题。
+C++规定，else与离它最近的尚未匹配的if匹配，从而消除了二义性。
+*/
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191011171555941.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/2019101117160961.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(5.9)
+void count() {
+    string seq;
+    while(cin &gt;&gt; seq) {
+        int Cnt = 0;
+        string::iterator iter = seq.begin();
+        while(iter != seq.end()) {
+            if(*iter == 'a' || *iter == 'e' || *iter == 'i' || *iter == 'o' || *iter == 'u') {
+                Cnt++;
+            }
+            iter++;
+        }
+        cout &lt;&lt; Cnt &lt;&lt; endl;
+    }
+}
+(5.10, 5.11, 5.12)
+void countSt() {
+    string seq;
+    while(getline(cin, seq)) {
+        int aCnt =0, eCnt = 0, iCnt = 0, oCnt = 0, uCnt = 0;
+        int blank = 0, t = 0, n = 0;
+        int ff = 0, fl = 0, fi = 0;
+        string::iterator iter = seq.begin();
+        while(iter != seq.end()) {
+            switch(*iter) {
+                case'a':
+                case'A':
+                    aCnt++;break;
+                case'e':
+                case'E':
+                    eCnt++;break;
+                case'i':
+                case'I':
+                    iCnt++;break;
+                case'o':
+                case'O':
+                    oCnt++;break;
+                case'u':
+                case'U':
+                    uCnt++;break;
+                case' ':
+                    blank++;break;
+                case'\t':
+                    t++;break;
+                case'\n':
+                    n++;break;
+                case'f':
+                    {
+                        string::iterator next = iter + 1;
+                        if(*next == 'f' ) ff++;
+                        else if(*next == 'l') fl++;
+                        else if(*next == 'i') fi++;
+                        break;
+                    }
+                default:break;
+            }
+            iter++;
+        }
+        cout &lt;&lt; "aCnt: " &lt;&lt; aCnt &lt;&lt; endl;
+        cout &lt;&lt; "eCnt: " &lt;&lt; eCnt &lt;&lt; endl;
+        cout &lt;&lt; "iCnt: " &lt;&lt; iCnt &lt;&lt; endl;
+        cout &lt;&lt; "oCnt: " &lt;&lt; oCnt &lt;&lt; endl;
+        cout &lt;&lt; "uCnt: " &lt;&lt; uCnt &lt;&lt; endl;
+        cout &lt;&lt; "blank: " &lt;&lt; blank &lt;&lt; endl;
+        cout &lt;&lt; "t: " &lt;&lt; t &lt;&lt; endl;
+        cout &lt;&lt; "n: " &lt;&lt; n &lt;&lt; endl;
+        cout &lt;&lt; "ff: " &lt;&lt; ff &lt;&lt; endl;
+        cout &lt;&lt; "fl: " &lt;&lt; fl &lt;&lt; endl;
+        cout &lt;&lt; "fi: " &lt;&lt; fi &lt;&lt; endl;
+    }
+}
+(5.13)
+a&gt;
+case和default后面缺少break
+b&gt;
+ix需定义在switch之前
+c&gt;
+case不能用逗号表示,需改为case 1 : case 3 : case 5 ...
+d&gt;
+case后面需要是常量表达式,应该为const unsigned ival = 512, jval = 1024, kval = 4096;
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019101117310614.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(5.14)
+void countWord() {
+    string line, word;
+    while(getline(cin, line)) {
+        string w;
+        int count = 0, n = 0;
+        istringstream record(line);
+        string before;
+        record &gt;&gt; before;
+        while(record &gt;&gt; word) {
+            if(word == before) {
+                n++;
+            }else {
+                if(n &gt;= count) {
+                    count = n;
+                    w = before;
+                }
+                n = 0;
+                before = word;
+            }
+        }
+        if(n &gt;= count) {
+            count = n;
+            w = before;
+        }
+        if(count == 0) {
+            cout &lt;&lt; "没有连续单词出现过" &lt;&lt;endl;
+        }
+        else {
+            cout &lt;&lt; w &lt;&lt; " " &lt;&lt; count+1 &lt;&lt;endl;
+        }
+    }
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/201910111734156.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(5.15)
+a&gt;
+ix作用域只在for中,需要将ix定义在for前面,if才能用
+b&gt;
+for里面语句为空的时候也需要加上分号
+c&gt;
+死循环
+(5.16)
+略
+(5.17)
+bool com() {
+    vector&lt;int&gt; v1 = {0, 1, 1, 2};
+    vector&lt;int&gt; v2 = {0, 1, 1, 2, 3, 5, 8};
+    auto max = v2.begin();
+    auto min = v1.begin();
+    while(min != v1.end()) {
+        if(*max != *min) return false;
+        max++, min++;
+    }
+    return true;
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191011174539182.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(5.18)
+a&gt;
+do 后面的语句需要用花括号
+b&gt;
+= 赋值语句,始终为真
+== 才是判断语句
+c&gt;
+只要ival不为0,一直循环
+(5.19)
+void comStr() {
+    cout &lt;&lt; "请输入两个string" &lt;&lt; endl;
+    string str1,str2;
+    cin &gt;&gt; str1 &gt;&gt; str2;
+    do {
+        if(str1.size() &gt; str2.size()) {
+            cout &lt;&lt; str2 &lt;&lt; endl;
+        }
+        else cout &lt;&lt; str1 &lt;&lt;endl;
+    }while(cin&gt;&gt;str1&gt;&gt;str2);
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191011174847671.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void printRe() {
+    string before, word;
+    bool flag = true;
+    cin&gt;&gt;before;
+    while(cin&gt;&gt;word) {
+        if(word == before) {
+            cout &lt;&lt; "Re" &lt;&lt; endl;
+            flag = false;
+            break;
+        }
+        if(word == "0") break;
+        before = word;
+    }
+    if(flag) cout &lt;&lt; "success" &lt;&lt; endl;
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191011174923528.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void printRe() {
+    string before, word;
+    bool flag = true;
+    cin&gt;&gt;before;
+    while(cin&gt;&gt;word) {
+        if(word == before &amp;&amp; isupper(word[0])) {
+            cout &lt;&lt; "Re" &lt;&lt; endl;
+            flag = false;
+            break;
+        }
+        if(word == "0") break;
+        before = word;
+    }
+    if(flag) cout &lt;&lt; "success" &lt;&lt; endl;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191011175128562.png" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191030141906189.png" alt="在这里插入图片描述" /></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>while(get_size() &gt; 0) {/*...*/}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191011175754234.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(5.23)
+void devide() {
+    int v1, v2;
+    while(cin&gt;&gt;v1&gt;&gt;v2) cout &lt;&lt; v1/v2 &lt;&lt;endl;
+}
+(5.24)
+void devide() {
+    int v1, v2;
+    while(cin&gt;&gt;v1&gt;&gt;v2) {
+        if(v2 == 0) throw runtime_error("除数为0");
+            cout &lt;&lt; v1/v2 &lt;&lt;endl;
+    }
+}
+(5.25)
+void devide() {
+    int v1, v2;
+    while(cin&gt;&gt;v1&gt;&gt;v2) {
+        try {
+            if(v2 == 0) {
+                throw runtime_error("除数为0");
+            }
+            cout &lt;&lt; v1/v2 &lt;&lt; endl;
+        }
+        catch(runtime_error err) {
+            cout &lt;&lt; err.what() &lt;&lt; endl;
+            cout &lt;&lt; "Try again or Give up, Enter Y to continue " &lt;&lt; endl;
+            char c;
+            cin&gt;&gt;c;
+            if(c != 'y' &amp;&amp; c != 'Y') break;
+            cout &lt;&lt; "agin:" &lt;&lt; endl;
+        }
+    }
+}
+
+</code></pre></div></div>
+
+:ET

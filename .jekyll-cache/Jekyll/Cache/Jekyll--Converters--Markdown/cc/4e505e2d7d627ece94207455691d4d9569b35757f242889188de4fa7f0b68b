@@ -1,0 +1,215 @@
+I"D<h3 id="状态模式">状态模式</h3>
+<p>Allow an object to alter its behavior when its internal state changes.The object will appear to change its class.
+(当一个对象内在状态改变时允许其改变行为,这个对象看起来像改变了其类。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>抽象状态类
+抽象类，负责对象状态定义，并且封装环境角色以实现状态切换
+具体状态类
+继承抽象类，完成两个职责，本状态的行为管理以及趋向状态处理
+环境类
+定义客户端需要的接口，负责具体状态的切换</p>
+<h3 id="通用源码">通用源码</h3>
+<p>//抽象状态类
+class State {
+protected:
+    //定义一个环境类，提供子类访问
+    Context* context;
+public:
+    //设置环境类
+    void setContext(Context* c) { context = c; }
+    //具有的行为
+    virtual void handle1() = 0;
+    virtual void handle2() = 0;
+};
+//具体状态类
+class ConcreteState1 : public State {
+public:
+    //本状态的处理逻辑
+    void handle1() override {
+        //do something
+    }
+    //切换到状态2
+    void handle2() override {
+        context-&gt;setCurrentState(Context::state2);
+        context-&gt;handle2();
+    }
+};
+class ConcreteState2 : public State {
+public:
+    void handle2() override {
+        //do something
+    }
+    void handle1() override {
+        context-&gt;setCurrentState(Context::state1);
+        context-&gt;handle1();
+    }
+};
+//环境类
+class Context {
+public:
+    //定义状态
+    static State* state1;
+    static State* state2;
+    //获得当前状态
+    State* getCurrentState() { return currentState; }
+    //设置当前状态
+    void setCurrentState(State* s) {
+        currentState = c;
+        //切换状态
+        currentState-&gt;setContext(this);
+    }
+    //行为委托
+    void handle1() { currentState-&gt;handle1(); }
+    void handle2() { currentState-&gt;handle2(); }
+private:
+    //当前状态
+    State* currentState;
+}
+State* Context::state1 = new ConcreteState1();
+State* Context::state2 = new ConcreteState2();</p>
+<h3 id="优点">优点</h3>
+<p>结构清晰
+遵循设计原则
+封装性非常好</p>
+<h3 id="缺点">缺点</h3>
+<p>子类会非常多</p>
+<h3 id="使用场景">使用场景</h3>
+<p>行为随状态改变而改变的场景
+条件、分支判断语句的替代者</p>
+<h3 id="示例代码">示例代码</h3>
+<h3 id="示例代码-1">示例代码</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+class Context;
+class LiftState {
+public:
+    void setContext(Context* c) { context = c; }
+    virtual void open() = 0;
+    virtual void close() = 0;
+    virtual void run() = 0;
+    virtual void stop() = 0;
+protected:
+    Context* context;
+};
+
+class OpenningState;
+class ClosingState;
+class RunningState;
+class StoppingState;
+class Context {
+private:
+    LiftState *liftState;
+public:
+    LiftState* getLiftState() {
+        return liftState;
+    }
+    void setLiftState(LiftState* l) {
+        liftState = l;
+        liftState-&gt;setContext(this);
+    }
+    void open() {
+        liftState-&gt;open();
+    }
+    void close() {
+        liftState-&gt;close();
+    }
+    void run() {
+        liftState-&gt;run();
+    }
+    void stop() {
+        liftState-&gt;stop();
+    }
+    static OpenningState* openningState;
+    static ClosingState* closingState;
+    static RunningState* runningState;
+    static StoppingState* stoppingState;
+};
+
+class OpenningState : public LiftState {
+public:
+    void open() override {
+        cout &lt;&lt; "open lift..." &lt;&lt; endl;
+    }
+    void close() override;
+    void run() override {
+    }
+    void stop() override {
+    }
+};
+class ClosingState : public LiftState {
+public:
+    void open() override {
+        context-&gt;setLiftState(Context::openningState);
+        context-&gt;getLiftState()-&gt;open();
+    }
+    void close() override {
+        cout &lt;&lt; "close lift..." &lt;&lt; endl;
+    }
+    void run() override;
+    void stop() override;
+};
+class RunningState : public LiftState {
+public:
+    void open() override {
+    }
+    void close() override {
+    }
+    void run() override {
+        cout &lt;&lt; "run lift..." &lt;&lt; endl;
+    }
+    void stop() override;
+};
+class StoppingState : public LiftState {
+public:
+    void open() override {
+        context-&gt;setLiftState(Context::openningState);
+        context-&gt;getLiftState()-&gt;open();
+    }
+    void close() override {
+    }
+    void run() override {
+        context-&gt;setLiftState(Context::runningState);
+        context-&gt;getLiftState()-&gt;run();
+    }
+    void stop() override {
+        cout &lt;&lt; "stop lift..." &lt;&lt; endl;
+    }
+};
+
+OpenningState* Context::openningState = new OpenningState();
+ClosingState* Context::closingState = new ClosingState();
+RunningState* Context::runningState = new RunningState();
+StoppingState* Context::stoppingState = new StoppingState();
+
+void OpenningState::close() {
+    context-&gt;setLiftState(Context::closingState);
+    context-&gt;getLiftState()-&gt;close();
+}
+void ClosingState::run() {
+    context-&gt;setLiftState(Context::runningState);
+    context-&gt;getLiftState()-&gt;run();
+}
+void ClosingState::stop() {
+    context-&gt;setLiftState(Context::stoppingState);
+    context-&gt;getLiftState()-&gt;stop();
+}
+void RunningState::stop() {
+    context-&gt;setLiftState(Context::stoppingState);
+    context-&gt;getLiftState()-&gt;stop();
+}
+
+int main() {
+    Context* c = new Context();
+    c-&gt;setLiftState(new ClosingState());
+    c-&gt;open();
+    c-&gt;close();
+    c-&gt;run();
+    c-&gt;stop();
+    return 0;
+}
+</code></pre></div></div>
+
+:ET

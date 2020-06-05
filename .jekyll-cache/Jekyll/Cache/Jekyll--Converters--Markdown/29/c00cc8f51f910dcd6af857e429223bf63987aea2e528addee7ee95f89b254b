@@ -1,0 +1,663 @@
+I"�o<p>本书为Primer C++ 中文第五版</p>
+<h2 id="练习题笔记">练习题笔记</h2>
+<p><img src="https://img-blog.csdnimg.cn/20191107133347172.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.1</span><span class="p">)</span>
+<span class="err">虚函数：基类希望派生类进行覆盖的函数</span>
+<span class="p">(</span><span class="mf">15.2</span><span class="p">)</span>
+<span class="err">派生类可以继承定义在基类的成员，但是派生类的函数不一定有权访问基类继承而来的成员。</span>
+<span class="err">派生类可以访问公有成员，不能访问私有成员。</span>
+<span class="err">定义受保护的成员使得派生类可以访问，而其他用户禁止访问</span>
+<span class="p">(</span><span class="mf">15.3</span><span class="p">)</span>
+<span class="cp">#ifndef QUOTE_H
+#define QUOTE_H
+#include &lt;iostream&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Quote</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+    <span class="n">Quote</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">book</span><span class="p">,</span> <span class="kt">double</span> <span class="n">sales_price</span><span class="p">)</span> <span class="o">:</span> <span class="n">bookNo</span><span class="p">(</span><span class="n">book</span><span class="p">),</span> <span class="n">price</span><span class="p">(</span><span class="n">sales_price</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="n">string</span> <span class="n">isbn</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">bookNo</span><span class="p">;}</span>
+    <span class="k">virtual</span> <span class="kt">double</span> <span class="n">net_price</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="n">price</span><span class="p">;}</span>
+    <span class="k">virtual</span> <span class="o">~</span><span class="n">Quote</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span><span class="c1">//基类通常都应该定义一个虚析构函数</span>
+<span class="nl">private:</span>
+    <span class="n">string</span> <span class="n">bookNo</span><span class="p">;</span>
+<span class="nl">protected:</span>
+    <span class="kt">double</span> <span class="n">price</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cp">#endif
+</span></code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019110714063632.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.4</span><span class="p">)</span>
+<span class="err">派生类的声明只需要包含类名即可，若想将某个类用作基类，则该类必须已经定义</span>
+<span class="n">a</span><span class="o">&gt;</span><span class="err">不可以继承自己</span>
+<span class="n">b</span><span class="o">&gt;</span><span class="err">正确声明且定义</span>
+<span class="n">c</span><span class="o">&gt;</span><span class="err">仅声明的话，只需要类名即可</span>
+<span class="p">(</span><span class="mf">15.5</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Bulk_Quote</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Bulk_Quote</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+    <span class="n">Bulk_Quote</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">book</span><span class="p">,</span> <span class="kt">double</span> <span class="n">p</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">qty</span><span class="p">,</span> <span class="kt">double</span> <span class="n">disc</span><span class="p">)</span><span class="o">:</span>
+                <span class="n">Quote</span><span class="p">(</span><span class="n">book</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">min_qty</span><span class="p">(</span><span class="n">qty</span><span class="p">),</span> <span class="n">discount</span><span class="p">(</span><span class="n">disc</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="kt">double</span> <span class="n">net_price</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="n">min_qty</span><span class="p">)</span> <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">discount</span><span class="p">)</span><span class="o">*</span><span class="n">price</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="n">price</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="kt">size_t</span> <span class="n">min_qty</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">discount</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="p">(</span><span class="mf">15.6</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">test6</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Quote</span> <span class="n">q</span><span class="p">(</span><span class="s">"bcsj"</span><span class="p">,</span> <span class="mi">12</span><span class="p">);</span>
+    <span class="n">Bulk_Quote</span> <span class="n">bq</span><span class="p">(</span><span class="s">"pfdsj"</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">);</span>
+    <span class="c1">//第七题定义的派生类</span>
+    <span class="n">Bulk</span> <span class="n">b</span><span class="p">(</span><span class="s">"sgyy"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">q</span><span class="p">.</span><span class="n">net_price</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">bq</span><span class="p">.</span><span class="n">net_price</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">bq</span><span class="p">.</span><span class="n">net_price</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="p">.</span><span class="n">net_price</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="p">.</span><span class="n">net_price</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">(</span><span class="mf">15.7</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Bulk</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Bulk</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">book</span><span class="p">,</span> <span class="kt">double</span> <span class="n">pri</span><span class="p">,</span> <span class="kt">double</span> <span class="n">dis</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">n</span><span class="p">)</span><span class="o">:</span>
+                    <span class="n">Quote</span><span class="p">(</span><span class="n">book</span><span class="p">,</span> <span class="n">pri</span><span class="p">),</span> <span class="n">discount</span><span class="p">(</span><span class="n">dis</span><span class="p">),</span> <span class="n">max_qty</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">max_dis</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dis</span><span class="p">)</span> <span class="o">*</span> <span class="n">pri</span><span class="p">;</span>
+                    <span class="p">}</span>
+    <span class="kt">double</span> <span class="n">net_price</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="n">max_qty</span><span class="p">)</span> <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">discount</span><span class="p">)</span><span class="o">*</span><span class="n">price</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">return</span> <span class="n">max_dis</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">max_qty</span><span class="p">)</span><span class="o">*</span><span class="n">price</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="kt">size_t</span> <span class="n">max_qty</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">discount</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">max_dis</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107143224258.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.8</span><span class="p">)</span>
+<span class="err">静态类型，编译时总是已知的，它是变量声明时的类型或表达式生成的类型</span>
+<span class="err">动态类型，是变量或表达式表示的内存中的对象的类型，直到运行时才可知</span>
+
+<span class="err">如果表达式既不是引用也不是指针，则它的动态类型永远与静态类型一致。</span>
+<span class="err">基类的指针或引用的静态类型可能与其动态类型不一致。</span>
+
+<span class="err">一个基类的对象可能是派生类对象的一部分，也可能不是，所以不存在从基类向派生类的自动类型转换</span>
+<span class="err">可以通过</span><span class="k">dynamic_cast</span> <span class="err">或</span> <span class="k">static_cast</span> <span class="err">进行类型转换</span>
+<span class="p">(</span><span class="mf">15.9</span><span class="p">)</span>
+<span class="n">eg</span><span class="p">.</span>
+<span class="n">Bulk_Quote</span> <span class="n">bulk</span><span class="p">;</span>
+<span class="n">Quote</span> <span class="o">*</span><span class="n">itemP</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">bulk</span><span class="p">;</span> <span class="c1">//itemP 动态类型是Bulk_Quote</span>
+<span class="p">(</span><span class="mf">15.10</span><span class="p">)</span>
+<span class="n">ifstream</span><span class="err">类和</span><span class="n">istringstream</span><span class="err">都继承自</span><span class="n">istream</span><span class="err">类</span><span class="p">(</span><span class="n">cin</span><span class="p">)</span><span class="err">。</span>
+<span class="n">ofstream</span><span class="err">类和</span><span class="n">ostringstream</span><span class="err">都继承自</span><span class="n">ostream</span><span class="err">类</span><span class="p">(</span><span class="n">cout</span><span class="p">)</span><span class="err">。</span>
+<span class="n">read</span><span class="err">函数接受</span><span class="n">istream</span><span class="err">类的引用，所以发生了派生类向基类的类型转换。</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107150504840.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.11</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+<span class="c1">//...</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">debug</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">bookNo</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span> <span class="o">&lt;&lt;</span> <span class="n">price</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="c1">//...</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Bulk_Quote</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+<span class="c1">//...</span>
+    <span class="kt">void</span> <span class="n">debug</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">Quote</span><span class="o">::</span><span class="n">debug</span><span class="p">();</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">min_qty</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span> <span class="o">&lt;&lt;</span> <span class="n">discount</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="c1">//...</span>
+<span class="p">};</span>
+<span class="p">(</span><span class="mf">15.12</span><span class="p">)</span>
+<span class="k">override</span><span class="err">表示改派生类的此函数为虚函数，每个派生类都需要定义</span>
+<span class="k">final</span><span class="err">表示函数不可被覆写，不允许该类的派生类定义</span>
+<span class="err">如果不允许该派生类的派生类覆写改函数，则有必要</span>
+<span class="p">(</span><span class="mf">15.13</span><span class="p">)</span>
+<span class="n">base</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">)</span> <span class="err">输出</span><span class="n">base</span><span class="err">的</span><span class="n">basename</span>
+<span class="n">derived</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">)</span> <span class="err">调用</span><span class="n">base</span><span class="o">::</span><span class="n">print</span><span class="err">，然后输出</span><span class="n">derived</span><span class="err">的</span><span class="n">i</span>
+<span class="err">应该把</span><span class="n">print</span><span class="p">(</span><span class="n">os</span><span class="p">);</span><span class="err">改成</span> <span class="n">base</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="n">os</span><span class="p">);</span>
+<span class="p">(</span><span class="mf">15.14</span><span class="p">)</span>
+<span class="n">a</span><span class="o">&gt;</span> <span class="n">base</span><span class="o">::</span><span class="n">print</span>
+<span class="n">b</span><span class="o">&gt;</span> <span class="n">derived</span><span class="o">::</span><span class="n">print</span>
+<span class="n">c</span><span class="o">&gt;</span> <span class="n">base</span><span class="o">::</span><span class="n">name</span>
+<span class="n">d</span><span class="o">&gt;</span> <span class="n">base</span><span class="o">::</span><span class="n">name</span>
+<span class="n">e</span><span class="o">&gt;</span> <span class="n">base</span><span class="o">::</span><span class="n">print</span>
+<span class="n">f</span><span class="o">&gt;</span> <span class="n">derived</span><span class="o">::</span><span class="n">print</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107152324678.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.15</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Disc_quote</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Disc_quote</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+    <span class="n">Disc_quote</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">book</span><span class="p">,</span> <span class="kt">double</span> <span class="n">p</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">qty</span><span class="p">,</span> <span class="kt">double</span> <span class="n">disc</span><span class="p">)</span><span class="o">:</span>
+                <span class="n">Quote</span><span class="p">(</span><span class="n">book</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">quantity</span><span class="p">(</span><span class="n">qty</span><span class="p">),</span> <span class="n">discount</span><span class="p">(</span><span class="n">disc</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="kt">double</span> <span class="n">net_price</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="n">debug</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">Quote</span><span class="o">::</span><span class="n">debug</span><span class="p">();</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">quantity</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span> <span class="o">&lt;&lt;</span> <span class="n">discount</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="nl">protected:</span>
+    <span class="kt">double</span> <span class="n">discount</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">quantity</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Bulk_quote</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Disc_quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Bulk_quote</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+    <span class="n">Bulk_quote</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">book</span><span class="p">,</span> <span class="kt">double</span> <span class="n">p</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">qty</span><span class="p">,</span> <span class="kt">double</span> <span class="n">disc</span><span class="p">)</span><span class="o">:</span>
+                <span class="n">Disc_quote</span><span class="p">(</span><span class="n">book</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">qty</span><span class="p">,</span> <span class="n">disc</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="kt">double</span> <span class="n">net_price</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span><span class="p">)</span> <span class="k">const</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="n">quantity</span><span class="p">)</span> <span class="k">return</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">discount</span><span class="p">)</span><span class="o">*</span><span class="n">price</span><span class="p">;</span>
+        <span class="k">else</span> <span class="k">return</span> <span class="n">quantity</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">discount</span><span class="p">)</span><span class="o">*</span><span class="n">price</span><span class="o">+</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">quantity</span><span class="p">)</span><span class="o">*</span><span class="n">price</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+<span class="p">(</span><span class="mf">15.16</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">test16</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Bulk_quote</span> <span class="n">bq</span><span class="p">(</span><span class="s">"pfdsj"</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">);</span>
+    <span class="n">Disc_quote</span><span class="o">&amp;</span> <span class="n">dp</span> <span class="o">=</span> <span class="n">bq</span><span class="p">;</span>
+    <span class="n">bq</span><span class="p">.</span><span class="n">debug</span><span class="p">();</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">dp</span><span class="p">.</span><span class="n">net_price</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">dp</span><span class="p">.</span><span class="n">net_price</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">dp</span><span class="p">.</span><span class="n">debug</span><span class="p">();</span>
+    <span class="n">Disc_quote</span> <span class="n">dq</span><span class="p">;</span><span class="c1">//17题错误示范</span>
+<span class="p">}</span>
+
+<span class="p">(</span><span class="mf">15.17</span><span class="p">)</span>
+<span class="n">cannot</span> <span class="n">declare</span> <span class="n">variable</span> <span class="err">‘</span><span class="n">dq</span><span class="err">’</span> <span class="n">to</span> <span class="n">be</span> <span class="n">of</span> <span class="n">abstract</span> <span class="n">type</span> <span class="err">‘</span><span class="n">Disc_quote</span><span class="err">’</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107161056663.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.18</span><span class="p">)</span>
+<span class="err">只有公有地继承，用户代码才能使用派生类向基类的转换。</span>
+<span class="n">Base</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d1</span><span class="p">;</span>  <span class="c1">//合法</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d2</span><span class="p">;</span>    <span class="c1">//不合法</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d3</span><span class="p">;</span>    <span class="c1">//不合法</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dd1</span><span class="p">;</span>   <span class="c1">//合法</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dd2</span><span class="p">;</span>   <span class="c1">//不合法</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dd3</span><span class="p">;</span>   <span class="c1">//不合法</span>
+<span class="p">(</span><span class="mf">15.19</span><span class="p">)</span>
+<span class="err">不论什么方式继承，派生类的成员函数和友元都能使用派生类向基类的转换。</span>
+<span class="err">如果</span><span class="n">D</span><span class="err">继承</span><span class="n">B</span><span class="err">的方式是私有的，则</span><span class="n">D</span><span class="err">的派生类的成员和友元不能使用类型转换。</span>
+<span class="err">所以除了类</span><span class="n">Derived_from_Private</span><span class="err">不合法外，其他都合法</span>
+<span class="p">(</span><span class="mf">15.20</span><span class="p">)</span>
+<span class="cp">#include &lt;iostream&gt;
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">base</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">int</span> <span class="n">pub</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="nl">protected:</span>
+    <span class="kt">int</span> <span class="n">prot</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nl">private:</span>
+    <span class="kt">int</span> <span class="n">priv</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">pub_derv</span> <span class="o">:</span> <span class="k">public</span> <span class="n">base</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">memfcn</span><span class="p">(</span><span class="n">base</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="n">b</span> <span class="o">=</span> <span class="o">*</span><span class="k">this</span><span class="p">;}</span>
+    <span class="kt">int</span> <span class="n">pubd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"pub_derv pub: "</span> <span class="o">&lt;&lt;</span> <span class="n">pub</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">protd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"pub_derv prot: "</span> <span class="o">&lt;&lt;</span> <span class="n">prot</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">privd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//cout &lt;&lt; "pub_derv priv: " &lt;&lt; priv &lt;&lt; endl;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">prot_derv</span> <span class="o">:</span> <span class="k">protected</span> <span class="n">base</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">memfcn</span><span class="p">(</span><span class="n">base</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="n">b</span> <span class="o">=</span> <span class="o">*</span><span class="k">this</span><span class="p">;}</span>
+    <span class="kt">void</span> <span class="n">pubd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"prot_derv pub: "</span> <span class="o">&lt;&lt;</span> <span class="n">pub</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">protd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"prot_derv prot: "</span> <span class="o">&lt;&lt;</span> <span class="n">prot</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">privd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//cout &lt;&lt; "prot_derv priv: " &lt;&lt; priv &lt;&lt; endl;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">priv_derv</span> <span class="o">:</span> <span class="k">private</span> <span class="n">base</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">memfcn</span><span class="p">(</span><span class="n">base</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="n">b</span> <span class="o">=</span> <span class="o">*</span><span class="k">this</span><span class="p">;}</span>
+    <span class="kt">void</span> <span class="n">pubd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"priv_derv pub: "</span> <span class="o">&lt;&lt;</span> <span class="n">pub</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">protd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"priv_derv prot: "</span> <span class="o">&lt;&lt;</span> <span class="n">prot</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">privd</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//cout &lt;&lt; "priv_derv priv: " &lt;&lt; priv &lt;&lt; endl;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">pub_pub_derv</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pub_derv</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">memfcn</span><span class="p">(</span><span class="n">base</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="n">b</span> <span class="o">=</span> <span class="o">*</span><span class="k">this</span><span class="p">;}</span>
+    <span class="kt">void</span> <span class="n">pub_pub</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"pub_pub_derv pub: "</span> <span class="o">&lt;&lt;</span> <span class="n">pub</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">pub_prot</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"pub_pub_derv prot: "</span> <span class="o">&lt;&lt;</span> <span class="n">prot</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">pub_priv</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//cout &lt;&lt; "pub_pub_derv priv: " &lt;&lt; priv &lt;&lt; endl;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">pub_prot_derv</span> <span class="o">:</span> <span class="k">public</span> <span class="n">prot_derv</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">memfcn</span><span class="p">(</span><span class="n">base</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="n">b</span> <span class="o">=</span> <span class="o">*</span><span class="k">this</span><span class="p">;}</span>
+    <span class="kt">void</span> <span class="n">pub_pub</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"pub_prot_derv pub: "</span> <span class="o">&lt;&lt;</span> <span class="n">pub</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">pub_prot</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"pub_prot_derv prot: "</span> <span class="o">&lt;&lt;</span> <span class="n">prot</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">pub_priv</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//cout &lt;&lt; "pub_prot_derv priv: " &lt;&lt; priv &lt;&lt; endl;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">pub_priv_derv</span> <span class="o">:</span> <span class="k">public</span> <span class="n">priv_derv</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">memfcn</span><span class="p">(</span><span class="n">base</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="n">b</span> <span class="o">=</span> <span class="o">*</span><span class="k">this</span><span class="p">;}</span>
+    <span class="kt">void</span> <span class="n">pub_pub</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//cout &lt;&lt; "pub_prot_derv pub: " &lt;&lt; pub &lt;&lt; endl;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">pub_prot</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//cout &lt;&lt; "pub_prot_derv prot: " &lt;&lt; prot &lt;&lt; endl;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">pub_priv</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//cout &lt;&lt; "pub_prot_derv priv: " &lt;&lt; priv &lt;&lt; endl;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">test20</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">pub_derv</span> <span class="n">d1</span><span class="p">;</span>
+    <span class="n">priv_derv</span> <span class="n">d2</span><span class="p">;</span>
+    <span class="n">prot_derv</span> <span class="n">d3</span><span class="p">;</span>
+    <span class="n">pub_pub_derv</span> <span class="n">dd1</span><span class="p">;</span>
+    <span class="n">pub_priv_derv</span> <span class="n">dd2</span><span class="p">;</span>
+    <span class="n">pub_prot_derv</span> <span class="n">dd3</span><span class="p">;</span>
+    <span class="n">base</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d1</span><span class="p">;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d2</span><span class="p">;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d3</span><span class="p">;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dd1</span><span class="p">;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dd2</span><span class="p">;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dd3</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">test20</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="mi">18</span><span class="o">:</span>
+<span class="n">inherit</span><span class="p">.</span><span class="n">cpp</span><span class="o">:</span><span class="mi">100</span><span class="o">:</span><span class="mi">7</span><span class="o">:</span> <span class="n">error</span><span class="o">:</span> <span class="err">‘</span><span class="n">base</span><span class="err">’</span> <span class="n">is</span> <span class="n">an</span> <span class="n">inaccessible</span> <span class="n">base</span> <span class="n">of</span> <span class="err">‘</span><span class="n">priv_derv</span><span class="err">’</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d2</span><span class="p">;</span>
+  <span class="o">^</span>
+<span class="n">inherit</span><span class="p">.</span><span class="n">cpp</span><span class="o">:</span><span class="mi">101</span><span class="o">:</span><span class="mi">7</span><span class="o">:</span> <span class="n">error</span><span class="o">:</span> <span class="err">‘</span><span class="n">base</span><span class="err">’</span> <span class="n">is</span> <span class="n">an</span> <span class="n">inaccessible</span> <span class="n">base</span> <span class="n">of</span> <span class="err">‘</span><span class="n">prot_derv</span><span class="err">’</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d3</span><span class="p">;</span>
+  <span class="o">^</span>
+<span class="n">inherit</span><span class="p">.</span><span class="n">cpp</span><span class="o">:</span><span class="mi">103</span><span class="o">:</span><span class="mi">7</span><span class="o">:</span> <span class="n">error</span><span class="o">:</span> <span class="err">‘</span><span class="n">base</span><span class="err">’</span> <span class="n">is</span> <span class="n">an</span> <span class="n">inaccessible</span> <span class="n">base</span> <span class="n">of</span> <span class="err">‘</span><span class="n">pub_priv_derv</span><span class="err">’</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dd2</span><span class="p">;</span>
+  <span class="o">^</span>
+<span class="n">inherit</span><span class="p">.</span><span class="n">cpp</span><span class="o">:</span><span class="mi">104</span><span class="o">:</span><span class="mi">7</span><span class="o">:</span> <span class="n">error</span><span class="o">:</span> <span class="err">‘</span><span class="n">base</span><span class="err">’</span> <span class="n">is</span> <span class="n">an</span> <span class="n">inaccessible</span> <span class="n">base</span> <span class="n">of</span> <span class="err">‘</span><span class="n">pub_prot_derv</span><span class="err">’</span>
+<span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">dd3</span><span class="p">;</span>
+  <span class="o">^</span>
+<span class="mi">19</span><span class="o">:</span>
+<span class="n">inherit</span><span class="p">.</span><span class="n">cpp</span><span class="o">:</span><span class="mi">86</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span> <span class="n">error</span><span class="o">:</span> <span class="n">within</span> <span class="k">this</span> <span class="n">context</span>
+<span class="kt">void</span> <span class="nf">memfcn</span><span class="p">(</span><span class="n">base</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="n">b</span> <span class="o">=</span> <span class="o">*</span><span class="k">this</span><span class="p">;}</span>
+            <span class="o">^</span>
+<span class="n">inherit</span><span class="p">.</span><span class="n">cpp</span><span class="o">:</span> <span class="n">In</span> <span class="n">member</span> <span class="n">function</span> <span class="err">‘</span><span class="kt">void</span> <span class="n">pub_priv_derv</span><span class="o">::</span><span class="n">memfcn</span><span class="p">(</span><span class="n">base</span><span class="o">&amp;</span><span class="p">)</span><span class="err">’</span><span class="o">:</span>
+<span class="n">inherit</span><span class="p">.</span><span class="n">cpp</span><span class="o">:</span><span class="mi">86</span><span class="o">:</span><span class="mi">29</span><span class="o">:</span> <span class="n">error</span><span class="o">:</span> <span class="err">‘</span><span class="n">base</span><span class="err">’</span> <span class="n">is</span> <span class="n">an</span> <span class="n">inaccessible</span> <span class="n">base</span> <span class="n">of</span> <span class="err">‘</span><span class="n">pub_priv_derv</span><span class="err">’</span>
+<span class="kt">void</span> <span class="nf">memfcn</span><span class="p">(</span><span class="n">base</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="n">b</span> <span class="o">=</span> <span class="o">*</span><span class="k">this</span><span class="p">;}</span>
+                        <span class="o">^</span>
+<span class="p">(</span><span class="mf">15.21</span><span class="p">)</span>
+<span class="err">见</span><span class="mi">21</span>
+<span class="p">(</span><span class="mf">15.22</span><span class="p">)</span>
+<span class="cp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Animals</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Animals</span><span class="p">(</span><span class="n">string</span> <span class="n">n</span><span class="p">)</span><span class="o">:</span> <span class="n">name</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">speak</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="nl">protected:</span>
+    <span class="n">string</span> <span class="n">name</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Dog</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Animals</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Dog</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span><span class="o">:</span> <span class="n">Animals</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">speak</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"I'm "</span> <span class="o">&lt;&lt;</span> <span class="n">name</span> <span class="o">&lt;&lt;</span> <span class="s">", and wang wang wang..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Cat</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Animals</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Cat</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span><span class="o">:</span> <span class="n">Animals</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="kt">void</span> <span class="n">speak</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"I'm "</span> <span class="o">&lt;&lt;</span> <span class="n">name</span> <span class="o">&lt;&lt;</span> <span class="s">", and miao miao miao..."</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Dog</span> <span class="n">d</span><span class="p">(</span><span class="s">"xiaohei"</span><span class="p">);</span>
+    <span class="n">Cat</span> <span class="n">c</span><span class="p">(</span><span class="s">"tom"</span><span class="p">);</span>
+    <span class="n">Animals</span><span class="o">*</span> <span class="n">a</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">d</span><span class="p">;</span>
+    <span class="n">a</span><span class="o">-&gt;</span><span class="n">speak</span><span class="p">();</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">;</span>
+    <span class="n">a</span><span class="o">-&gt;</span><span class="n">speak</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107162717535.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.23</span><span class="p">)</span>
+<span class="err">虚函数将在运行时确定使用虚函数的哪个版本，判断的依据是该指针所绑定对象的真实类型。</span>
+<span class="err">非虚函数不会发生动态绑定，实际调用的函数版本由指针的静态类型决定。</span>
+<span class="kt">int</span> <span class="nf">fcn</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="p">}</span>
+<span class="n">bp2</span><span class="o">-&gt;</span><span class="n">fcn</span><span class="p">();</span><span class="err">将调用</span><span class="n">D1</span><span class="o">::</span><span class="n">fcn</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107164807356.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.24</span><span class="p">)</span>
+<span class="err">如果基类的析构函数不是虚函数，则</span><span class="k">delete</span><span class="err">一个指向派生类对象的基类指针则只会调用基类的析构函数</span>
+<span class="err">如果基类的析构函数是虚函数，则会先调用派生类的析构函数然后调用基类的析构函数</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107165512890.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.25</span><span class="p">)</span>
+<span class="err">合成的</span><span class="n">Bulk_quote</span><span class="err">默认构造函数运行</span><span class="n">Disc_quote</span><span class="err">的默认构造函数，后者又运行</span><span class="n">Quote</span><span class="err">的默认构造函数</span>
+<span class="n">Quote</span><span class="err">的构造函数完成后，继续执行</span><span class="n">Disc_quote</span><span class="err">的构造函数，然后执行</span><span class="n">Bulk_quote</span><span class="err">的构造函数</span>
+<span class="err">如果去掉</span><span class="n">Disc_quote</span><span class="err">的构造函数，则无法对</span><span class="n">Bulk_quote</span><span class="err">进行默认初始化</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107170134366.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Quote</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Quote()</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">Quote</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">,</span> <span class="kt">double</span> <span class="n">p</span><span class="p">)</span><span class="o">:</span> <span class="n">bookNo</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">price</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Quote(string, double)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//copy construtor</span>
+    <span class="n">Quote</span><span class="p">(</span><span class="k">const</span> <span class="n">Quote</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">)</span><span class="o">:</span> <span class="n">bookNo</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">bookNo</span><span class="p">),</span> <span class="n">price</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">price</span><span class="p">)</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Quote(const Quote&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//move construtor</span>
+    <span class="n">Quote</span><span class="p">(</span><span class="n">Quote</span><span class="o">&amp;&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="k">noexcept</span><span class="o">:</span> <span class="n">bookNo</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">bookNo</span><span class="p">)),</span> <span class="n">price</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">price</span><span class="p">))</span> 
+        <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Quote(Quote&amp;&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//copy =</span>
+    <span class="n">Quote</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Quote</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">bookNo</span> <span class="o">=</span> <span class="n">q</span><span class="p">.</span><span class="n">bookNo</span><span class="p">;</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">q</span><span class="p">.</span><span class="n">price</span><span class="p">;</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Quote operator=(const Quote&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//move =</span>
+    <span class="n">Quote</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Quote</span><span class="o">&amp;&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="k">noexcept</span> <span class="p">{</span>
+        <span class="n">bookNo</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">bookNo</span><span class="p">);</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">price</span><span class="p">);</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Quote operator=(Quote&amp;&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//destructor</span>
+    <span class="k">virtual</span> <span class="o">~</span><span class="n">Quote</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"~Quote()</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">virtual</span> <span class="kt">void</span> <span class="n">show</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">bookNo</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span> <span class="o">&lt;&lt;</span> <span class="n">price</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="n">string</span> <span class="n">bookNo</span><span class="p">;</span>
+<span class="nl">protected:</span>
+    <span class="kt">double</span> <span class="n">price</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Disc_quote</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Disc_quote</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Disc_quote()</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">Disc_quote</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">,</span> <span class="kt">double</span> <span class="n">p</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">n</span><span class="p">,</span> <span class="kt">double</span> <span class="n">d</span><span class="p">)</span><span class="o">:</span> <span class="n">Quote</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">quantity</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">discount</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Disc_quote(string, double, size_t, double)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//copy construtor</span>
+    <span class="n">Disc_quote</span><span class="p">(</span><span class="k">const</span> <span class="n">Disc_quote</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">)</span><span class="o">:</span><span class="n">Quote</span><span class="p">(</span><span class="n">q</span><span class="p">),</span> <span class="n">quantity</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">quantity</span><span class="p">),</span> <span class="n">discount</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">discount</span><span class="p">)</span>
+        <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Disc_quote(const Disc_quote&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//move construtor</span>
+    <span class="n">Disc_quote</span><span class="p">(</span><span class="n">Disc_quote</span><span class="o">&amp;&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="k">noexcept</span><span class="o">:</span><span class="n">Quote</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">)),</span> <span class="n">quantity</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">quantity</span><span class="p">)),</span> <span class="n">discount</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">discount</span><span class="p">))</span>
+        <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Disc_quote(Disc_quote&amp;&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//copy =</span>
+    <span class="n">Disc_quote</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Disc_quote</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Quote</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+        <span class="n">quantity</span> <span class="o">=</span> <span class="n">q</span><span class="p">.</span><span class="n">quantity</span><span class="p">;</span>
+        <span class="n">discount</span> <span class="o">=</span> <span class="n">q</span><span class="p">.</span><span class="n">discount</span><span class="p">;</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Disc_quote operator=(const Disc_quote&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//move =</span>
+    <span class="n">Disc_quote</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Disc_quote</span><span class="o">&amp;&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="k">noexcept</span> <span class="p">{</span>
+        <span class="n">Quote</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">));</span>
+        <span class="n">quantity</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">quantity</span><span class="p">);</span>
+        <span class="n">discount</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">discount</span><span class="p">);</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Disc_quote operator=(Disc_quote&amp;&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//destructor</span>
+    <span class="o">~</span><span class="n">Disc_quote</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"~Disc_quote()</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+<span class="nl">protected:</span>
+    <span class="kt">size_t</span> <span class="n">quantity</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">discount</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">Bulk_quote</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Disc_quote</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">Bulk_quote</span><span class="p">()</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bulk_quote()</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">Bulk_quote</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">,</span> <span class="kt">double</span> <span class="n">p</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">n</span><span class="p">,</span> <span class="kt">double</span> <span class="n">d</span><span class="p">)</span><span class="o">:</span> <span class="n">Disc_quote</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bulk_quote(string, double, size_t, double)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//copy construtor</span>
+    <span class="n">Bulk_quote</span><span class="p">(</span><span class="k">const</span> <span class="n">Bulk_quote</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">)</span><span class="o">:</span> <span class="n">Disc_quote</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bulk_quote(const Bulk_quote&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//move construtor</span>
+    <span class="n">Bulk_quote</span><span class="p">(</span><span class="n">Bulk_quote</span><span class="o">&amp;&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="k">noexcept</span><span class="o">:</span> <span class="n">Disc_quote</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+        <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bulk_quote(Bulk_quote&amp;&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+    <span class="c1">//copy =</span>
+    <span class="n">Bulk_quote</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">Bulk_quote</span><span class="o">&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Disc_quote</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bulk_quote operator=(const Bulk_quote&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//move =</span>
+    <span class="n">Bulk_quote</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Bulk_quote</span><span class="o">&amp;&amp;</span> <span class="n">q</span><span class="p">)</span> <span class="k">noexcept</span> <span class="p">{</span>
+        <span class="n">Disc_quote</span><span class="o">::</span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">));</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bulk_quote operator=(Bulk_quote&amp;&amp;)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//destructor</span>
+    <span class="o">~</span><span class="n">Bulk_quote</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"~Bulk_quote()</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"=========1========</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">Bulk_quote</span> <span class="n">bq1</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"=========2========</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">Bulk_quote</span> <span class="n">bq2</span><span class="p">(</span><span class="s">"tlbb"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"=========3========</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">bq1</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">bq2</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"=========4========</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">bq2</span><span class="p">.</span><span class="n">show</span><span class="p">();</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"=========5========</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107170438662.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.27</span><span class="p">)</span>
+<span class="k">using</span> <span class="n">Disc_quote</span><span class="o">::</span><span class="n">Disc_quote</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107171301801.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">test28</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">Quote</span><span class="o">&gt;</span> <span class="n">basket</span><span class="p">;</span>
+    <span class="n">basket</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">Quote</span><span class="p">(</span><span class="s">"tlbb"</span><span class="p">,</span> <span class="mi">20</span><span class="p">));</span>
+    <span class="n">basket</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">Bulk_quote</span><span class="p">(</span><span class="s">"sdxn"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">));</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">basket</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">net_price</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test29</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Quote</span><span class="o">&gt;&gt;</span> <span class="n">basket</span><span class="p">;</span>
+    <span class="n">basket</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Quote</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"tlbb"</span><span class="p">,</span> <span class="mi">20</span><span class="p">));</span>
+    <span class="n">basket</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Bulk_quote</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"sdxn"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">));</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">basket</span><span class="p">.</span><span class="n">back</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">net_price</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107171921622.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Basket</span> <span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="kt">void</span> <span class="n">add_item</span><span class="p">(</span><span class="k">const</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Quote</span><span class="o">&gt;&amp;</span> <span class="n">sale</span><span class="p">)</span> <span class="p">{</span> <span class="n">items</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">sale</span><span class="p">);</span> <span class="p">}</span>
+    <span class="kt">double</span> <span class="n">total_receipt</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+        <span class="kt">double</span> <span class="n">sum</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">iter</span> <span class="o">:</span> <span class="n">items</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">iter</span><span class="o">-&gt;</span><span class="n">show</span><span class="p">();</span>
+            <span class="n">sum</span> <span class="o">+=</span> <span class="n">iter</span><span class="o">-&gt;</span><span class="n">net_price</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">"sum: "</span> <span class="o">&lt;&lt;</span> <span class="n">sum</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="nl">private:</span>
+    <span class="k">static</span> <span class="kt">bool</span> <span class="n">compare</span><span class="p">(</span><span class="k">const</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Quote</span><span class="o">&gt;&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Quote</span><span class="o">&gt;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">lhs</span><span class="o">-&gt;</span><span class="n">isbn</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="o">-&gt;</span><span class="n">isbn</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="n">multiset</span><span class="o">&lt;</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Quote</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">decltype</span><span class="p">(</span><span class="n">compare</span><span class="p">)</span><span class="o">*&gt;</span> <span class="n">items</span><span class="p">{</span><span class="n">compare</span><span class="p">};</span>
+<span class="p">};</span>
+<span class="kt">void</span> <span class="nf">test30</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">Basket</span> <span class="n">b</span><span class="p">;</span>
+    <span class="n">b</span><span class="p">.</span><span class="n">add_item</span><span class="p">(</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Quote</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"tlbb"</span><span class="p">,</span> <span class="mi">20</span><span class="p">));</span>
+    <span class="n">b</span><span class="p">.</span><span class="n">add_item</span><span class="p">(</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Bulk_quote</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"sdxn"</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">));</span>
+    <span class="n">b</span><span class="p">.</span><span class="n">total_receipt</span><span class="p">(</span><span class="n">cout</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107172458739.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.31</span><span class="p">)</span>
+<span class="n">a</span><span class="o">&gt;</span> <span class="n">WordQuery</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="n">OrQuery</span><span class="o">*</span><span class="mi">1</span><span class="p">,</span> <span class="n">AndQuery</span><span class="o">*</span><span class="mi">1</span><span class="p">,</span> <span class="n">NotQuery</span><span class="o">*</span><span class="mi">1</span>
+<span class="n">b</span><span class="o">&gt;</span> <span class="n">WordQuery</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="n">OrQuery</span><span class="o">*</span><span class="mi">1</span><span class="p">,</span> <span class="n">AndQuery</span><span class="o">*</span><span class="mi">1</span><span class="p">,</span> <span class="n">NotQuery</span><span class="o">*</span><span class="mi">1</span>
+<span class="n">c</span><span class="o">&gt;</span> <span class="n">WordQuery</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span> <span class="n">AndQuery</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">OrQuery</span><span class="o">*</span><span class="mi">1</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107173814511.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.32</span><span class="p">)</span>
+<span class="err">拷贝</span><span class="o">:</span>
+<span class="err">调用合成的拷贝构造函数。在本例中，数据成员是一个共享指针，所以在拷贝时，共享指针指向相同的地址并且使用计数</span><span class="o">+</span><span class="mi">1</span><span class="err">。</span>
+<span class="err">移动</span><span class="o">:</span>
+<span class="err">调用合成的移动构造函数。在本例中，共享指针指向原始共享指针指向的地址。移动操作后，新对象中共享指针的使用计数为</span><span class="mi">1</span><span class="err">，原始对象的指针变成了</span><span class="nb">nullptr</span><span class="err">。</span>
+<span class="err">赋值</span><span class="o">:</span>
+<span class="err">调用合成的赋值构造函数，和拷贝构造函数类似。</span>
+<span class="err">销毁</span><span class="o">:</span>
+<span class="err">调用合成析构函数。使用次数</span><span class="o">-</span><span class="mi">1</span><span class="err">。如果计数变为零，将删除智能指针所指向的资源。</span>
+<span class="p">(</span><span class="mf">15.33</span><span class="p">)</span>
+<span class="n">Query_base</span><span class="err">是一个抽象基类，不允许直接声明其对象。</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107173844215.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<strong>因为这后面的代码太长了，所以重新写了一篇<a href="https://blog.csdn.net/qq_42685012/article/details/106276866">点我</a></strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.34</span><span class="p">)</span>
+<span class="n">Query</span> <span class="n">q</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="s">"fiery"</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">Query</span><span class="p">(</span><span class="s">"bird"</span><span class="p">)</span> <span class="o">|</span> <span class="n">Query</span><span class="p">(</span><span class="s">"wind"</span><span class="p">);</span>
+<span class="n">a</span><span class="o">&gt;</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">WordQuery</span><span class="p">(</span><span class="n">wind</span><span class="p">)</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">Query</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="n">where</span> <span class="n">s</span><span class="o">=</span><span class="n">wind</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">WordQuery</span><span class="p">(</span><span class="n">bird</span><span class="p">)</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">Query</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="n">where</span> <span class="n">s</span><span class="o">=</span><span class="n">bird</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">WordQuery</span><span class="p">(</span><span class="n">fiery</span><span class="p">)</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">Query</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="n">where</span> <span class="n">s</span><span class="o">=</span><span class="n">fiery</span>
+<span class="n">BinaryQuery</span><span class="o">::</span><span class="n">BinaryQuery</span><span class="p">()</span>  <span class="n">where</span> <span class="n">s</span><span class="o">=&amp;</span>
+<span class="n">AndQuery</span><span class="o">::</span><span class="n">AndQuery</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">Query</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Query_base</span><span class="o">&gt;</span> <span class="n">query</span><span class="p">)</span>
+<span class="n">BinaryQuery</span><span class="o">::</span><span class="n">BinaryQuery</span><span class="p">()</span>  <span class="n">where</span> <span class="n">s</span><span class="o">=|</span>
+<span class="n">OrQuery</span><span class="o">::</span><span class="n">OrQuery</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">Query</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Query_base</span><span class="o">&gt;</span> <span class="n">query</span><span class="p">)</span>
+<span class="n">b</span><span class="o">&gt;</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">BinaryQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">BinaryQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">c</span><span class="o">&gt;</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">OrQuery</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">AndQuery</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">BinaryQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">BinaryQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">BinaryQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">Query</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="n">WordQuery</span><span class="o">::</span><span class="n">rep</span><span class="p">()</span>
+<span class="p">(</span><span class="mf">15.35</span><span class="p">)</span>
+<span class="p">(</span><span class="mf">15.36</span><span class="p">)</span>
+<span class="p">(</span><span class="mf">15.37</span><span class="p">)</span>
+<span class="p">(</span><span class="mf">15.38</span><span class="p">)</span>
+<span class="mi">1</span><span class="o">&gt;</span><span class="err">不合法，</span><span class="n">BinaryQuery</span><span class="err">是抽象类</span>
+<span class="mi">2</span><span class="o">&gt;</span><span class="err">不合法，</span><span class="o">&amp;</span><span class="err">返回</span><span class="n">Query</span><span class="err">类，</span><span class="n">AndQuery</span><span class="err">不能转换到</span><span class="n">Query</span><span class="err">类</span>
+<span class="mi">3</span><span class="o">&gt;</span><span class="err">不合法，同上</span>
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191107173902496.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">15.39</span><span class="p">)</span>
+<span class="p">(</span><span class="mf">15.40</span><span class="p">)</span>
+<span class="err">不会</span><span class="n">rhs</span><span class="err">空集则返回</span><span class="n">lhs</span><span class="err">的结果，</span><span class="n">lhs</span><span class="err">空集则返回</span><span class="n">rhs</span><span class="err">的结果，两个都是空集则返回空结果</span>
+<span class="p">(</span><span class="mf">15.41</span><span class="p">)</span>
+<span class="p">(</span><span class="mf">15.42</span><span class="p">)</span>
+</code></pre></div></div>
+
+:ET

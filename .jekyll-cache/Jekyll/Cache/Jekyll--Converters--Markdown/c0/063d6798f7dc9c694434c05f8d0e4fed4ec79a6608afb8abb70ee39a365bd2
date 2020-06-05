@@ -1,0 +1,229 @@
+I"�<p>本书为Primer C++ 中文第五版</p>
+<h2 id="练习题笔记">练习题笔记</h2>
+<p><img src="https://img-blog.csdnimg.cn/20191029154908550.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(8.1)
+std::istream&amp; input(std::istream &amp;is) {
+    int n;
+    while(is &gt;&gt; n &amp;&amp; n != 0) {
+        std::cout &lt;&lt; n &lt;&lt; "\n";
+    }
+    is.clear();
+    return is;
+}
+(8.2)
+int main() {
+    input(std::cin);
+    return 0;
+}
+(8.3) 
+错误类型 或者 eof()
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191029161202426.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(8.4) 
+void t84() {
+    std::vector&lt;std::string&gt; lines;
+    std::ifstream fin;
+    fin.open("test.txt");
+    std::string line;
+    while(!fin.eof()) {
+        getline(fin, line);
+        lines.push_back(line);
+    }
+    fin.close();
+    lines.pop_back();
+    for(auto l : lines) {
+        std::cout &lt;&lt; l &lt;&lt; "\n";
+    }
+}
+(8.5) 
+void t85() {
+    std::vector&lt;std::string&gt; words;
+    std::ifstream fin;
+    fin.open("test.txt");
+    std::string word;
+    while(!fin.eof()) {
+        fin &gt;&gt; word;
+        words.push_back(word);
+    }
+    fin.close();
+    words.pop_back();
+    for(auto l : words) {
+        std::cout &lt;&lt; l &lt;&lt; "\n";
+    }
+}
+(8.6) 
+int main(int argc, char *argv[]) {
+    if(argc != 2) {
+        return -1;
+    }
+    std::ifstream fin;
+    fin.open(argv[1]);
+    if(fin) {
+        while(!fin.eof()) {
+            std::string goods;
+            getline(fin, goods);
+            std::cout &lt;&lt; goods &lt;&lt; "\n";
+        }
+    }
+    fin.close();
+    return 0;
+}
+
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019102917050249.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(8.7)
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+
+int main(int argc, char *argv[]) {
+    if(argc != 3) {
+        return -1;
+    }
+    std::ifstream fin;
+    std::ofstream fout;
+    fout.open(argv[2]);
+    fin.open(argv[1]);
+    std::string item;
+    if(fin &amp;&amp; fout) {
+        while(!fin.eof() &amp;&amp; fin.peek() != EOF) {
+            getline(fin, item);
+            fout &lt;&lt; item &lt;&lt; "\n";
+        }
+    }
+    fin.close();
+	fout.close();
+    return 0;
+}
+(8.8)
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+
+int main(int argc, char *argv[]) {
+    if(argc != 3) {
+        return -1;
+    }
+    std::ifstream fin;
+    std::ofstream fout;
+    fout.open(argv[2], std::ofstream::app);
+    fin.open(argv[1]);
+    std::string item;
+    if(fin &amp;&amp; fout) {
+        while(!fin.eof() &amp;&amp; fin.peek() != EOF) {
+            getline(fin, item);
+            fout &lt;&lt; item &lt;&lt; "\n";
+        }
+    }
+    fin.close();
+	fout.close();
+    return 0;
+}
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20191029171751522.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(8.9)
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+
+void t89() {
+    std::vector&lt;std::string&gt; words;
+    std::ifstream fin;
+    fin.open("test.txt");
+    std::string word;
+    while(!fin.eof()) {
+		std::string line;
+        getline(fin, line);
+		std::istringstream record(line);
+		while(record &gt;&gt; word)
+        	words.push_back(word);
+    }
+    fin.close();
+    for(auto w : words) {
+        std::cout &lt;&lt; w &lt;&lt; "\n";
+    }
+}
+
+int main() {
+    t89();
+    return 0;
+}
+(8.10)
+见8.9
+(8.11)
+void t811() {
+    std::vector&lt;std::string&gt; words;
+    std::ifstream fin;
+    fin.open("test.txt");
+    std::string word;
+	std::istringstream record;
+    while(!fin.eof()) {
+		std::string line;
+        getline(fin, line);
+		record.clear();//清除缓存
+		record.str(line);
+		while(record &gt;&gt; word)
+        	words.push_back(word);
+    }
+    fin.close();
+    for(auto w : words) {
+        std::cout &lt;&lt; w &lt;&lt; "\n";
+    }
+}
+
+int main() {
+    t811();
+    return 0;
+}
+(8.12)
+因为每个人的电话号码的数量不一致
+</code></pre></div></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019102917264470.png" alt="在这里插入图片描述" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(8.13)
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+
+using namespace std;
+
+struct PersonInfo {
+	string name;
+	vector&lt;string&gt; phones;
+};
+
+int main() {
+	vector&lt;PersonInfo&gt; people;
+	string line, word;
+	ifstream fin;
+	fin.open("test.txt");
+	while(!fin.eof() &amp;&amp; fin.peek() != EOF) {
+		PersonInfo info;
+		getline(fin, line);
+		istringstream record(line);
+		record &gt;&gt; info.name;
+		while(record &gt;&gt; word)
+			info.phones.push_back(word);
+		people.push_back(info);	
+	}
+	for(auto p : people) {
+		cout &lt;&lt; p.name &lt;&lt; endl;	
+	}
+	return 0;
+}
+(8.14)
+无需改变类中的变量，最好定义为常量引用，可以避免对象拷贝。
+</code></pre></div></div>
+
+:ET

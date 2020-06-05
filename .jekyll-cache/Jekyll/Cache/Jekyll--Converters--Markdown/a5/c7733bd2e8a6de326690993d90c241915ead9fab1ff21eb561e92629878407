@@ -1,0 +1,174 @@
+I"�(<p>本书为Primer C++ 中文第五版
+<img src="https://img-blog.csdnimg.cn/20190927133257838.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="算术类型" />
+<img src="https://img-blog.csdnimg.cn/2019092713335026.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="指定字面值的类型" />​​
+<img src="https://img-blog.csdnimg.cn/20190927142716539.png" alt="转义序列" /></p>
+<h2 id="学习笔记">学习笔记</h2>
+<h4 id="初始化与赋值"><em>初始化与赋值</em></h4>
+<p>初始化的含义是创建变量时赋予其一个初始值；
+赋值的含义是把对象的当前值擦除，以一个新值代替；
+<strong>对象在创建的时候最好初始化</strong></p>
+<h4 id="声明与定义"><em>声明与定义</em></h4>
+<p>声明使得名字为程序所知，一个文件如果想要使用别处定义的名字必须包含对那个名字的声明，声明规定了变量的类型和名字；
+定义负责创建与名字关联的实体，不仅规定变量的类型和名字，还会申请存储控件，也可能会为变量赋一个初始值。</p>
+<pre><code class="language-C++">//eg.
+extern int i;//声明
+int j;//定义
+extern double pi = 3.14159;//定义
+</code></pre>
+<p><strong>变量能且只能被定义一次，但是可以被多次声明</strong></p>
+<h4 id="引用"><em>引用</em></h4>
+<p>引用为对象起了另外一个名字，引用一旦初始化完成，引用将和它的初始值对象一直绑定在一次，所以<strong>引用必须要初始化</strong>，引用类型的初始值必须是一个对象。
+在定义引用之后，对引用的一切操作都是在与之绑定的对象上进行的，因为引用本身不是一个对象，不能定义引用的引用。</p>
+<pre><code class="language-C++">//eg.
+int ival = 1024;
+int &amp;refVal = ival;
+</code></pre>
+<h4 id="指针"><em>指针</em></h4>
+<p>指针和引用一样也实现了对其他对象的间接访问，与引用不同的地方有以下几个方面:
+指针本身就是一个对象，允许对指针赋值和拷贝，而且在指针的声明周期内它可以先后指向几个不同的对象；
+指针无须在定义时赋初值，但是如果不初始化，将会拥有一个不确定的值。
+<strong>如果指针没有指向任何具体对象，所有试图访问此指针对象的行为都不被允许</strong></p>
+<h4 id="符号的多重含义"><em>符号的多重含义</em></h4>
+<pre><code class="language-C++">//eg.
+int i = 42;	//定义int类型的i值为42
+int &amp;r = i;	//声明r是一个引用
+int *p;		//声明p是一个指针
+p = &amp;i;	//&amp;是一个取地址符
+*p = i;		//*是一个解引用符
+int &amp;r2 = *p;	//声明r2是一个引用，*是一个解引用符，其中r2的初始对象为i
+int *&amp;r3 = p;	//声明r3是一个引用，*是一个解引用符，其中r3的初始对象为p
+</code></pre>
+<h4 id="void指针"><em>void指针</em></h4>
+<p>是一种特殊的指针类型，可用于存放任意对象的地址。void<em>指针只可以和别的指针比较、作为函数的输入或输出，或者赋给另外一个void</em>指针。不能直接操作void*指针所指的对象。</p>
+
+<h4 id="限定符const"><em>限定符const</em></h4>
+<p>关键字const是对变量的类型加以限定，使这个变量的值不能被改变，称为常量。因为const对象一旦创建后其值不能被改变，所以const对象必须要初始化。
+一般情况下，const对象仅在文件内有效，如果多个文件之间共享const对象，需加上extern关键字。
+对const的引用也称为常量引用。<strong>常量不可改变，因此常量引用也不可修改。</strong>
+指向常量的指针不能用于改变其所指对象的值。想要存放常量对象的地址，只能使用指向常量的指针。
+<strong>指向常量的指针可以指向一个非常量对象，但是不能通过该指针改变对象的值</strong></p>
+<pre><code class="language-C++">//eg.
+int errNumb = 0;
+int *const curErr = &amp;errNumb;
+//curErr将一直指向errNumb，errNumb是一个一般的非常量整数，可以使用curErr去修改errNumb的值
+const double pi = 3.14159;
+const double *const pip = &amp;pip;
+//pip是一个指向常量对象的常量指针，无论pip指向的对象值和自己存的地址都不能改变。
+</code></pre>
+<p><strong>顶层const表示指针本身是个常量，底层const表示指针所指的对象是一个常量。更一般的，顶层const表示任意的对象是常量，用于声明引用的const都是底层const</strong></p>
+<h4 id="指向常量的指针常量指针指向常量的常量指针"><em>指向常量的指针，常量指针，指向常量的常量指针</em></h4>
+<p>在书中，我并没有看到指针常量的定义，==百度百科的解释如下==:
+<img src="https://img-blog.csdnimg.cn/20190929171838439.png" alt="指针常量" />
+==网上博客大多是将之区分了的，不清楚是不是我没有查到。但是由于PrimerC++上并未定义指针常量，所以我不再用指针常量这个术语，或许是翻译的锅。但是书中既然翻译成常量指针，我后面也只会用常量指针。==<strong>希望知道的科普一下</strong></p>
+
+<pre><code class="language-C++">//eg.
+const int *p;
+//指向常量的指针，指针"自以为是"的结果，他们觉得自己指向了常量。
+//指针指向的值不可以通过此指针更改，但是可以更改指针的指向，也可以改变p1指针指向的值
+
+int *const p;
+//常量指针，一旦初始化之后，存放在指针中的那个地址就不能再改变，不变的是指针本身而非指向的值
+//指针指向的值可以通过此指针更改，但是不可以更改指针的指向
+
+const double *const pip
+//指向常量的常量指针
+//无论pip所指的对象还是pip自己存储的地方在都不能改变
+</code></pre>
+<p>实例代码</p>
+<pre><code class="language-C++">#include&lt;iostream&gt;
+
+int main(){
+    int a = 3;
+    int b = 4;
+    //指向常量的指针
+    const int *p1 = &amp;a;
+    std::cout&lt;&lt;a&lt;&lt;"\t"&lt;&lt;*p1&lt;&lt;std::endl;
+    //如果要改变p1的值
+    //方法1，改变p1指针指向a的值
+    a = 1000;
+    std::cout&lt;&lt;a&lt;&lt;"\t"&lt;&lt;*p1&lt;&lt;std::endl;
+    //方法2，改变p1指针的指向
+    p1 = &amp;b;
+    std::cout&lt;&lt;a&lt;&lt;"\t"&lt;&lt;*p1&lt;&lt;std::endl;
+     //常量指针
+    int *const p2 = &amp;b;
+    std::cout&lt;&lt;b&lt;&lt;"\t"&lt;&lt;*p2&lt;&lt;std::endl;
+    //如果要改变p2的值，直接更改
+    *p2 = 100;
+    std::cout&lt;&lt;b&lt;&lt;"\t"&lt;&lt;*p2&lt;&lt;std::endl;
+}
+</code></pre>
+<p>结果如下
+3	3
+1000	1000
+1000	4
+4	4
+100	100</p>
+<h4 id="类型别名"><em>类型别名</em></h4>
+<p>定义类型别名，传统的方式是typedef，C++11定义了别名声明。</p>
+<pre><code class="language-C++">//typedef
+typedef double wages;
+//别名声明
+using base = double;
+//折腾半天记录
+typedef char *pstring;
+const pstring cstr1 = 0;//cstr1是常量指针
+const char * cstr2 = 0;//cstr2是指向常量的指针
+//理解:const pstring cstr1 = 0 &lt;==&gt; char * const cstr1 = 0
+//typedef不能简单的替换
+</code></pre>
+<h4 id="auto类型说明符"><em>auto类型说明符</em></h4>
+<p>auto让编译器替我们分析表达式所属的类型，通过初始值推算变量的类型。auto定义的变量必须有初始值。在一条一句声明多个变量时，需要包中只有一个基本数据类型。
+auto一般会忽略顶层const，保留底层const。如果希望推断出的auto类型是一个顶层const，则需要明确指出，如: const auto f = (int) a;</p>
+<h4 id="decltype类型指示符"><em>decltype类型指示符</em></h4>
+<p>从表达式的类型推断出要定义的变量的类型，但是不用该表达式的值初始化变量。
+如果decltype使用的表达式是一个变量，则返回该变量的类型。
+如果decltype使用的表达式不是一个变量，则返回表达式结果对应的类型。
+decltype((variable))的结果永远是引用，decltype(variable)结果只有当variable本身就是一个引用的时候才是引用。
+实例代码</p>
+<pre><code class="language-C++">#include&lt;iostream&gt;
+
+int main()
+{
+    int a = 3, b = 4;
+    decltype(a) c = a;	//c是int的定义，赋初始值为a的值3
+    decltype((b)) d = a;	//d是个int(b为int)引用，初始化对象为a，则d的值将和a一直保持一样
+    std::cout&lt;&lt;a&lt;&lt;" "&lt;&lt;b&lt;&lt;" "&lt;&lt;c&lt;&lt;" "&lt;&lt;d&lt;&lt;std::endl;
+    a++;
+    std::cout&lt;&lt;a&lt;&lt;" "&lt;&lt;b&lt;&lt;" "&lt;&lt;c&lt;&lt;" "&lt;&lt;d&lt;&lt;std::endl;
+    b++;
+    std::cout&lt;&lt;a&lt;&lt;" "&lt;&lt;b&lt;&lt;" "&lt;&lt;c&lt;&lt;" "&lt;&lt;d&lt;&lt;std::endl;
+    c++;
+    std::cout&lt;&lt;a&lt;&lt;" "&lt;&lt;b&lt;&lt;" "&lt;&lt;c&lt;&lt;" "&lt;&lt;d&lt;&lt;std::endl;
+    d++;
+    std::cout&lt;&lt;a&lt;&lt;" "&lt;&lt;b&lt;&lt;" "&lt;&lt;c&lt;&lt;" "&lt;&lt;d&lt;&lt;std::endl;
+    return 0;
+}
+</code></pre>
+<p>结果如下
+3 4 3 3
+4 4 3 4
+4 5 3 4
+4 5 4 4
+5 5 4 5</p>
+<h4 id="预处理器"><em>预处理器</em></h4>
+<p>确保头文件多次包含之后仍能够安全工作。
+#include 用指定的头文件的内容代替
+#define 把一个名字设定为预处理变量
+#ifdef 当且仅当变量已定义时为真
+#ifndef 当且仅当变量未定义时为真
+#endif 当结果为真，执行操作到此为止</p>
+<pre><code class="language-C++">// 防止重复包含的写法，最好都加上
+//SALES_DATA_H为预处理变量，如果没有被定义则执行，如果已经被定义则忽略
+#ifndef SALES_DATA_H	
+#define SALES_DATA_H
+
+#endif
+</code></pre>
+<h2 id="例外记录"><strong>例外记录</strong></h2>
+<p>引用的类型必须与其所引用的对象类型一致；(两个例外)；page46
+==第一种例外是，初始化常量引用时允许用任意表达式作为初始值，只要改表达式能够转换成引用的类型即可。==
+指针的类型必须与其所指对象的类型一致；(两个例外)；page47
+==第一个例外是，允许令一个指向常量的指针指向一个非常量对象。==
+const指针不变的是指针本身的值，也就是存放在指针中的地址。而不是指针指向的那个值。</p>
+:ET

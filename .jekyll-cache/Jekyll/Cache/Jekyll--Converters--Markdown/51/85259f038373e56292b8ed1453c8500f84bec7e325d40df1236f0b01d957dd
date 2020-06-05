@@ -1,0 +1,24 @@
+I"Y<p>本书为Primer C++ 中文第五版</p>
+<h2 id="学习笔记">学习笔记</h2>
+<h4 id="命名空间的using声明"><em>命名空间的using声明</em></h4>
+<pre><code class="language-C++">//using声明的形式如下
+using namespace::name;
+//eg.
+int value;
+std::cin &gt;&gt; value; &lt;==&gt; using std::cin; cin&gt;&gt;value;
+std::cout&lt;&lt;value; &lt;==&gt; using std::cout;cout&lt;&lt;value;
+</code></pre>
+<p><strong>头文件中不宜包含using声明，以防发生名字冲突；</strong></p>
+<h4 id="标准库类型string"><em>标准库类型string</em></h4>
+<p>string表示可变长的字符序列，使用string类型必须首先包含string头文件，string定义在命名空间std中。
+初始化string对象的方式</p>
+<pre><code class="language-C++">//eg.
+string s1;	//默认初始化，s1为空串
+string s2(s1);	//给s2赋s1的值
+string s2 = s1;	//等价于s2(s1)
+string s3("value");	//给s3赋值value，直接初始化
+string s3 = "value";	//等价于s3("value")，拷贝初始化
+string s4(n,'c');	//给s4赋值为n个字符c组成的串，直接初始化
+</code></pre>
+<p>例子:</p>
+:ET

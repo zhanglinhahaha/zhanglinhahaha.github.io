@@ -1,0 +1,173 @@
+I"<p>本书为Primer C++ 中文第五版</p>
+<h2 id="学习笔记">学习笔记</h2>
+<h4 id="命名空间的using声明"><em>命名空间的using声明</em></h4>
+<pre><code class="language-C++">//using声明的形式如下
+using namespace::name;
+//eg.
+int value;
+std::cin &gt;&gt; value; &lt;==&gt; using std::cin; cin&gt;&gt;value;
+std::cout&lt;&lt;value; &lt;==&gt; using std::cout;cout&lt;&lt;value;
+</code></pre>
+<p><strong>头文件中不宜包含using声明，以防发生名字冲突；</strong></p>
+<h4 id="标准库类型string"><em>标准库类型string</em></h4>
+<p>string表示可变长的字符序列，使用string类型必须首先包含string头文件，string定义在命名空间std中。
+初始化string对象的方式</p>
+<pre><code class="language-C++">//eg.
+string s1;	//默认初始化，s1为空串
+string s2(s1);	//给s2赋s1的值
+string s2 = s1;	//等价于s2(s1)
+string s3("value");	//给s3赋值value，直接初始化
+string s3 = "value";	//等价于s3("value")，拷贝初始化
+string s4(n,'c');	//给s4赋值为n个字符c组成的串，直接初始化
+</code></pre>
+<p>例子:</p>
+
+<pre><code class="language-C++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main(){
+    //如果没有加std::，只使用string会报错
+    std::string s1 = "hello";
+    std::cout&lt;&lt;s1&lt;&lt;'\n';
+    return 0;
+}
+
+</code></pre>
+
+<p><img src="https://img-blog.csdnimg.cn/20190930105349798.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="string的操作" />
+<strong>size函数返回的是一个string::size_type类型的值，所以尽量使用</strong><code class="language-plaintext highlighter-rouge">auto len = line.size();</code><strong>而不是使用</strong><code class="language-plaintext highlighter-rouge">int len = line.size();</code></p>
+
+<p>当把string对象和字符字面值及字符串字面值混在一条语句中使用时，必须确保每个加法运算符(+)的两侧的运算对象至少有一个是string。</p>
+<pre><code class="language-C++">//eg.
+string s1 = "hello";
+string s2 = s1 + "world!"；	//正确
+string s3 = "hello" + "world!"；	//错误
+string s4 = s1 + ", " + "world!" ；	//正确，相当于(s1+",")+"world!"
+string s5 = "world" + " , " + s1；	//错误
+</code></pre>
+<p><img src="https://img-blog.csdnimg.cn/2019093011565299.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="cctype库" />
+<strong>处理string中的每一个字符</strong></p>
+
+<pre><code class="language-C++">/*
+for (declaration: expression){
+	statement
+}
+declaration 定义一个变量，是序列中的基础元素
+expression 是一个对象，表示一个序列
+statement 对变量的操作
+*/
+//eg.
+string str("some string");
+for (auto : str){
+	cout&lt;&lt; c &lt;&lt;endl;
+}
+</code></pre>
+<p>例子</p>
+
+<pre><code class="language-C++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cctype&gt;
+void numpunct(std::string str) {
+    decltype(str.size()) punct_num = 0;
+    for(auto c : str) {
+        if(ispunct(c)) punct_num++;
+    }
+    std::cout&lt;&lt;str&lt;&lt;" has puncts : "&lt;&lt;punct_num&lt;&lt;"\n";
+}
+
+void toUp(std::string str) {
+    for(auto &amp;c : str) {
+        c = toupper(c);
+    }
+    std::cout&lt;&lt;str&lt;&lt;"\n";
+}
+
+int main() {
+    std::string s1("hello,world!");
+    numpunct(s1);
+    toUp(s1);
+    return 0;
+}
+
+</code></pre>
+<p>输出结果为
+hello,world! has puncts : 2
+HELLO,WORLD!</p>
+<h4 id="标准库类型vector"><em>标准库类型vector</em></h4>
+<p><img src="https://img-blog.csdnimg.cn/20191009162646141.png" alt="vector" />
+<img src="https://img-blog.csdnimg.cn/20191009163438421.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191009164953228.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+<h4 id="迭代器介绍"><em>迭代器介绍</em></h4>
+<p><img src="https://img-blog.csdnimg.cn/20191009165737356.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191009172733190.png" alt="在这里插入图片描述" /></p>
+<h4 id="数组"><em>数组</em></h4>
+<p><img src="https://img-blog.csdnimg.cn/20191009175301252.png" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191010095434707.png" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191010095448323.png" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191010095359550.png" alt="在这里插入图片描述" />
+<img src="https://img-blog.csdnimg.cn/20191010101619622.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyNjg1MDEy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+eg.</p>
+<pre><code class="language-C++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+void test() {
+    int ia[] = {0,1,2,3,4};
+    //ia2 是指针
+    //auto 定义的变量必须有初始值
+    auto ia2(ia);
+    //ia3是数组
+    //ia3 = ia; 数组不允许拷贝
+    decltype(ia) ia3 = {0,1,2,3,4};
+    std::cout&lt;&lt;*ia2&lt;&lt;" "&lt;&lt;ia3[0]&lt;&lt;"\n";
+}
+
+void dou() {
+    std::vector&lt;int&gt; n;
+    for(int i=0; i&lt;10; i++) {
+        n.push_back(i);
+    }
+    for(auto r : n) {
+        std::cout&lt;&lt;r&lt;&lt;" ";
+    }
+    std::cout&lt;&lt;"\n";
+    for(auto &amp;r : n) {
+        r = 2*r;
+    }
+
+    for(auto r : n) {
+        std::cout&lt;&lt;r&lt;&lt;" ";
+    }
+    std::cout&lt;&lt;"\n";
+}
+
+int main(){
+    std::string s1 = "Hello";
+    std::string s2 = "Hiya";
+    std::cout&lt;&lt;(s2&gt;s1)&lt;&lt;"\n";
+    std::cout&lt;&lt;('A'&gt;'B')&lt;&lt;"\n";
+    std::string s = "some string";
+    if(s.begin() != s.end()) {
+        auto it = s.begin();
+        *it = toupper(*it);
+    }
+    std::cout&lt;&lt;s&lt;&lt;"\n";
+    for(auto it = s.begin(); it != s.end() &amp;&amp; !isspace(*it); ++it) {
+        *it = toupper(*it);
+    }
+    std::cout&lt;&lt;s&lt;&lt;"\n";
+    dou();
+    test();
+    return 0;
+}
+
+</code></pre>
+<p>输出结果:
+1
+0
+Some string
+SOME string
+0 1 2 3 4 5 6 7 8 9 
+0 2 4 6 8 10 12 14 16 18 
+0 0</p>
+:ET

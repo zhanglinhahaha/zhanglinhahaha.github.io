@@ -1,0 +1,83 @@
+I"Q
+<h3 id="访问者模式">访问者模式</h3>
+<p>Represent an operation to be performed on the elements of an object structure. Visitor lets you define a new operation without changing the classes of the elements on which it operates.
+(封装一些作用于某种数据结构中的各元素的操作,它可以在不改变数据结构的前提下定义作用于这些元素的新的操作。)</p>
+<h3 id="通用类图">通用类图</h3>
+<p>抽象访问者类
+抽象类，声明访问者可以访问哪些元素
+具体访问者类
+继承其抽象，影响访问者访问到一个类后要做什么事情
+抽象元素类
+抽象类，声明接受哪一类访问者访问
+具体元素类
+继承其抽象，实现抽象元素类中的方法
+结构对象类
+元素产生者，一般容纳在多个不同类、不同接口的容器。</p>
+<h3 id="通用源码">通用源码</h3>
+<p>//抽象元素类
+class Element {
+public:
+    virtual void doSomething() = 0;
+    virtual void accept(IVisitor<em>) = 0;
+};
+//具体元素类
+class ConcreteElement1 : public Element {
+public:
+    //实现业务逻辑
+    void doSomething override {
+    }
+    //允许哪个访问者访问
+    void accept(IVisitor</em> visitor) override {
+        visitor-&gt;visit(this);
+    }
+};
+class ConcreteElement2 : public Element {
+public:
+    void doSomething override {
+    }
+    void accept(IVisitor* visitor) override {
+        visitor-&gt;visit(this);
+    }
+};
+//抽象访问者类
+class IVisitor {
+public:
+    virtual void visit(ConcreteElement1<em>) = 0;
+    virtual void visit(ConcreteElement2</em>) = 0;
+};
+//具体访问者类
+class Visitor : public IVisitor {
+public:
+    void visit(ConcreteElement1* ce) override {
+        ce-&gt;doSomething();
+    }
+    void visit(ConcreteElement2* ce) override {
+        ce-&gt;doSomething();
+    }
+};
+//结构对象类
+class ObjectStructure {
+    //生成ConcreteElement1和ConcreteElement2对象
+};</p>
+<h3 id="优点">优点</h3>
+<p>符合单一职责原则
+优秀的扩展性
+灵活性非常高</p>
+<h3 id="缺点">缺点</h3>
+<p>具体元素对访问者公布细节，违背了迪米特法则
+具体元素变更比较困难，具体元素变更会引起访问者类改变
+违背了依赖倒置原则</p>
+<h3 id="使用场景">使用场景</h3>
+<p>一个对象结构包含多类对象
+需要对一个对象结构中的对象进行很多不同且不相关的操作
+业务规则要求遍历多个不同的对象</p>
+<h3 id="扩展">扩展</h3>
+<p>统计功能
+多个访问者
+双分派</p>
+<h3 id="示例代码">示例代码</h3>
+<p>```
+#include <iostream>
+#include <string>
+#include <vector></vector></string></iostream></p>
+:ET

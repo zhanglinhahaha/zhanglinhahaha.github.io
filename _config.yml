@@ -16,15 +16,22 @@ github_username:  zhanglinhahaha
 # Comment
 comment:
     # disqus:
-    gitment: zhanglinhahaha # 需要修改 comments.html中的client_id和client_secret 
-    #gitalk: true
-    gitalk_clientID: 'a775b95c50b01cf85e7f'
-    gitalk_Secret: '5063634cd668cd04f934a481c03a053a57dcafc2'
-    gitalk_repo: 'zhanglinhahaha.github.io'
-    gitalk_owner: 'zhanglinhahaha'
-    gitalk_admin: 'zhanglinhahaha'
-    distractionFreeMode: true
+    # gitment: zhanglinhahaha # 需要修改 comments.html中的client_id和client_secret 
+    # gitalk: true
+    # gitalk_clientID: 'a775b95c50b01cf85e7f'
+    # gitalk_Secret: '5063634cd668cd04f934a481c03a053a57dcafc2'
+    # gitalk_repo: 'zhanglinhahaha.github.io'
+    # gitalk_owner: 'zhanglinhahaha'
+    # gitalk_admin: 'zhanglinhahaha'
+    # distractionFreeMode: true
     # uyan: # 有言id,登录有言官网申请
+    valine: true
+    # app_id
+    leancloud_appid: ANUwi4qxtNtrDDWTfob1kWOb-gzGzoHsz
+    # app_key
+    leancloud_appkey: IckLfgEPb7f2lspC5jFRB7mT
+    # placeholde
+    placeholder: 留下一个脚印吧~
 
 # Social
 social:

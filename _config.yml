@@ -15,8 +15,8 @@ github_username:  zhanglinhahaha
 
 # Comment
 comment:
-    disqus: zhanglin
-    # gitment: xxx // 需要修改 comments.html中的client_id和client_secret
+    # disqus: zhanglin
+    gitment: zhanglinhahaha # 需要修改 comments.html中的client_id和client_secret
     # uyan: 2143225  # 有言id,登录有言官网申请
 
 # Social
@@ -25,7 +25,7 @@ social:
     github: zhanglinhahaha
     # zhihu: panpanleopard
     # juejin: xxx
-    csdn: https://blog.csdn.net/qq_42685012
+    # csdn: https://blog.csdn.net/qq_42685012
     # twitter: 
     mail: zlfighting@tju.edu.cn
 

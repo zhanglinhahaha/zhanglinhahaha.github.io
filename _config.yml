@@ -15,8 +15,8 @@ github_username:  zhanglinhahaha
 
 # Comment
 comment:
-    # disqus: zhanglin
-    gitment: zhanglinhahaha # 需要修改 comments.html中的client_id和client_secret
+    # disqus:
+    gitment: true # 需要修改 comments.html中的client_id和client_secret
     # uyan: 2143225  # 有言id,登录有言官网申请
 
 # Social

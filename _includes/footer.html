@@ -4,6 +4,15 @@
         <nav class="cover-navigation navigation--social">
           <ul class="navigation">
 
+          {% if site.social.csdn %}
+          <!-- CSDN -->
+          <li class="navigation__item_social">
+            <a href="https://blog.csdn.net/{{site.social.csdn}}" title="@{{site.social.csdn}}" target="_blank">
+              <div class="footer-social-icon" style="background:url(/images/csdn.jpg);"></div>
+            </a>
+          </li>
+          {% endif %}
+
           {% if site.social.github %}
           <!-- Github -->
           <li class="navigation__item_social">
@@ -24,7 +33,7 @@
           {% endif %}
 
           {% if site.social.juejin %}
-          <!-- Zhihu -->
+          <!-- juejin -->
           <li class="navigation__item_social">
             <a href="https://juejin.im/user/{{site.social.juejin}}" title="@{{site.social.juejin}}" target="_blank">
               <div class="footer-social-icon" style="background:url(/images/juejin.png);"></div>
@@ -34,7 +43,7 @@
           {% endif %}
 
           {% if site.social.jianshu %}
-          <!-- Zhihu -->
+          <!-- jianshu -->
           <li class="navigation__item_social">
             <a href="https://www.jianshu.com/u/{{site.social.jianshu}}" title="@{{site.social.jianshu}}" target="_blank">
               <div class="footer-social-icon" style="background:url(/images/jianshu.png);"></div>

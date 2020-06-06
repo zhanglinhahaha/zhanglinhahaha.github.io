@@ -26,8 +26,6 @@ python  白银
 <p> 
 email：zlfighting@tju.edu.cn
 <p> 
-qq: 1012035640
-<p> 
 
 {% include comments.html %}
 

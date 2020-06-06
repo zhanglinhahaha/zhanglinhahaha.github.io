@@ -53,7 +53,7 @@
             repo: '{{ site.comments.gitalk_repo }}',
             owner: '{{ site.comments.gitalk_owner }}',
             admin: '{{ site.comments.gitalk_admin }}',
-            id: location.pathname,      // Ensure uniqueness and length less than 50{{ page.title }}
+            id: location.pathname.substring(0, 49),      // Ensure uniqueness and length less than 50{{ page.title }}
             distractionFreeMode: '{{ site.comments.distractionFreeMode }}'  // Facebook-like distraction free mode
           })
       gitalk.render('gitalk-container');

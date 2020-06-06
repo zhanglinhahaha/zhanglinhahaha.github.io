@@ -20,7 +20,7 @@ comment:
     gitalk: true
     gitalk_clientID: 'a775b95c50b01cf85e7f'
     gitalk_Secret: '5063634cd668cd04f934a481c03a053a57dcafc2'
-    gitalk_repo: 'https://zhanglinhahaha.github.io/'
+    gitalk_repo: 'zhanglinhahaha.github.io'
     gitalk_owner: 'zhanglinhahaha'
     gitalk_admin: 'zhanglinhahaha'
     distractionFreeMode: true

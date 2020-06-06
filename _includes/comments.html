@@ -31,22 +31,22 @@
     <script src="https://jjeejj.github.io/js/gitment.js"></script>
     <script>
     var gitment = new Gitment({
-        owner: 'zhanglinhahaha',
-        repo: 'zhanglinhahaha.github.io',
+        owner: '{{ site.comments.gitalk_owner }}',
+        repo: '{{ site.comments.gitalk_repo }}',
         oauth: {
-            client_id: 'a775b95c50b01cf85e7f',
-            client_secret: '5063634cd668cd04f934a481c03a053a57dcafc2',
+            client_id:'{{ site.comments.gitalk_clientID }}',
+            client_secret: '{{ site.comments.gitalk_Secret }}',
         },
     });
     gitment.render('gitmentContainer');
     </script>
 
-  {% elsif site.comments.gitalk %}
+  {% elsif site.comment.gitalk %}
   <!-- Link Gitalk 的支持文件  -->
+  <div id="gitalk-container"></div>
   <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
   <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
-  <div id="gitalk-container"></div>
-      <script type="text/javascript">
+      <script>
       var gitalk = new Gitalk({
             clientID: '{{ site.comments.gitalk_clientID }}',
             clientSecret: '{{ site.comments.gitalk_Secret }}',

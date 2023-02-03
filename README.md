@@ -1,4 +1,4 @@
 ## 框架
 Github Page + Jekyll + Valine
 
-[blog 链接](zhanglinhahaha.github.io)
+[blog 链接](https://zhanglinhahaha.github.io/)
